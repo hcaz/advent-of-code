@@ -2,6 +2,7 @@
 
 namespace App\Commands\AOC2022;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 
@@ -21,6 +22,8 @@ class AOC2022One extends Command
      */
     protected $description = 'Display solution for problem 1 :: 2022';
 
+    private Collection $elves;
+
     /**
      * Execute the console command.
      *
@@ -30,7 +33,8 @@ class AOC2022One extends Command
     {
         $option = $this->menu('Day 1: Calorie Counting', [
             'View problem',
-            'Run solution',
+            'Run step 1',
+            'Run step 2',
         ])->open();
 
         if(is_null($option)) {
@@ -89,35 +93,44 @@ EOL);
                 $this->handle();
                 break;
             case 1:
-                $this->info("Running solution for problem 1 :: 2022");
-                $this->info("Loading in 2022_one_input.txt");
-                $data = Storage::get('2022/one_input.txt');
+                $this->info('Running step 1');
+                $this->loadData();
 
-                $elves = Collect([]);
-                $tmpElf = Collect([]);
-                foreach(explode("\n", $data) as $line) {
-                    if($line == '') {
-                        $elves->push($tmpElf);
-                        $tmpElf = Collect([]);
-                    } else {
-                        $tmpElf->push($line);
-                    }
-                }
-
-                $this->info("There are {$elves->count()} elves");
-
-                $mostCaloriesElement = $elves->sortByDesc(function ($elf) {
-                    return $elf->sum();
-                })->first();
-                $mostCaloriesElf = $elves->search(function($elf) use($mostCaloriesElement) {
+                $mostCaloriesElement = $this->elves->first();
+                $mostCaloriesElf = $this->elves->search(function($elf) use($mostCaloriesElement) {
                     return $elf === $mostCaloriesElement;
                 });
-                $mostCaloriesTotal = number_format($elves[$mostCaloriesElf]->sum());
-                $mostCaloriesItems = $elves[$mostCaloriesElf]->count();
+                $mostCaloriesTotal = number_format($this->elves[$mostCaloriesElf]->sum());
+                $mostCaloriesItems = $this->elves[$mostCaloriesElf]->count();
 
                 $this->alert("Elf #$mostCaloriesElf has $mostCaloriesTotal total calories across $mostCaloriesItems items");
 
                 break;
+            case 2:
+                break;
         }
+    }
+
+    private function loadData() {
+        $this->info("Running solution for problem 1 :: 2022");
+        $this->info("Loading in 2022_one_input.txt");
+        $data = Storage::get('2022/one_input.txt');
+
+        $this->elves = Collect([]);
+        $tmpElf = Collect([]);
+        foreach(explode("\n", $data) as $line) {
+            if($line == '') {
+                $this->elves->push($tmpElf);
+                $tmpElf = Collect([]);
+            } else {
+                $tmpElf->push($line);
+            }
+        }
+
+        $this->info("There are {$this->elves->count()} elves");
+
+        $this->elves = $this->elves->sortByDesc(function ($elf) {
+            return $elf->sum();
+        });
     }
 }
