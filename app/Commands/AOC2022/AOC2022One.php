@@ -2,6 +2,7 @@
 
 namespace App\Commands\AOC2022;
 
+use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 
 class AOC2022One extends Command
@@ -86,6 +87,36 @@ EOL);
                 $this->ask('Press any key to continue');
 
                 $this->handle();
+                break;
+            case 1:
+                $this->info("Running solution for problem 1 :: 2022");
+                $this->info("Loading in 2022_one_input.txt");
+                $data = Storage::get('2022/one_input.txt');
+
+                $elves = Collect([]);
+                $tmpElf = Collect([]);
+                foreach(explode("\n", $data) as $line) {
+                    if($line == '') {
+                        $elves->push($tmpElf);
+                        $tmpElf = Collect([]);
+                    } else {
+                        $tmpElf->push($line);
+                    }
+                }
+
+                $this->info("There are {$elves->count()} elves");
+
+                $mostCaloriesElement = $elves->sortByDesc(function ($elf) {
+                    return $elf->sum();
+                })->first();
+                $mostCaloriesElf = $elves->search(function($elf) use($mostCaloriesElement) {
+                    return $elf === $mostCaloriesElement;
+                });
+                $mostCaloriesTotal = number_format($elves[$mostCaloriesElf]->sum());
+                $mostCaloriesItems = $elves[$mostCaloriesElf]->count();
+
+                $this->alert("Elf #$mostCaloriesElf has $mostCaloriesTotal total calories across $mostCaloriesItems items");
+
                 break;
         }
     }
