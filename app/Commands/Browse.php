@@ -30,7 +30,7 @@ class Browse extends Command
      */
     public function handle()
     {
-        $option = $this->menu('Please select a year to view', [
+        $option = $this->menu('Advent of Code', [
             '2022',
         ])->open();
 
