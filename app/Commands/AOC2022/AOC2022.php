@@ -27,7 +27,7 @@ class AOC2022 extends Command
      */
     public function handle()
     {
-        $option = $this->menu('Please select a problem to view', [
+        $option = $this->menu('2022', [
             'Day 1: Calorie Counting',
             'Day 2: Rock Paper Scissors',
             'Day 3: Rucksack Reorganization',
