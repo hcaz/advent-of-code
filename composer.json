@@ -17,8 +17,10 @@
     ],
     "require": {
         "php": "^8.0",
+        "illuminate/log": "^9.0",
         "laminas/laminas-text": "^2.9",
         "laravel-zero/framework": "^9.2",
+        "nunomaduro/laravel-console-menu": "^3.2",
         "nunomaduro/termwind": "^1.14"
     },
     "require-dev": {
