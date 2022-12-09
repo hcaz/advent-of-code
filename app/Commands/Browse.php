@@ -3,7 +3,7 @@
 namespace App\Commands;
 
 use App\Commands\AOC2022\AOC2022;
-use App\Commands\AOC2022\AOC2022One;
+use App\Commands\AOC2022\AOC2022Two;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
