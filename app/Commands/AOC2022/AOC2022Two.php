@@ -139,11 +139,25 @@ EOL);
                 $this->loadData();
 
                 $score = 0;
+                $gamesWon = 0;
+                $gamesLost = 0;
+                $gamesDrawn = 0;
                 foreach($this->rounds as $round) {
                     $score = $score + $round['you']->score();
+                    if($round['you']->beats($round['opponent'])) {
+                        $score = $score + 6;
+                        $gamesWon++;
+                    } elseif($round['you']->losesTo($round['opponent'])) {
+                        $score = $score + 0;
+                        $gamesLost++;
+                    } else {
+                        $score = $score + 3;
+                        $gamesDrawn++;
+                    }
                 }
 
-                $this->alert('Your score is ' . $score);
+                $this->info("You won $gamesWon games, lost $gamesLost games and drew $gamesDrawn games");
+                $this->alert('Your score is ' . number_format($score));
                 break;
             case 2:
                 $this->info('Running step 2');
