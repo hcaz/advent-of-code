@@ -2,6 +2,7 @@
 
 namespace App\Commands\AOC2022;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 
@@ -50,12 +51,14 @@ enum GameObject
 
 class AOC2022Two extends Command
 {
-    const A = GameObject::ROCK;
-    const B = GameObject::PAPER;
-    const C = GameObject::SCISSORS;
-    const X = GameObject::ROCK;
-    const Y = GameObject::PAPER;
-    const Z = GameObject::SCISSORS;
+    private $dataKey = [
+        'A' => GameObject::ROCK,
+        'B' => GameObject::PAPER,
+        'C' => GameObject::SCISSORS,
+        'X' => GameObject::ROCK,
+        'Y' => GameObject::PAPER,
+        'Z' => GameObject::SCISSORS,
+    ];
 
     /**
      * The signature of the command.
@@ -70,6 +73,8 @@ class AOC2022Two extends Command
      * @var string
      */
     protected $description = 'Display solution for problem 2 :: 2022';
+
+    private Collection $rounds;
 
     /**
      * Execute the console command.
@@ -132,6 +137,13 @@ EOL);
             case 1:
                 $this->info('Running step 1');
                 $this->loadData();
+
+                $score = 0;
+                foreach($this->rounds as $round) {
+                    $score = $score + $round['you']->score();
+                }
+
+                $this->alert('Your score is ' . $score);
                 break;
             case 2:
                 $this->info('Running step 2');
@@ -144,5 +156,13 @@ EOL);
         $this->info("Running solution for problem 2 :: 2022");
         $this->info("Loading in 2022_two_input.txt");
         $data = Storage::get('2022/two_input.txt');
+
+        $this->rounds = Collect([]);
+        foreach(explode("\n", $data) as $line) {
+            $round = explode(' ', $line);
+            if(count($round) == 2) $this->rounds->push(['opponent' => $this->dataKey[$round[0]], 'you' => $this->dataKey[$round[1]]]);
+        }
+
+        $this->info("There are {$this->rounds->count()} rounds");
     }
 }
