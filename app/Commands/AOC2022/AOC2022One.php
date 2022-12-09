@@ -104,9 +104,29 @@ EOL);
                 $mostCaloriesItems = $this->elves[$mostCaloriesElf]->count();
 
                 $this->alert("Elf #$mostCaloriesElf has $mostCaloriesTotal total calories across $mostCaloriesItems items");
-
                 break;
             case 2:
+                $this->info('Running step 2');
+                $this->loadData();
+
+                $mostCaloriesElements = $this->elves->take(3);
+                $mostCaloriesTotalTop3 = 0;
+                $mostCaloriesItemsTop3 = 0;
+                foreach($mostCaloriesElements as $mostCaloriesElement){
+                    $mostCaloriesElf = $this->elves->search(function ($elf) use ($mostCaloriesElement) {
+                        return $elf === $mostCaloriesElement;
+                    });
+                    $mostCaloriesTotal = number_format($this->elves[$mostCaloriesElf]->sum());
+                    $mostCaloriesItems = $this->elves[$mostCaloriesElf]->count();
+
+                    $mostCaloriesTotalTop3 = $mostCaloriesTotalTop3 + $this->elves[$mostCaloriesElf]->sum();
+                    $mostCaloriesItemsTop3 = $mostCaloriesItemsTop3 + $mostCaloriesItems;
+
+                    $this->info("Elf #$mostCaloriesElf has $mostCaloriesTotal total calories across $mostCaloriesItems items");
+                }
+
+                $mostCaloriesTotalTop3 = number_format($mostCaloriesTotalTop3);
+                $this->alert("Top 3 elves have $mostCaloriesTotalTop3 total calories across $mostCaloriesItemsTop3 items");
                 break;
         }
     }
