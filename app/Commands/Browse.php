@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use App\Commands\AOC2015\AOC2015;
 use App\Commands\AOC2022\AOC2022;
 use LaravelZero\Framework\Commands\Command;
 
@@ -29,7 +30,7 @@ class Browse extends Command
     public function handle()
     {
         $option = $this->menu('Advent of Code', [
-            '2015',
+            '2015 ★★',
             '2016',
             '2017',
             '2018',
@@ -46,6 +47,9 @@ class Browse extends Command
         }
 
         switch($option) {
+            case 0:
+                $this->call(AOC2015::class);
+                break;
             case 7:
                 $this->call(AOC2022::class);
                 break;

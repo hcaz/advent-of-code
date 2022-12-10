@@ -4,6 +4,7 @@ namespace App\Commands;
 
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
+use Ubench;
 
 class ProblemExample extends Command
 {
@@ -38,6 +39,9 @@ class ProblemExample extends Command
             return;
         }
 
+        $bench = new Ubench;
+
+        $bench->start();
         switch($option) {
             case 0:
                 $this->alert('https://adventofcode.com/YEAR/day/PROBLEM');
@@ -54,6 +58,10 @@ EOL);
                 $this->loadData();
                 break;
         }
+        $bench->end();
+
+        $this->error("Execution time: {$bench->getTime()}");
+        $this->error("Peak memory usage: {$bench->getMemoryPeak()}");
 
         $this->ask('Press any key to continue');
         $this->handle();
