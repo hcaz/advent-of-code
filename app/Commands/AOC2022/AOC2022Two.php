@@ -178,6 +178,8 @@ EOL);
 
         $this->rounds = Collect([]);
         foreach(explode("\n", $data) as $line) {
+            if($line == '') continue;
+
             $round = explode(' ', $line);
             if(count($round) == 2) $this->rounds->push(['opponent' => $this->dataKey[$round[0]], 'you' => $this->dataKey[$round[1]]]);
         }
