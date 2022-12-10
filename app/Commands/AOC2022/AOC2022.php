@@ -11,7 +11,7 @@ class AOC2022 extends Command
      *
      * @var string
      */
-    protected $signature = 'browse 2022';
+    protected $signature = 'browse/2022';
 
     /**
      * The description of the command.
@@ -37,6 +37,7 @@ class AOC2022 extends Command
             'Day 7: No Space Left On Device',
             'Day 8: Treetop Tree House',
             'Day 9: Rope Bridge',
+            'Day 10: Cathode-Ray Tube',
         ])->setExitButtonText("Back")->open();
 
         if(is_null($option)) {
@@ -52,6 +53,9 @@ class AOC2022 extends Command
                 break;
             case 2:
                 $this->call(AOC2022Three::class);
+                break;
+            case 2:
+                $this->call(AOC2022Four::class);
                 break;
         }
         $this->handle();
