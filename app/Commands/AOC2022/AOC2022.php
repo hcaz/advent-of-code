@@ -57,6 +57,9 @@ class AOC2022 extends Command
             case 3:
                 $this->call(AOC2022Four::class);
                 break;
+            case 4:
+                $this->call(AOC2022Five::class);
+                break;
         }
         $this->handle();
     }
