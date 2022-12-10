@@ -121,12 +121,18 @@ EOL);
                 $this->displayStacks();
 
                 foreach($this->moves as $move) {
-
-                    dd($move);
+                    for($i = 0; $i < $move['amount']; $i++) {
+                        $crate = $this->stacks[$move['from'] - 1]->pop();
+                        $this->stacks[$move['to'] - 1]->push($crate);
+                    }
                 }
 
                 $this->info("Ending position:");
                 $this->displayStacks();
+
+                $this->alert("Final crates at top of stacks: " . $this->stacks->map(function($stack) {
+                    return $stack->pop();
+                })->implode(''));
                 break;
             case 2:
                 $this->info('Running step 2');
@@ -158,8 +164,8 @@ EOL);
                 $stackCount = round(strlen($line) / 4);
                 for($i = 0; $i < $stackCount; $i++) {
                     if(!isset($this->stacks[$i])) $this->stacks[$i] = Collect([]);
-                    $create = substr($line, ($i * 4) + 1, 1);
-                    if(!empty(trim($create))) $this->stacks[$i]->push($create);
+                    $crate = substr($line, ($i * 4) + 1, 1);
+                    if(!empty(trim($crate))) $this->stacks[$i]->prepend($crate);
                 }
             } else {
                 $move = explode(' ', $line);
@@ -176,10 +182,10 @@ EOL);
     }
 
     private function displayStacks() {
-        $this->table(['Stack', 'Crates'], $this->stacks->map(function($stack, $key) {
+        $this->table(['Stack', 'Crate'], $this->stacks->map(function($stack, $key) {
             return [
                 $key + 1,
-                $stack->reverse()->implode(' '),
+                $stack->implode(' '),
             ];
         })->toArray());
     }
