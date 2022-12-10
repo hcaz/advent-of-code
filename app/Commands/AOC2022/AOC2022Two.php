@@ -7,6 +7,7 @@ use App\Enums\AOC2022GameResults;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
+use Ubench;
 
 class AOC2022Two extends Command
 {
@@ -49,6 +50,9 @@ class AOC2022Two extends Command
             return;
         }
 
+        $bench = new Ubench;
+
+        $bench->start();
         switch($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2022/day/2');
@@ -163,6 +167,10 @@ EOL);
                 $this->alert("Your score is $score!");
                 break;
         }
+        $bench->end();
+
+        $this->error("Execution time: " . $bench->getTime());
+        $this->error("Memory usage: " . $bench->getMemoryPeak());
 
         $this->ask('Press any key to continue');
         $this->handle();

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "89087928658d367bd4884451111959b4",
+    "content-hash": "c868ccd748f35b9c3faa2c431ca7455a",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -128,6 +128,58 @@
                 }
             ],
             "time": "2022-08-10T22:54:19+00:00"
+        },
+        {
+            "name": "devster/ubench",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/devster/ubench.git",
+                "reference": "18467017d0ce4db67bc9872393e88a27d87069df"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/devster/ubench/zipball/18467017d0ce4db67bc9872393e88a27d87069df",
+                "reference": "18467017d0ce4db67bc9872393e88a27d87069df",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Ubench": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeremy Perret",
+                    "email": "jeremy@devster.org"
+                }
+            ],
+            "description": "Micro PHP library for benchmarking",
+            "homepage": "https://github.com/devster/ubench",
+            "keywords": [
+                "bench",
+                "benchmark",
+                "library",
+                "micro"
+            ],
+            "support": {
+                "issues": "https://github.com/devster/ubench/issues",
+                "source": "https://github.com/devster/ubench/tree/master"
+            },
+            "time": "2019-06-03T06:54:12+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -6618,7 +6670,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.0"
+        "php": "^8.1"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
