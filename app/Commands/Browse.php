@@ -38,7 +38,7 @@ class Browse extends Command
             '2019',
             '2020',
             '2021',
-            '2022 ★★ ★★ ★★',
+            '2022 ★★ ★★ ★★ ★★',
         ])->open();
 
         if(is_null($option)) {
