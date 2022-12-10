@@ -49,6 +49,18 @@ EOL);
             case 1:
                 $this->info('Running step 1');
                 $this->loadData();
+
+                $localBuffer = Collect([]);
+                for($i = 0; $i < strlen($this->buffer); $i++) {
+                    $char = $this->buffer[$i];
+                    if(empty($char)) continue;
+
+                    $localBuffer->push($char);
+                    if($localBuffer->count() > 4) $localBuffer->pull(0);
+                    $localBuffer = $localBuffer->values();
+
+                    dump($localBuffer->join(''));
+                }
                 break;
             case 2:
                 $this->info('Running step 2');
