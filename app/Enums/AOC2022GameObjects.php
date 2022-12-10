@@ -2,14 +2,15 @@
 
 namespace App\Enums;
 
-enum AOC2022GameObjects {
+enum AOC2022GameObjects
+{
     case ROCK;
     case PAPER;
     case SCISSORS;
 
     public function beats(): self
     {
-        return match($this) {
+        return match ($this) {
             self::ROCK => self::SCISSORS,
             self::PAPER => self::ROCK,
             self::SCISSORS => self::PAPER,
@@ -18,7 +19,7 @@ enum AOC2022GameObjects {
 
     public function losesTo(): self
     {
-        return match($this) {
+        return match ($this) {
             self::ROCK => self::PAPER,
             self::PAPER => self::SCISSORS,
             self::SCISSORS => self::ROCK,
@@ -27,7 +28,7 @@ enum AOC2022GameObjects {
 
     public function score(): int
     {
-        return match($this) {
+        return match ($this) {
             self::ROCK => 1,
             self::PAPER => 2,
             self::SCISSORS => 3,

@@ -3,8 +3,6 @@
 namespace App\Commands;
 
 use App\Commands\AOC2022\AOC2022;
-use App\Commands\AOC2022\AOC2022Two;
-use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
 class Browse extends Command
@@ -41,8 +39,9 @@ class Browse extends Command
             '2022 ★★ ★★ ★★ ★★ ★★ ★★',
         ])->open();
 
-        if(is_null($option)) {
+        if (is_null($option)) {
             $this->info('You have chosen to exit');
+
             return;
         }
 

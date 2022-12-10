@@ -36,9 +36,9 @@ class AOC2022Three extends Command
             'View problem',
             'Run step 1',
             'Run step 2',
-        ])->setExitButtonText("Back")->open();
+        ])->setExitButtonText('Back')->open();
 
-        if(is_null($option)) {
+        if (is_null($option)) {
             return;
         }
 
@@ -48,7 +48,7 @@ class AOC2022Three extends Command
         switch($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2022/day/3');
-                $this->info(<<<EOL
+                $this->info(<<<'EOL'
 --- Day 3: Rucksack Reorganization ---
 One Elf has the important job of loading all of the rucksacks with supplies for the jungle journey. Unfortunately, that Elf didn't quite follow the packing instructions, and so a few items now need to be rearranged.
 
@@ -121,12 +121,14 @@ EOL);
                 $this->loadData();
 
                 $priorityTotal = 0;
-                foreach($this->rucksacks as $rucksack) {
+                foreach ($this->rucksacks as $rucksack) {
                     $itemsInBothCompartments = implode(array_unique(array_intersect(str_split($rucksack['compartment_1']), str_split($rucksack['compartment_2']))));
 
                     // I had hoped I could change 96 to 64 depending on capital or lowercase, but that didn't work
                     $number = (ord(strtolower($itemsInBothCompartments)) - 96) + ($itemsInBothCompartments == strtoupper($itemsInBothCompartments) ? 26 : 0);
-                    if($number > 0) $priorityTotal = $priorityTotal + $number;
+                    if ($number > 0) {
+                        $priorityTotal = $priorityTotal + $number;
+                    }
                 }
 
                 $priorityTotal = number_format($priorityTotal);
@@ -140,16 +142,18 @@ EOL);
                 $chunks = $this->rucksacks->chunk(3);
 
                 $priorityTotal = 0;
-                foreach($chunks as $chunk) {
-                    $elfOneRucksack = $chunk->values()[0]['compartment_1'] . $chunk->values()[0]['compartment_2'];
-                    $elfTwoRucksack = $chunk->values()[1]['compartment_1'] . $chunk->values()[1]['compartment_2'];
-                    $elfThreeRucksack = $chunk->values()[2]['compartment_1'] . $chunk->values()[2]['compartment_2'];
+                foreach ($chunks as $chunk) {
+                    $elfOneRucksack = $chunk->values()[0]['compartment_1'].$chunk->values()[0]['compartment_2'];
+                    $elfTwoRucksack = $chunk->values()[1]['compartment_1'].$chunk->values()[1]['compartment_2'];
+                    $elfThreeRucksack = $chunk->values()[2]['compartment_1'].$chunk->values()[2]['compartment_2'];
 
                     $itemsOnAllElves = implode(array_unique(array_intersect(str_split($elfOneRucksack), str_split($elfTwoRucksack), str_split($elfThreeRucksack))));
 
                     // I had hoped I could change 96 to 64 depending on capital or lowercase, but that didn't work
                     $number = (ord(strtolower($itemsOnAllElves)) - 96) + ($itemsOnAllElves == strtoupper($itemsOnAllElves) ? 26 : 0);
-                    if($number > 0) $priorityTotal = $priorityTotal + $number;
+                    if ($number > 0) {
+                        $priorityTotal = $priorityTotal + $number;
+                    }
                 }
 
                 $priorityTotal = number_format($priorityTotal);
@@ -159,24 +163,27 @@ EOL);
         }
         $bench->end();
 
-        $this->error("Execution time: " . $bench->getTime());
-        $this->error("Memory usage: " . $bench->getMemoryPeak());
+        $this->error("Execution time: {$bench->getTime()}");
+        $this->error("Peak memory usage: {$bench->getMemoryPeak()}");
 
         $this->ask('Press any key to continue');
         $this->handle();
     }
 
-    private function loadData() {
-        $this->info("Running solution for problem 3 :: 2022");
-        $this->info("Loading in 2022_three_input.txt");
+    private function loadData()
+    {
+        $this->info('Running solution for problem 3 :: 2022');
+        $this->info('Loading in 2022_three_input.txt');
         $data = Storage::get('2022/three_input.txt');
 
         $this->rucksacks = Collect([]);
-        foreach(explode("\n", $data) as $line) {
-            if($line == '') continue;
+        foreach (explode("\n", $data) as $line) {
+            if ($line == '') {
+                continue;
+            }
 
-            $first_half = substr($line,0, strlen($line)/2);
-            $second_half = substr($line, strlen($line)/2);
+            $first_half = substr($line, 0, strlen($line) / 2);
+            $second_half = substr($line, strlen($line) / 2);
 
             $this->rucksacks->push([
                 'compartment_1' => $first_half,

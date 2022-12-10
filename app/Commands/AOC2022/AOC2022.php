@@ -38,9 +38,9 @@ class AOC2022 extends Command
             'Day 8: Treetop Tree House',
             'Day 9: Rope Bridge',
             'Day 10: Cathode-Ray Tube',
-        ])->setExitButtonText("Back")->open();
+        ])->setExitButtonText('Back')->open();
 
-        if(is_null($option)) {
+        if (is_null($option)) {
             return;
         }
 

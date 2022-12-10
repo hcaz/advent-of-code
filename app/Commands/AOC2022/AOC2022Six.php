@@ -23,6 +23,7 @@ class AOC2022Six extends Command
     protected $description = 'Display solution for problem 6 :: 2022';
 
     private String $buffer;
+
     /**
      * Execute the console command.
      *
@@ -34,9 +35,9 @@ class AOC2022Six extends Command
             'View problem',
             'Run step 1',
             'Run step 2',
-        ])->setExitButtonText("Back")->open();
+        ])->setExitButtonText('Back')->open();
 
-        if(is_null($option)) {
+        if (is_null($option)) {
             return;
         }
 
@@ -46,7 +47,7 @@ class AOC2022Six extends Command
         switch($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2022/day/6');
-                $this->info(<<<EOL
+                $this->info(<<<'EOL'
 --- Day 6: Tuning Trouble ---
 The preparations are finally complete; you and the Elves leave camp on foot and begin to make your way toward the star fruit grove.
 
@@ -102,23 +103,29 @@ EOL);
                 $indexOfFirstMarker = null;
 
                 $localBuffer = Collect([]);
-                for($i = 0; $i < strlen($this->buffer); $i++) {
+                for ($i = 0; $i < strlen($this->buffer); $i++) {
                     $char = $this->buffer[$i];
-                    if(empty(trim($char))) continue;
+                    if (empty(trim($char))) {
+                        continue;
+                    }
 
                     $localBuffer->push($char);
-                    if($localBuffer->count() > 4) $localBuffer->pull(0);
+                    if ($localBuffer->count() > 4) {
+                        $localBuffer->pull(0);
+                    }
                     $localBuffer = $localBuffer->values();
 
-                    if($localBuffer->count() == 4 && $localBuffer->unique()->count() == 4) {
+                    if ($localBuffer->count() == 4 && $localBuffer->unique()->count() == 4) {
 //                        $this->info("Found 4 unique characters in a row {$localBuffer->implode('')} at index " . ($i + 1));
 
-                        if(is_null($indexOfFirstMarker)) $indexOfFirstMarker = ($i + 1);
+                        if (is_null($indexOfFirstMarker)) {
+                            $indexOfFirstMarker = ($i + 1);
+                        }
                     }
                 }
 
-                if(is_null($indexOfFirstMarker)) {
-                    $this->error("No start-of-packet found");
+                if (is_null($indexOfFirstMarker)) {
+                    $this->error('No start-of-packet found');
                 } else {
                     $this->info("Found start-of-packet found at index $indexOfFirstMarker");
                 }
@@ -130,23 +137,29 @@ EOL);
                 $indexOfFirstMarker = null;
 
                 $localBuffer = Collect([]);
-                for($i = 0; $i < strlen($this->buffer); $i++) {
+                for ($i = 0; $i < strlen($this->buffer); $i++) {
                     $char = $this->buffer[$i];
-                    if(empty(trim($char))) continue;
+                    if (empty(trim($char))) {
+                        continue;
+                    }
 
                     $localBuffer->push($char);
-                    if($localBuffer->count() > 14) $localBuffer->pull(0);
+                    if ($localBuffer->count() > 14) {
+                        $localBuffer->pull(0);
+                    }
                     $localBuffer = $localBuffer->values();
 
-                    if($localBuffer->count() == 14 && $localBuffer->unique()->count() == 14) {
+                    if ($localBuffer->count() == 14 && $localBuffer->unique()->count() == 14) {
 //                        $this->info("Found 14 unique characters in a row {$localBuffer->implode('')} at index " . ($i + 1));
 
-                        if(is_null($indexOfFirstMarker)) $indexOfFirstMarker = ($i + 1);
+                        if (is_null($indexOfFirstMarker)) {
+                            $indexOfFirstMarker = ($i + 1);
+                        }
                     }
                 }
 
-                if(is_null($indexOfFirstMarker)) {
-                    $this->error("No start-of-packet found");
+                if (is_null($indexOfFirstMarker)) {
+                    $this->error('No start-of-packet found');
                 } else {
                     $this->info("Found start-of-packet found at index $indexOfFirstMarker");
                 }
@@ -154,16 +167,17 @@ EOL);
         }
         $bench->end();
 
-        $this->error("Execution time: " . $bench->getTime());
-        $this->error("Memory usage: " . $bench->getMemoryPeak());
+        $this->error("Execution time: {$bench->getTime()}");
+        $this->error("Peak memory usage: {$bench->getMemoryPeak()}");
 
         $this->ask('Press any key to continue');
         $this->handle();
     }
 
-    private function loadData() {
-        $this->info("Running solution for problem 6 :: 2022");
-        $this->info("Loading in 2022_six_input.txt");
+    private function loadData()
+    {
+        $this->info('Running solution for problem 6 :: 2022');
+        $this->info('Loading in 2022_six_input.txt');
         $data = Storage::get('2022/six_input.txt');
 
         $this->buffer = $data;

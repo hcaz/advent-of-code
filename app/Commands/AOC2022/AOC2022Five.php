@@ -24,6 +24,7 @@ class AOC2022Five extends Command
     protected $description = 'Display solution for problem 5 :: 2022';
 
     private Collection $stacks;
+
     private Collection $moves;
 
     /**
@@ -37,9 +38,9 @@ class AOC2022Five extends Command
             'View problem',
             'Run step 1',
             'Run step 2',
-        ])->setExitButtonText("Back")->open();
+        ])->setExitButtonText('Back')->open();
 
-        if(is_null($option)) {
+        if (is_null($option)) {
             return;
         }
 
@@ -49,7 +50,7 @@ class AOC2022Five extends Command
         switch($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2022/day/5');
-                $this->info(<<<EOL
+                $this->info(<<<'EOL'
 --- Day 5: Supply Stacks ---
 The expedition can depart as soon as the final supplies have been unloaded from the ships. Supplies are stored in stacks of marked crates, but because the needed supplies are buried under many other crates, the crates need to be rearranged.
 
@@ -180,20 +181,20 @@ EOL);
                 $this->info('Running step 1');
                 $this->loadData();
 
-                $this->info("Starting position:");
+                $this->info('Starting position:');
                 $this->displayStacks();
 
-                foreach($this->moves as $move) {
-                    for($i = 0; $i < $move['amount']; $i++) {
+                foreach ($this->moves as $move) {
+                    for ($i = 0; $i < $move['amount']; $i++) {
                         $crate = $this->stacks[$move['from'] - 1]->pop();
                         $this->stacks[$move['to'] - 1]->push($crate);
                     }
                 }
 
-                $this->info("Ending position:");
+                $this->info('Ending position:');
                 $this->displayStacks();
 
-                $this->alert("Final crates at top of stacks: " . $this->stacks->map(function($stack) {
+                $this->alert('Final crates at top of stacks: '.$this->stacks->map(function ($stack) {
                     return $stack->pop();
                 })->implode(''));
                 break;
@@ -201,55 +202,63 @@ EOL);
                 $this->info('Running step 2');
                 $this->loadData();
 
-                $this->info("Starting position:");
+                $this->info('Starting position:');
                 $this->displayStacks();
 
-                foreach($this->moves as $move) {
+                foreach ($this->moves as $move) {
                     $crates = $this->stacks[$move['from'] - 1]->pop($move['amount']);
-                    foreach($crates->reverse() as $crate) {
+                    foreach ($crates->reverse() as $crate) {
                         $this->stacks[$move['to'] - 1]->push($crate);
                     }
                 }
 
-                $this->info("Ending position:");
+                $this->info('Ending position:');
                 $this->displayStacks();
 
-                $this->alert("Final crates at top of stacks: " . $this->stacks->map(function($stack) {
-                        return $stack->pop();
-                    })->implode(''));
+                $this->alert('Final crates at top of stacks: '.$this->stacks->map(function ($stack) {
+                    return $stack->pop();
+                })->implode(''));
                 break;
         }
         $bench->end();
 
-        $this->error("Execution time: " . $bench->getTime());
-        $this->error("Memory usage: " . $bench->getMemoryPeak());
+        $this->error("Execution time: {$bench->getTime()}");
+        $this->error("Peak memory usage: {$bench->getMemoryPeak()}");
 
         $this->ask('Press any key to continue');
         $this->handle();
     }
 
-    private function loadData() {
-        $this->info("Running solution for problem 5 :: 2022");
-        $this->info("Loading in 2022_five_input.txt");
+    private function loadData()
+    {
+        $this->info('Running solution for problem 5 :: 2022');
+        $this->info('Loading in 2022_five_input.txt');
         $data = Storage::get('2022/five_input.txt');
 
         $this->stacks = Collect([]);
         $this->moves = Collect([]);
         $stacks = true;
-        foreach(explode("\n", $data) as $line) {
-            if($line == '') {
+        foreach (explode("\n", $data) as $line) {
+            if ($line == '') {
                 $stacks = false;
+
                 continue;
             }
 
-            if($stacks) {
-                if(!str_contains($line, "[")) continue;
+            if ($stacks) {
+                if (! str_contains($line, '[')) {
+                    continue;
+                }
 
                 $stackCount = round(strlen($line) / 4);
-                for($i = 0; $i < $stackCount; $i++) {
-                    if(!isset($this->stacks[$i])) $this->stacks[$i] = Collect([]);
+                for ($i = 0; $i < $stackCount; $i++) {
+                    if (! isset($this->stacks[$i])) {
+                        $this->stacks[$i] = Collect([]);
+                    }
                     $crate = substr($line, ($i * 4) + 1, 1);
-                    if(!empty(trim($crate))) $this->stacks[$i]->prepend($crate);
+                    if (! empty(trim($crate))) {
+                        $this->stacks[$i]->prepend($crate);
+                    }
                 }
             } else {
                 $move = explode(' ', $line);
@@ -265,8 +274,9 @@ EOL);
         $this->info("There are {$this->moves->count()} moves");
     }
 
-    private function displayStacks() {
-        $this->table(['Stack', 'Crate'], $this->stacks->map(function($stack, $key) {
+    private function displayStacks()
+    {
+        $this->table(['Stack', 'Crate'], $this->stacks->map(function ($stack, $key) {
             return [
                 $key + 1,
                 $stack->implode(' '),
