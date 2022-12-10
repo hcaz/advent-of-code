@@ -36,9 +36,9 @@ class AOC2022One extends Command
             'View problem',
             'Run step 1',
             'Run step 2',
-        ])->setExitButtonText("Back")->open();
+        ])->setExitButtonText('Back')->open();
 
-        if(is_null($option)) {
+        if (is_null($option)) {
             return;
         }
 
@@ -48,7 +48,7 @@ class AOC2022One extends Command
         switch($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2022/day/1');
-                $this->info(<<<EOL
+                $this->info(<<<'EOL'
 --- Day 1: Calorie Counting ---
 
 Santa's reindeer typically eat regular reindeer food, but they need a lot of magical energy to deliver presents on Christmas. For that, their favorite snack is a special type of star fruit that only grows deep in the jungle. The Elves have brought you on their annual expedition to the grove where the fruit grows.
@@ -107,7 +107,7 @@ EOL);
                 $this->loadData();
 
                 $mostCaloriesElement = $this->elves->first();
-                $mostCaloriesElf = $this->elves->search(function($elf) use($mostCaloriesElement) {
+                $mostCaloriesElf = $this->elves->search(function ($elf) use ($mostCaloriesElement) {
                     return $elf === $mostCaloriesElement;
                 });
                 $mostCaloriesTotal = number_format($this->elves[$mostCaloriesElf]->sum());
@@ -122,7 +122,7 @@ EOL);
                 $mostCaloriesElements = $this->elves->take(3);
                 $mostCaloriesTotalTop3 = 0;
                 $mostCaloriesItemsTop3 = 0;
-                foreach($mostCaloriesElements as $mostCaloriesElement){
+                foreach ($mostCaloriesElements as $mostCaloriesElement) {
                     $mostCaloriesElf = $this->elves->search(function ($elf) use ($mostCaloriesElement) {
                         return $elf === $mostCaloriesElement;
                     });
@@ -141,22 +141,23 @@ EOL);
         }
         $bench->end();
 
-        $this->error("Execution time: " . $bench->getTime());
-        $this->error("Memory usage: " . $bench->getMemoryPeak());
+        $this->error("Execution time: {$bench->getTime()}");
+        $this->error("Peak memory usage: {$bench->getMemoryPeak()}");
 
         $this->ask('Press any key to continue');
         $this->handle();
     }
 
-    private function loadData() {
-        $this->info("Running solution for problem 1 :: 2022");
-        $this->info("Loading in 2022_one_input.txt");
+    private function loadData()
+    {
+        $this->info('Running solution for problem 1 :: 2022');
+        $this->info('Loading in 2022_one_input.txt');
         $data = Storage::get('2022/one_input.txt');
 
         $this->elves = Collect([]);
         $tmpElf = Collect([]);
-        foreach(explode("\n", $data) as $line) {
-            if($line == '') {
+        foreach (explode("\n", $data) as $line) {
+            if ($line == '') {
                 $this->elves->push($tmpElf);
                 $tmpElf = Collect([]);
             } else {

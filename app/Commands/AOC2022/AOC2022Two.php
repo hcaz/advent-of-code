@@ -44,9 +44,9 @@ class AOC2022Two extends Command
             'View problem',
             'Run step 1',
             'Run step 2',
-        ])->setExitButtonText("Back")->open();
+        ])->setExitButtonText('Back')->open();
 
-        if(is_null($option)) {
+        if (is_null($option)) {
             return;
         }
 
@@ -56,7 +56,7 @@ class AOC2022Two extends Command
         switch($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2022/day/2');
-                $this->info(<<<EOL
+                $this->info(<<<'EOL'
 --- Day 2: Rock Paper Scissors ---
 
 The Elves begin to set up camp on the beach. To decide whose tent gets to be closest to the snack storage, a giant Rock Paper Scissors tournament is already in progress.
@@ -112,12 +112,12 @@ EOL);
                 $gamesWon = 0;
                 $gamesLost = 0;
                 $gamesDrawn = 0;
-                foreach($this->rounds as $round) {
+                foreach ($this->rounds as $round) {
                     $score = $score + $round['you']->score();
-                    if($round['you']->beats() === $round['opponent']) {
+                    if ($round['you']->beats() === $round['opponent']) {
                         $score = $score + AOC2022GameResults::WIN->score();
                         $gamesWon++;
-                    } elseif($round['you']->losesTo() === $round['opponent']) {
+                    } elseif ($round['you']->losesTo() === $round['opponent']) {
                         $score = $score + AOC2022GameResults::LOSS->score();
                         $gamesLost++;
                     } else {
@@ -142,7 +142,7 @@ EOL);
                 $gamesWon = 0;
                 $gamesLost = 0;
                 $gamesDrawn = 0;
-                foreach($this->rounds as $round) {
+                foreach ($this->rounds as $round) {
                     $score = $score + $round['you']->score();
 
                     switch($round['you']) {
@@ -169,24 +169,29 @@ EOL);
         }
         $bench->end();
 
-        $this->error("Execution time: " . $bench->getTime());
-        $this->error("Memory usage: " . $bench->getMemoryPeak());
+        $this->error("Execution time: {$bench->getTime()}");
+        $this->error("Peak memory usage: {$bench->getMemoryPeak()}");
 
         $this->ask('Press any key to continue');
         $this->handle();
     }
 
-    private function loadData() {
-        $this->info("Running solution for problem 2 :: 2022");
-        $this->info("Loading in 2022_two_input.txt");
+    private function loadData()
+    {
+        $this->info('Running solution for problem 2 :: 2022');
+        $this->info('Loading in 2022_two_input.txt');
         $data = Storage::get('2022/two_input.txt');
 
         $this->rounds = Collect([]);
-        foreach(explode("\n", $data) as $line) {
-            if($line == '') continue;
+        foreach (explode("\n", $data) as $line) {
+            if ($line == '') {
+                continue;
+            }
 
             $round = explode(' ', $line);
-            if(count($round) == 2) $this->rounds->push(['opponent' => $this->dataKey[$round[0]], 'you' => $this->dataKey[$round[1]]]);
+            if (count($round) == 2) {
+                $this->rounds->push(['opponent' => $this->dataKey[$round[0]], 'you' => $this->dataKey[$round[1]]]);
+            }
         }
 
         $this->info("There are {$this->rounds->count()} rounds");

@@ -32,16 +32,16 @@ class ProblemExample extends Command
             'View problem',
             'Run step 1',
             'Run step 2',
-        ])->setExitButtonText("Back")->open();
+        ])->setExitButtonText('Back')->open();
 
-        if(is_null($option)) {
+        if (is_null($option)) {
             return;
         }
 
         switch($option) {
             case 0:
                 $this->alert('https://adventofcode.com/YEAR/day/PROBLEM');
-                $this->info(<<<EOL
+                $this->info(<<<'EOL'
 
 EOL);
                 break;
@@ -59,11 +59,10 @@ EOL);
         $this->handle();
     }
 
-    private function loadData() {
-        $this->info("Running solution for problem # :: YEAR");
-        $this->info("Loading in 2022_four_input.txt");
+    private function loadData()
+    {
+        $this->info('Running solution for problem # :: YEAR');
+        $this->info('Loading in 2022_four_input.txt');
         $data = Storage::get('2022/four_input.txt');
-
-
     }
 }

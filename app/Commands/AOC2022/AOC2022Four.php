@@ -36,9 +36,9 @@ class AOC2022Four extends Command
             'View problem',
             'Run step 1',
             'Run step 2',
-        ])->setExitButtonText("Back")->open();
+        ])->setExitButtonText('Back')->open();
 
-        if(is_null($option)) {
+        if (is_null($option)) {
             return;
         }
 
@@ -48,7 +48,7 @@ class AOC2022Four extends Command
         switch($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2022/day/4');
-                $this->info(<<<EOL
+                $this->info(<<<'EOL'
 --- Day 4: Camp Cleanup ---
 Space needs to be cleared before the last supplies can be unloaded from the ships, and so several Elves have been assigned the job of cleaning up sections of the camp. Every section has a unique ID number, and each Elf is assigned a range of section IDs.
 
@@ -115,13 +115,13 @@ EOL);
                 $this->loadData();
 
                 $overlaps = 0;
-                foreach($this->sections as $section) {
+                foreach ($this->sections as $section) {
                     $one = explode('-', $section['one']);
                     $two = explode('-', $section['two']);
 
-                    if($one[0] <= $two[0] && $one[1] >= $two[1]) {
+                    if ($one[0] <= $two[0] && $one[1] >= $two[1]) {
                         $overlaps++;
-                    } elseif($two[0] <= $one[0] && $two[1] >= $one[1]) {
+                    } elseif ($two[0] <= $one[0] && $two[1] >= $one[1]) {
                         $overlaps++;
                     }
                 }
@@ -133,17 +133,17 @@ EOL);
                 $this->loadData();
 
                 $overlaps = 0;
-                foreach($this->sections as $section) {
+                foreach ($this->sections as $section) {
                     $one = explode('-', $section['one']);
                     $two = explode('-', $section['two']);
 
-                    if($one[0] <= $two[0] && $one[1] >= $two[1]) {
+                    if ($one[0] <= $two[0] && $one[1] >= $two[1]) {
                         $overlaps++;
-                    } elseif($two[0] <= $one[0] && $two[1] >= $one[1]) {
+                    } elseif ($two[0] <= $one[0] && $two[1] >= $one[1]) {
                         $overlaps++;
-                    } elseif($one[0] <= $two[0] && $one[1] >= $two[0]) {
+                    } elseif ($one[0] <= $two[0] && $one[1] >= $two[0]) {
                         $overlaps++;
-                    } elseif($two[0] <= $one[0] && $two[1] >= $one[0]) {
+                    } elseif ($two[0] <= $one[0] && $two[1] >= $one[0]) {
                         $overlaps++;
                     }
                 }
@@ -153,24 +153,29 @@ EOL);
         }
         $bench->end();
 
-        $this->error("Execution time: " . $bench->getTime());
-        $this->error("Memory usage: " . $bench->getMemoryPeak());
+        $this->error("Execution time: {$bench->getTime()}");
+        $this->error("Peak memory usage: {$bench->getMemoryPeak()}");
 
         $this->ask('Press any key to continue');
         $this->handle();
     }
 
-    private function loadData() {
-        $this->info("Running solution for problem 4 :: 2022");
-        $this->info("Loading in 2022_four_input.txt");
+    private function loadData()
+    {
+        $this->info('Running solution for problem 4 :: 2022');
+        $this->info('Loading in 2022_four_input.txt');
         $data = Storage::get('2022/four_input.txt');
 
         $this->sections = Collect([]);
-        foreach(explode("\n", $data) as $line) {
-            if($line == '') continue;
+        foreach (explode("\n", $data) as $line) {
+            if ($line == '') {
+                continue;
+            }
 
             $section = explode(',', $line);
-            if(count($section) == 2) $this->sections->push(['one' => $section[0], 'two' => $section[1]]);
+            if (count($section) == 2) {
+                $this->sections->push(['one' => $section[0], 'two' => $section[1]]);
+            }
         }
 
         $this->info("There are {$this->sections->count()} sections");
