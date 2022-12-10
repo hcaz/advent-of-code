@@ -5,6 +5,7 @@ namespace App\Commands\AOC2022;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
+use Ubench;
 
 class AOC2022Three extends Command
 {
@@ -41,6 +42,9 @@ class AOC2022Three extends Command
             return;
         }
 
+        $bench = new Ubench;
+
+        $bench->start();
         switch($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2022/day/3');
@@ -153,6 +157,10 @@ EOL);
                 $this->alert("The total priority is $priorityTotal");
                 break;
         }
+        $bench->end();
+
+        $this->error("Execution time: " . $bench->getTime());
+        $this->error("Memory usage: " . $bench->getMemoryPeak());
 
         $this->ask('Press any key to continue');
         $this->handle();
