@@ -2,11 +2,19 @@
 
 namespace App\Commands\AOC2015;
 
+use Carbon\Carbon;
 use LaravelZero\Framework\Commands\Command;
 
 class AOC2015 extends Command
 {
     public int $complete = 1;
+    public function available():int {
+        $datetime1 = new Carbon('2015-12-01');
+        $datetime2 = new Carbon();
+        $difference = $datetime1->diff($datetime2);
+
+        return $difference->days > 25 ? 25 : $difference->days;
+    }
     /**
      * The signature of the command.
      *
