@@ -6,6 +6,7 @@ use LaravelZero\Framework\Commands\Command;
 
 class AOC2015 extends Command
 {
+    public int $complete = 1;
     /**
      * The signature of the command.
      *
