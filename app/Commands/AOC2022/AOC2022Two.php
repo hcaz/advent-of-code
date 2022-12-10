@@ -6,40 +6,46 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 
+enum GameResult {
+    case WIN;
+    case LOSS;
+    case DRAW;
+
+    public function score(): int
+    {
+        return match($this) {
+            self::WIN => 6,
+            self::LOSS => 0,
+            self::DRAW => 3,
+        };
+    }
+}
+
 enum GameObject
 {
     case ROCK;
     case PAPER;
     case SCISSORS;
 
-    public function beats(GameObject $other): bool
+    public function beats(): self
     {
         return match($this) {
-            self::ROCK => $other === self::SCISSORS,
-            self::PAPER => $other === self::ROCK,
-            self::SCISSORS => $other === self::PAPER,
+            self::ROCK => self::SCISSORS,
+            self::PAPER => self::ROCK,
+            self::SCISSORS => self::PAPER,
         };
     }
 
-    public function losesTo(GameObject $other): bool
+    public function losesTo(): self
     {
         return match($this) {
-            self::ROCK => $other === self::PAPER,
-            self::PAPER => $other === self::SCISSORS,
-            self::SCISSORS => $other === self::ROCK,
+            self::ROCK => self::PAPER,
+            self::PAPER => self::SCISSORS,
+            self::SCISSORS => self::ROCK,
         };
     }
 
-    public function toString(): string
-    {
-        return match($this) {
-            self::ROCK => 'Rock',
-            self::PAPER => 'Paper',
-            self::SCISSORS => 'Scissors',
-        };
-    }
-
-    public function score(): string
+    public function score(): int
     {
         return match($this) {
             self::ROCK => 1,
@@ -55,9 +61,6 @@ class AOC2022Two extends Command
         'A' => GameObject::ROCK,
         'B' => GameObject::PAPER,
         'C' => GameObject::SCISSORS,
-        'X' => GameObject::ROCK,
-        'Y' => GameObject::PAPER,
-        'Z' => GameObject::SCISSORS,
     ];
 
     /**
@@ -129,6 +132,19 @@ This strategy guide predicts and recommends the following:
 In this example, if you were to follow the strategy guide, you would get a total score of 15 (8 + 1 + 6).
 
 What would your total score be if everything goes exactly according to your strategy guide?
+
+--- Part Two ---
+The Elf finishes helping with the tent and sneaks back over to you. "Anyway, the second column says how the round needs to end: X means you need to lose, Y means you need to end the round in a draw, and Z means you need to win. Good luck!"
+
+The total score is still calculated in the same way, but now you need to figure out what shape to choose so the round ends as indicated. The example above now goes like this:
+
+- In the first round, your opponent will choose Rock (A), and you need the round to end in a draw (Y), so you also choose Rock. This gives you a score of 1 + 3 = 4.
+- In the second round, your opponent will choose Paper (B), and you choose Rock so you lose (X) with a score of 1 + 0 = 1.
+- In the third round, you will defeat your opponent's Scissors with Rock for a score of 1 + 6 = 7.
+
+Now that you're correctly decrypting the ultra top secret strategy guide, you would get a total score of 12.
+
+Following the Elf's instructions for the second column, what would your total score be if everything goes exactly according to your strategy guide?
 EOL);
                 $this->ask('Press any key to continue');
 
@@ -136,6 +152,9 @@ EOL);
                 break;
             case 1:
                 $this->info('Running step 1');
+                $this->dataKey['X'] = GameObject::ROCK;
+                $this->dataKey['Y'] = GameObject::PAPER;
+                $this->dataKey['Z'] = GameObject::SCISSORS;
                 $this->loadData();
 
                 $score = 0;
@@ -144,24 +163,57 @@ EOL);
                 $gamesDrawn = 0;
                 foreach($this->rounds as $round) {
                     $score = $score + $round['you']->score();
-                    if($round['you']->beats($round['opponent'])) {
-                        $score = $score + 6;
+                    if($round['you']->beats() === $round['opponent']) {
+                        $score = $score + GameResult::WIN->score();
                         $gamesWon++;
-                    } elseif($round['you']->losesTo($round['opponent'])) {
-                        $score = $score + 0;
+                    } elseif($round['you']->losesTo() === $round['opponent']) {
+                        $score = $score + GameResult::LOSS->score();
                         $gamesLost++;
                     } else {
-                        $score = $score + 3;
+                        $score = $score + GameResult::DRAW->score();
                         $gamesDrawn++;
                     }
                 }
 
+                $score = number_format($score);
+
                 $this->info("You won $gamesWon games, lost $gamesLost games and drew $gamesDrawn games");
-                $this->alert('Your score is ' . number_format($score));
+                $this->alert("Your score is $score!");
                 break;
             case 2:
                 $this->info('Running step 2');
+                $this->dataKey['X'] = GameResult::LOSS;
+                $this->dataKey['Y'] = GameResult::DRAW;
+                $this->dataKey['Z'] = GameResult::WIN;
                 $this->loadData();
+
+                $score = 0;
+                $gamesWon = 0;
+                $gamesLost = 0;
+                $gamesDrawn = 0;
+                foreach($this->rounds as $round) {
+                    $score = $score + $round['you']->score();
+
+                    switch($round['you']) {
+                        case GameResult::WIN:
+                            $gamesWon++;
+                            $score = $score + $round['opponent']->losesTo()->score();
+                            break;
+                        case GameResult::LOSS:
+                            $gamesLost++;
+                            $score = $score + $round['opponent']->beats()->score();
+                            break;
+                        case GameResult::DRAW:
+                            $gamesDrawn++;
+                            $score = $score + $round['opponent']->score();
+                            break;
+                    }
+                }
+
+                $score = number_format($score);
+
+                $this->info("You won $gamesWon games, lost $gamesLost games and drew $gamesDrawn games");
+                $this->alert("Your score is $score!");
                 break;
         }
     }
