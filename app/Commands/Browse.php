@@ -29,15 +29,19 @@ class Browse extends Command
      */
     public function handle()
     {
-        $option = $this->menu('Advent of Code', [
-            '2015 ★★',
-            '2016',
-            '2017',
-            '2018',
-            '2019',
-            '2020',
-            '2021',
-            '2022 ★★ ★★ ★★ ★★ ★★ ★★',
+        $AOC2015 = new AOC2015();
+        $AOC2022 = new AOC2022();
+        $totalComplete = $AOC2015->complete + $AOC2022->complete;
+
+        $option = $this->menu("Advent of Code - $totalComplete / 200 complete", [
+            "2015 - $AOC2015->complete / 25 complete",
+            '2016 - 0 / 25 complete',
+            '2017 - 0 / 25 complete',
+            '2018 - 0 / 25 complete',
+            '2019 - 0 / 25 complete',
+            '2020 - 0 / 25 complete',
+            '2021 - 0 / 25 complete',
+            "2022 - $AOC2022->complete / 25 complete",
         ])->open();
 
         if (is_null($option)) {
@@ -48,10 +52,10 @@ class Browse extends Command
 
         switch($option) {
             case 0:
-                $this->call(AOC2015::class);
+                $this->call($AOC2015::class);
                 break;
             case 7:
-                $this->call(AOC2022::class);
+                $this->call($AOC2022::class);
                 break;
         }
         $this->handle();
