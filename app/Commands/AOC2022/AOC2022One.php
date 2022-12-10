@@ -98,9 +98,6 @@ In the example above, the top three Elves are the fourth Elf (with 24000 Calorie
 
 Find the top three Elves carrying the most Calories. How many Calories are those Elves carrying in total?
 EOL);
-                $this->ask('Press any key to continue');
-
-                $this->handle();
                 break;
             case 1:
                 $this->info('Running step 1');
@@ -139,6 +136,9 @@ EOL);
                 $this->alert("Top 3 elves have $mostCaloriesTotalTop3 total calories across $mostCaloriesItemsTop3 items");
                 break;
         }
+
+        $this->ask('Press any key to continue');
+        $this->handle();
     }
 
     private function loadData() {

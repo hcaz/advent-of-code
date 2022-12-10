@@ -2,65 +2,18 @@
 
 namespace App\Commands\AOC2022;
 
+use App\Enums\AOC2022GameObjects;
+use App\Enums\AOC2022GameResults;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 
-enum GameResult {
-    case WIN;
-    case LOSS;
-    case DRAW;
-
-    public function score(): int
-    {
-        return match($this) {
-            self::WIN => 6,
-            self::LOSS => 0,
-            self::DRAW => 3,
-        };
-    }
-}
-
-enum GameObject
-{
-    case ROCK;
-    case PAPER;
-    case SCISSORS;
-
-    public function beats(): self
-    {
-        return match($this) {
-            self::ROCK => self::SCISSORS,
-            self::PAPER => self::ROCK,
-            self::SCISSORS => self::PAPER,
-        };
-    }
-
-    public function losesTo(): self
-    {
-        return match($this) {
-            self::ROCK => self::PAPER,
-            self::PAPER => self::SCISSORS,
-            self::SCISSORS => self::ROCK,
-        };
-    }
-
-    public function score(): int
-    {
-        return match($this) {
-            self::ROCK => 1,
-            self::PAPER => 2,
-            self::SCISSORS => 3,
-        };
-    }
-}
-
 class AOC2022Two extends Command
 {
     private $dataKey = [
-        'A' => GameObject::ROCK,
-        'B' => GameObject::PAPER,
-        'C' => GameObject::SCISSORS,
+        'A' => AOC2022GameObjects::ROCK,
+        'B' => AOC2022GameObjects::PAPER,
+        'C' => AOC2022GameObjects::SCISSORS,
     ];
 
     /**
@@ -146,15 +99,12 @@ Now that you're correctly decrypting the ultra top secret strategy guide, you wo
 
 Following the Elf's instructions for the second column, what would your total score be if everything goes exactly according to your strategy guide?
 EOL);
-                $this->ask('Press any key to continue');
-
-                $this->handle();
                 break;
             case 1:
                 $this->info('Running step 1');
-                $this->dataKey['X'] = GameObject::ROCK;
-                $this->dataKey['Y'] = GameObject::PAPER;
-                $this->dataKey['Z'] = GameObject::SCISSORS;
+                $this->dataKey['X'] = AOC2022GameObjects::ROCK;
+                $this->dataKey['Y'] = AOC2022GameObjects::PAPER;
+                $this->dataKey['Z'] = AOC2022GameObjects::SCISSORS;
                 $this->loadData();
 
                 $score = 0;
@@ -164,13 +114,13 @@ EOL);
                 foreach($this->rounds as $round) {
                     $score = $score + $round['you']->score();
                     if($round['you']->beats() === $round['opponent']) {
-                        $score = $score + GameResult::WIN->score();
+                        $score = $score + AOC2022GameResults::WIN->score();
                         $gamesWon++;
                     } elseif($round['you']->losesTo() === $round['opponent']) {
-                        $score = $score + GameResult::LOSS->score();
+                        $score = $score + AOC2022GameResults::LOSS->score();
                         $gamesLost++;
                     } else {
-                        $score = $score + GameResult::DRAW->score();
+                        $score = $score + AOC2022GameResults::DRAW->score();
                         $gamesDrawn++;
                     }
                 }
@@ -182,9 +132,9 @@ EOL);
                 break;
             case 2:
                 $this->info('Running step 2');
-                $this->dataKey['X'] = GameResult::LOSS;
-                $this->dataKey['Y'] = GameResult::DRAW;
-                $this->dataKey['Z'] = GameResult::WIN;
+                $this->dataKey['X'] = AOC2022GameResults::LOSS;
+                $this->dataKey['Y'] = AOC2022GameResults::DRAW;
+                $this->dataKey['Z'] = AOC2022GameResults::WIN;
                 $this->loadData();
 
                 $score = 0;
@@ -195,15 +145,15 @@ EOL);
                     $score = $score + $round['you']->score();
 
                     switch($round['you']) {
-                        case GameResult::WIN:
+                        case AOC2022GameResults::WIN:
                             $gamesWon++;
                             $score = $score + $round['opponent']->losesTo()->score();
                             break;
-                        case GameResult::LOSS:
+                        case AOC2022GameResults::LOSS:
                             $gamesLost++;
                             $score = $score + $round['opponent']->beats()->score();
                             break;
-                        case GameResult::DRAW:
+                        case AOC2022GameResults::DRAW:
                             $gamesDrawn++;
                             $score = $score + $round['opponent']->score();
                             break;
@@ -216,6 +166,9 @@ EOL);
                 $this->alert("Your score is $score!");
                 break;
         }
+
+        $this->ask('Press any key to continue');
+        $this->handle();
     }
 
     private function loadData() {
