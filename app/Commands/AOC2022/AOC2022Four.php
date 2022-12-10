@@ -22,6 +22,8 @@ class AOC2022Four extends Command
      */
     protected $description = 'Display solution for problem 4 :: 2022';
 
+    private Collection $sections;
+
     /**
      * Execute the console command.
      *
@@ -110,6 +112,14 @@ EOL);
         $this->info("Loading in 2022_four_input.txt");
         $data = Storage::get('2022/four_input.txt');
 
+        $this->sections = Collect([]);
+        foreach(explode("\n", $data) as $line) {
+            if($line == '') continue;
 
+            $section = explode(',', $line);
+            if(count($section) == 2) $this->sections->push(['one' => $section[0], 'two' => $section[1]]);
+        }
+
+        $this->info("There are {$this->sections->count()} sections");
     }
 }
