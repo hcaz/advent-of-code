@@ -21,7 +21,7 @@ class AOC2022Two extends Command
      *
      * @var string
      */
-    protected $signature = 'browse 2022 two';
+    protected $signature = 'browse/2022/two';
 
     /**
      * The description of the command.
