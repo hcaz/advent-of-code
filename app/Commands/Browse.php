@@ -31,7 +31,14 @@ class Browse extends Command
     public function handle()
     {
         $option = $this->menu('Advent of Code', [
-            '2022',
+            '2015',
+            '2016',
+            '2017',
+            '2018',
+            '2019',
+            '2020',
+            '2021',
+            '2022 ★★ ★★ ★★',
         ])->open();
 
         if(is_null($option)) {
@@ -40,9 +47,10 @@ class Browse extends Command
         }
 
         switch($option) {
-            case 0:
+            case 7:
                 $this->call(AOC2022::class);
                 break;
         }
+        $this->handle();
     }
 }
