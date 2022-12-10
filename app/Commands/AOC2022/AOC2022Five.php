@@ -2,6 +2,7 @@
 
 namespace App\Commands\AOC2022;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 
@@ -20,6 +21,9 @@ class AOC2022Five extends Command
      * @var string
      */
     protected $description = 'Display solution for problem 5 :: 2022';
+
+    private Collection $stacks;
+    private Collection $moves;
 
     /**
      * Execute the console command.
@@ -112,6 +116,17 @@ EOL);
             case 1:
                 $this->info('Running step 1');
                 $this->loadData();
+
+                $this->info("Starting position:");
+                $this->displayStacks();
+
+                foreach($this->moves as $move) {
+
+                    dd($move);
+                }
+
+                $this->info("Ending position:");
+                $this->displayStacks();
                 break;
             case 2:
                 $this->info('Running step 2');
@@ -128,6 +143,44 @@ EOL);
         $this->info("Loading in 2022_five_input.txt");
         $data = Storage::get('2022/five_input.txt');
 
+        $this->stacks = Collect([]);
+        $this->moves = Collect([]);
+        $stacks = true;
+        foreach(explode("\n", $data) as $line) {
+            if($line == '') {
+                $stacks = false;
+                continue;
+            }
 
+            if($stacks) {
+                if(!str_contains($line, "[")) continue;
+
+                $stackCount = round(strlen($line) / 4);
+                for($i = 0; $i < $stackCount; $i++) {
+                    if(!isset($this->stacks[$i])) $this->stacks[$i] = Collect([]);
+                    $create = substr($line, ($i * 4) + 1, 1);
+                    if(!empty(trim($create))) $this->stacks[$i]->push($create);
+                }
+            } else {
+                $move = explode(' ', $line);
+                $this->moves->push([
+                    'amount' => $move[1],
+                    'from' => $move[3],
+                    'to' => $move[5],
+                ]);
+            }
+        }
+
+        $this->info("There are {$this->stacks->count()} stacks");
+        $this->info("There are {$this->moves->count()} moves");
+    }
+
+    private function displayStacks() {
+        $this->table(['Stack', 'Crates'], $this->stacks->map(function($stack, $key) {
+            return [
+                $key + 1,
+                $stack->reverse()->implode(' '),
+            ];
+        })->toArray());
     }
 }
