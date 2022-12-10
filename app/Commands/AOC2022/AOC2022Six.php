@@ -50,16 +50,28 @@ EOL);
                 $this->info('Running step 1');
                 $this->loadData();
 
+                $indexOfFirstMarker = null;
+
                 $localBuffer = Collect([]);
                 for($i = 0; $i < strlen($this->buffer); $i++) {
                     $char = $this->buffer[$i];
-                    if(empty($char)) continue;
+                    if(empty(trim($char))) continue;
 
                     $localBuffer->push($char);
                     if($localBuffer->count() > 4) $localBuffer->pull(0);
                     $localBuffer = $localBuffer->values();
 
-                    dump($localBuffer->join(''));
+                    if($localBuffer->count() == 4 && $localBuffer->unique()->count() == 4) {
+//                        $this->info("Found 4 unique characters in a row {$localBuffer->implode('')} at index " . ($i + 1));
+
+                        if(is_null($indexOfFirstMarker)) $indexOfFirstMarker = ($i + 1);
+                    }
+                }
+
+                if(is_null($indexOfFirstMarker)) {
+                    $this->error("No marker found");
+                } else {
+                    $this->info("Marker found at index $indexOfFirstMarker");
                 }
                 break;
             case 2:
