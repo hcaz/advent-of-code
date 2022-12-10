@@ -86,6 +86,19 @@ EOL);
             case 1:
                 $this->info('Running step 1');
                 $this->loadData();
+
+                $priorityTotal = 0;
+                foreach($this->rucksacks as $rucksack) {
+                    $itemsInBothCompartments = implode(array_unique(array_intersect(str_split($rucksack['compartment_1']), str_split($rucksack['compartment_2']))));
+
+                    // I had hoped I could change 96 to 64 depending on capital or lowercase, but that didn't work
+                    $number = (ord(strtolower($itemsInBothCompartments)) - 96) + ($itemsInBothCompartments == strtoupper($itemsInBothCompartments) ? 26 : 0);
+                    if($number > 0) $priorityTotal = $priorityTotal + $number;
+                }
+
+                $priorityTotal = number_format($priorityTotal);
+
+                $this->alert("The total priority is {$priorityTotal}");
                 break;
             case 2:
                 $this->info('Running step 2');
