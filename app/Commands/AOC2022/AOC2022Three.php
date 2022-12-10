@@ -35,10 +35,9 @@ class AOC2022Three extends Command
             'View problem',
             'Run step 1',
             'Run step 2',
-        ])->open();
+        ])->setExitButtonText("Back")->open();
 
         if(is_null($option)) {
-            $this->info('You have chosen to exit');
             return;
         }
 

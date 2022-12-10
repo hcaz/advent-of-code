@@ -28,15 +28,18 @@ class AOC2022 extends Command
     public function handle()
     {
         $option = $this->menu('2022', [
-            'Day 1: Calorie Counting',
-            'Day 2: Rock Paper Scissors',
-            'Day 3: Rucksack Reorganization',
+            'Day 1: Calorie Counting ★★',
+            'Day 2: Rock Paper Scissors ★★',
+            'Day 3: Rucksack Reorganization ★★',
             'Day 4: Camp Cleanup',
             'Day 5: Supply Stacks',
-        ])->open();
+            'Day 6: Tuning Trouble',
+            'Day 7: No Space Left On Device',
+            'Day 8: Treetop Tree House',
+            'Day 9: Rope Bridge',
+        ])->setExitButtonText("Back")->open();
 
         if(is_null($option)) {
-            $this->info('You have chosen to exit');
             return;
         }
 
@@ -51,5 +54,6 @@ class AOC2022 extends Command
                 $this->call(AOC2022Three::class);
                 break;
         }
+        $this->handle();
     }
 }
