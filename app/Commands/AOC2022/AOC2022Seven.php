@@ -24,6 +24,8 @@ class AOC2022Seven extends Command
     protected $description = 'Display solution for problem 7 :: 2022';
 
     private Collection $commands;
+    private Collection $directories;
+    private int $totalSize = 0;
     /**
      * Execute the console command.
      *
@@ -138,36 +140,10 @@ EOL);
                 $this->info('Running step 1');
                 $this->loadData();
 
-                $directories = Collect([]);
-                $currentDirectoryPrefix = '';
-                foreach($this->commands as $command) {
-                    if(str_contains($command, '$')) {
-                        $command = explode(" ", str_replace('$ ', '', $command));
-                        if($command[0] == 'cd') {
-                            $command[1] = ltrim($command[1], '/');
+                $this->parseDirectories();
+                $this->calculateSize();
 
-                            if($command[1] == '..') {
-                                $currentDirectoryPrefix = substr($currentDirectoryPrefix, 0, strrpos($currentDirectoryPrefix, '.'));
-                                continue;
-                            }
-
-                            $directories[$currentDirectoryPrefix . $command[1]] = [];
-
-                            $currentDirectoryPrefix = ltrim($currentDirectoryPrefix . $command[1]. '.', '.');
-                        }
-                    } else {
-                        $command = explode(" ", $command);
-                        if($command[0] != 'dir' && count($command) == 2) {
-                            ///Replace file extension dot with a underscore so I can use undot later
-                            $command[1] = str_replace('.', '_', $command[1]);
-                            $directories[$currentDirectoryPrefix . $command[1]] = $command[0];
-                        }
-                    }
-                }
-
-                $directories = $directories->undot();
-
-                dd($directories);
+                $this->alert('Total size of directories with a total size of at most 100000: ' . $this->totalSize);
                 break;
             case 2:
                 $this->info('Running step 2');
@@ -181,6 +157,57 @@ EOL);
 
         $this->ask('Press any key to continue');
         $this->handle();
+    }
+
+    public function parseDirectories(){
+        $directories = Collect([]);
+        $currentDirectoryPrefix = '';
+        foreach($this->commands as $command) {
+            if(str_contains($command, '$')) {
+                $command = explode(" ", str_replace('$ ', '', $command));
+                if($command[0] == 'cd') {
+                    $command[1] = ltrim($command[1], '/');
+
+                    if($command[1] == '..') {
+                        $currentDirectoryPrefix = substr($currentDirectoryPrefix, 0, strrpos($currentDirectoryPrefix, '.'));
+                        continue;
+                    }
+
+                    $directories[$currentDirectoryPrefix . $command[1]] = [];
+
+                    $currentDirectoryPrefix = ltrim($currentDirectoryPrefix . $command[1]. '.', '.');
+                }
+            } else {
+                $command = explode(" ", $command);
+                if($command[0] != 'dir' && count($command) == 2) {
+                    ///Replace file extension dot with a underscore so I can use undot later
+                    $command[1] = str_replace('.', '_', $command[1]);
+                    $directories[$currentDirectoryPrefix . $command[1]] = $command[0];
+                }
+            }
+        }
+
+        $this->directories = $directories->undot();
+    }
+
+    private function calculateSize($children = null): int {
+        $folderCap = 100000;
+        $size = 0;
+
+        if(is_null($children)) $children = $this->directories->toArray();
+
+        if(is_numeric($children)) {
+            $size += $children;
+        } elseif(is_array($children)) {
+            foreach($children as $childChildren) {
+                $size += $this->calculateSize($childChildren);
+            }
+            if($size <= $folderCap) {
+                $this->totalSize += $size;
+            }
+        }
+
+        return $size;
     }
 
     private function loadData()
