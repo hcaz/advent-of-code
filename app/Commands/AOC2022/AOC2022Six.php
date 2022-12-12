@@ -31,7 +31,7 @@ class AOC2022Six extends Command
      */
     public function handle()
     {
-        $option = $this->menu('Day 6: Title', [
+        $option = $this->menu('Day 6: Tuning Trouble', [
             'View problem',
             'Run step 1',
             'Run step 2',
