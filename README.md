@@ -27,3 +27,5 @@ You can then run the main menu by running:
 
 - **Zachary Claret-Scott** -
   [hcaz](https://github.com/hcaz)
+  
+Migrated to Gitea
