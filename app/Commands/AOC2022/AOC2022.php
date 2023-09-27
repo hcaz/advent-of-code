@@ -7,7 +7,7 @@ use LaravelZero\Framework\Commands\Command;
 
 class AOC2022 extends Command
 {
-    public int $complete = 6;
+    public float $complete = 6.5;
     public function available():int {
         $datetime1 = new Carbon('2022-12-01');
         $datetime2 = new Carbon();
@@ -44,7 +44,7 @@ class AOC2022 extends Command
             'Day 4: Camp Cleanup ★★',
             'Day 5: Supply Stacks ★★',
             'Day 6: Tuning Trouble ★★',
-            'Day 7: No Space Left On Device',
+            'Day 7: No Space Left On Device ★',
             'Day 8: Treetop Tree House',
             'Day 9: Rope Bridge',
             'Day 10: Cathode-Ray Tube',
@@ -75,6 +75,9 @@ class AOC2022 extends Command
                 break;
             case 6:
                 $this->call(AOC2022Seven::class);
+                break;
+            case 7:
+                $this->call(AOC2022Eight::class);
                 break;
         }
         $this->handle();
