@@ -158,7 +158,7 @@ EOL);
                 $this->loadData();
 
                 $this->parseDirectories();
-                $this->calculateSize();
+                $this->calculateSizeOfFoldersUnderLimit();
 
                 $this->alert('Total size of directories with a total size of at most 100000: ' . $this->totalSize);
                 break;
@@ -167,6 +167,9 @@ EOL);
                 $this->loadData();
 
                 $this->parseDirectories();
+                $this->calculateSizeOfFoldersToBeRemoved();
+
+                $this->alert('Total size of directories to be deleted: ' . $this->totalSize);
                 break;
         }
         $bench->end();
@@ -209,8 +212,36 @@ EOL);
         $this->directories = $directories->undot();
     }
 
-    private function calculateSize($children = null): int {
-        $folderCap = 100000;
+    private function calculateSizeOfFoldersUnderLimit($children = null, $limit = 100000): int {
+        $size = 0;
+
+        if(is_null($children)) $children = $this->directories->toArray();
+
+        if(is_numeric($children)) {
+            $size += $children;
+        } elseif(is_array($children)) {
+            foreach($children as $childChildren) {
+                $size += $this->calculateSizeOfFoldersUnderLimit($childChildren, $limit);
+            }
+            if($size <= $limit) {
+                $this->totalSize += $size;
+            }
+        }
+
+        return $size;
+    }
+
+    private function calculateSizeOfFoldersToBeRemoved($children = null): int {
+        $totalDiskSpace = 70000000;
+        $spaceNeeded = 30000000;
+        $spaceUsed = $this->calculateSizeOfFoldersUnderLimit(PHP_INT_MAX);
+
+        dump("TotalDiskSpace $totalDiskSpace");
+        dump("SpaceNeeded $spaceNeeded");
+        dump("SpaceUsed $spaceUsed");
+        $spaceNeeded = $totalDiskSpace - $spaceUsed;
+        dd("SpaceNeeded $spaceNeeded");
+
         $size = 0;
 
         if(is_null($children)) $children = $this->directories->toArray();
@@ -221,7 +252,7 @@ EOL);
             foreach($children as $childChildren) {
                 $size += $this->calculateSize($childChildren);
             }
-            if($size <= $folderCap) {
+            if($size <= 100000) {
                 $this->totalSize += $size;
             }
         }
