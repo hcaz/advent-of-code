@@ -7,7 +7,7 @@ use LaravelZero\Framework\Commands\Command;
 
 class AOC2015 extends Command
 {
-    public int $complete = 1;
+    public float $complete = 1.5;
     public function available():int {
         $datetime1 = new Carbon('2015-12-01');
         $datetime2 = new Carbon();
@@ -38,6 +38,7 @@ class AOC2015 extends Command
     {
         $option = $this->menu('2015', [
             'Day 1: Not Quite Lisp ★★',
+            'Day 2: I Was Told There Would Be No Math ★',
         ])->setExitButtonText('Back')->open();
 
         if (is_null($option)) {
@@ -47,6 +48,9 @@ class AOC2015 extends Command
         switch($option) {
             case 0:
                 $this->call(AOC2015One::class);
+                break;
+            case 1:
+                $this->call(AOC2015Two::class);
                 break;
         }
         $this->handle();
