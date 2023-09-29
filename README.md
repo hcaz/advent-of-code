@@ -1,6 +1,15 @@
 # Advent of Code
 
-This is a single project which contains all my solutions to [Advent of Code](https://adventofcode.com/) problems for all years.
+This is a single project which contains all my solutions to [Advent of Code](https://adventofcode.com/). Here is a list of the challenges I have completed:
+
+## 2015
+
+- [Day 1: Not Quite Lisp](https://adventofcode.com/2015/day/1) - `php adventofcode browse/2015/one
+  `
+- [Day 2: I Was Told There Would Be No Math](https://adventofcode.com/2015/day/2) - `php adventofcode browse/2015/two`
+
+- [Day 3: Perfectly Spherical Houses in a Vacuum](https://adventofcode.com/2015/day/3) - `php adventofcode browse/2015/three
+  `
 
 ## Getting Started
 
