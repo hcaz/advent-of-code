@@ -31,7 +31,7 @@ class AOC2015One extends Command
      */
     public function handle()
     {
-        $option = $this->menu('Day 1: Title', [
+        $option = $this->menu('Day 1: Not Quite Lisp', [
             'View problem',
             'Run step 1',
             'Run step 2',
@@ -117,7 +117,7 @@ EOL);
 
     private function loadData()
     {
-        $this->info('Running solution for problem 1 :: YEAR');
+        $this->info('Running solution for problem 1 :: 2015');
         $this->info('Loading in 2015_one_input.txt');
         $data = Storage::get('2015/one_input.txt');
 
