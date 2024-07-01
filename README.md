@@ -37,4 +37,4 @@ You can then run the main menu by running:
 - **Zachary Claret-Scott** -
   [hcaz](https://github.com/hcaz)
   
-Migrated to Gitea
+This repository is mirrored to both https://github.com/hcaz/advent-of-code and https://gitlab.com/zachary.claretscott/advent-of-code
