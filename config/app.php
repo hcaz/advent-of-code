@@ -27,6 +27,7 @@ return [
     */
 
     'version' => app('git.version'),
+    'gitea_token' => trim(env('GITEA_TOKEN')),
 
     /*
     |--------------------------------------------------------------------------
