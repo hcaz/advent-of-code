@@ -4,6 +4,7 @@ namespace App\Commands;
 
 use App\Commands\AOC2015\AOC2015;
 use App\Commands\AOC2022\AOC2022;
+use App\Commands\AOC2023\AOC2023;
 use LaravelZero\Framework\Commands\Command;
 
 class Browse extends Command
@@ -37,8 +38,9 @@ class Browse extends Command
         $AOC2020 = new AOC2015();
         $AOC2021 = new AOC2015();
         $AOC2022 = new AOC2022();
-        $totalComplete = $AOC2015->complete + $AOC2016->complete + $AOC2017->complete + $AOC2018->complete + $AOC2019->complete + $AOC2020->complete + $AOC2021->complete + $AOC2022->complete;
-        $totalAvailable = $AOC2015->available() + $AOC2016->available() + $AOC2017->available() + $AOC2018->available() + $AOC2019->available() + $AOC2020->available() + $AOC2021->available() + $AOC2022->available();
+        $AOC2023 = new AOC2023();
+        $totalComplete = $AOC2015->complete + $AOC2016->complete + $AOC2017->complete + $AOC2018->complete + $AOC2019->complete + $AOC2020->complete + $AOC2021->complete + $AOC2022->complete + $AOC2023->complete;
+        $totalAvailable = $AOC2015->available() + $AOC2016->available() + $AOC2017->available() + $AOC2018->available() + $AOC2019->available() + $AOC2020->available() + $AOC2021->available() + $AOC2022->available() + $AOC2023->available();
 
         $option = $this->menu("Advent of Code - $totalComplete / $totalAvailable complete", [
             "2015 - $AOC2015->complete / {$AOC2015->available()} complete",
@@ -49,6 +51,7 @@ class Browse extends Command
             "2020 - 0 / {$AOC2020->available()} complete",
             "2021 - 0 / {$AOC2021->available()} complete",
             "2022 - $AOC2022->complete / {$AOC2022->available()} complete",
+            "2023 - $AOC2023->complete / {$AOC2023->available()} complete",
         ])->open();
 
         if (is_null($option)) {
@@ -81,6 +84,9 @@ class Browse extends Command
                 break;
             case 7:
                 $this->call($AOC2022::class);
+                break;
+            case 8:
+                $this->call($AOC2023::class);
                 break;
         }
         $this->handle();
