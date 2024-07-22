@@ -59,19 +59,54 @@ class CreateGiteaIssues extends Command
                 $this->info("-> Checking for issue $year/$day");
                 $dayRaw = intval($day);
 
+                $title = $challenge['info']['title'];
+                $link = $challenge['info']['link'];
+                $body = "# [$title]($link)\n\n## Step 1:\n\n{$challenge['step_one']}\n\n## Step 2:\n\n{$challenge['step_two']}";
+
+                if (isset($challenge['info']['step_one_answer']) && $challenge['info']['step_one_answer'] != '') {
+                    $body .= "\n\n## Answers\n\n- Step 1: `{$challenge['info']['step_one_answer']}`";
+                }
+                if (isset($challenge['info']['step_two_answer']) && $challenge['info']['step_two_answer'] != '') {
+                    $body .= "\n- Step 2: `{$challenge['info']['step_two_answer']}`";
+                }
+
                 foreach ($issues as $issue) {
-                    if ($issue['title'] === "Day $day - Advent of Code $year" || $issue['title'] === "Day $dayRaw - Advent of Code $year" || $issue['title'] == $challenge['info']['title']) {
-                        $data = $challenge['info'];
-                        $data['gitea_issue_id'] = $issue['id'];
-                        file_put_contents("storage/app/$year/$day/info.json", json_encode($data));
+                    if ((isset($challenge['info']['gitea_issue_id']) && $issue['id'] == $challenge['info']['gitea_issue_id']) || $issue['title'] == $title || $issue['title'] === "Day $day - Advent of Code $year" || $issue['title'] === "Day $dayRaw - Advent of Code $year") {
+                        if (! isset($challenge['info']['gitea_issue_id']) || $issue['id'] != $challenge['info']['gitea_issue_id']) {
+                            $this->info("--> Storing gitea issue id for $year/$day");
+                            $data = $challenge['info'];
+                            $data['gitea_issue_id'] = $issue['id'];
+                            file_put_contents("storage/app/$year/$day/info.json", json_encode($data));
+                        }
+
+                        $updates = [];
+
+                        if ($issue['title'] != $title) {
+                            $updates['title'] = $title;
+                        }
+
+                        if ($issue['body'] != $body) {
+                            $updates['body'] = $body;
+                        }
+
+                        if (count($updates) > 0) {
+                            $this->info("--> Updating issue for $year/$day");
+                            $ch = curl_init();
+                            curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$username/$repo/issues/{$issue['id']}?token=".config('app.gitea_token'));
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
+                            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json', 'Content-Type: application/json']);
+                            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($updates));
+                            curl_exec($ch);
+                            unset($ch);
+                            exit;
+                        }
+
                         continue 2;
                     }
                 }
 
                 $this->alert("Creating issue for $year/$day");
-
-                $title = $challenge['info']['title'];
-                $body = "## [Advent of Code $year](https://adventofcode.com/$year/day/$day)\n\n";
 
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$username/$repo/issues?token=".config('app.gitea_token'));
