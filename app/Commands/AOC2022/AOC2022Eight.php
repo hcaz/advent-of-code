@@ -45,7 +45,7 @@ class AOC2022Eight extends Command
         $bench = new Ubench;
 
         $bench->start();
-        switch($option) {
+        switch ($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2022/day/8');
                 $this->info(<<<'EOL'
@@ -57,26 +57,30 @@ EOL);
                 $this->loadData();
 
                 $hiddenTrees = 0;
-                for($i = 1; $i < ($this->trees->count() - 1); $i++) {
+                for ($i = 1; $i < ($this->trees->count() - 1); $i++) {
                     $row = $this->trees[$i];
-                    for($j = 1; $j < ($row->count() - 1); $j++) {
+                    for ($j = 1; $j < ($row->count() - 1); $j++) {
                         $currentTree = $this->trees[$i][$j];
                         $before = $this->trees[$i]->slice(0, $j);
                         $after = $this->trees[$i]->slice($j);
                         dump("{$i},{$j} H {$before->implode('')} {$currentTree} {$after->implode('')}");
-                        if($currentTree >= $before->max() || $currentTree >= $after->max()) continue;
+                        if ($currentTree >= $before->max() || $currentTree >= $after->max()) {
+                            continue;
+                        }
 
                         $tmpColumn = Collect([]);
-                        for($x = 0; $x < $this->trees->count(); $x++) {
+                        for ($x = 0; $x < $this->trees->count(); $x++) {
                             $tmpColumn->push($this->trees[$x][$j]);
                         }
                         $above = $tmpColumn->slice(0, $i);
                         $below = $tmpColumn->slice($i);
                         dump("{$i},{$j} V {$above->implode('')} {$currentTree} {$below->implode('')}");
-                        if($currentTree >= $above->max() || $currentTree >= $below->max()) continue;
+                        if ($currentTree >= $above->max() || $currentTree >= $below->max()) {
+                            continue;
+                        }
 
                         $hiddenTrees++;
-                        die;
+                        exit;
                     }
                 }
 
@@ -105,7 +109,9 @@ EOL);
         $trees = 0;
         $this->trees = Collect([]);
         foreach (explode("\n", $data) as $line) {
-            if($line == '') continue;
+            if ($line == '') {
+                continue;
+            }
 
             $tmpTrees = Collect(explode(',', chunk_split($line, 1, ',')));
             $this->trees->push($tmpTrees);

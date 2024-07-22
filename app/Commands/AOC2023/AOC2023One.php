@@ -45,7 +45,7 @@ class AOC2023One extends Command
         $bench = new Ubench;
 
         $bench->start();
-        switch($option) {
+        switch ($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2023/day/1');
                 $this->info(<<<'EOL'

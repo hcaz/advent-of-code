@@ -45,7 +45,7 @@ class AOC2015Three extends Command
         $bench = new Ubench;
 
         $bench->start();
-        switch($option) {
+        switch ($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2015/day/3');
                 $this->info(<<<'EOL'
@@ -89,7 +89,9 @@ EOL);
 
         $this->presents = Collect([]);
         foreach (explode("\n", $data) as $line) {
-            if($line == '') continue;
+            if ($line == '') {
+                continue;
+            }
 
             $tmpPresents = Collect(explode('x', $line));
             $this->presents->push($tmpPresents);

@@ -8,7 +8,9 @@ use LaravelZero\Framework\Commands\Command;
 class AOC2023 extends Command
 {
     public float $complete = 0;
-    public function available():int {
+
+    public function available(): int
+    {
         $datetime1 = new Carbon('2023-12-01');
         $datetime2 = new Carbon();
         $difference = $datetime1->diff($datetime2);
@@ -45,7 +47,7 @@ class AOC2023 extends Command
             return;
         }
 
-        switch($option) {
+        switch ($option) {
             case 0:
                 $this->call(AOC2023One::class);
                 break;
