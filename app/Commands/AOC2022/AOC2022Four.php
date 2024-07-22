@@ -45,7 +45,7 @@ class AOC2022Four extends Command
         $bench = new Ubench;
 
         $bench->start();
-        switch($option) {
+        switch ($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2022/day/4');
                 $this->info(<<<'EOL'

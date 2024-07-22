@@ -53,7 +53,7 @@ class AOC2022Two extends Command
         $bench = new Ubench;
 
         $bench->start();
-        switch($option) {
+        switch ($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2022/day/2');
                 $this->info(<<<'EOL'
@@ -145,7 +145,7 @@ EOL);
                 foreach ($this->rounds as $round) {
                     $score = $score + $round['you']->score();
 
-                    switch($round['you']) {
+                    switch ($round['you']) {
                         case AOC2022GameResults::WIN:
                             $gamesWon++;
                             $score = $score + $round['opponent']->losesTo()->score();

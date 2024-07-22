@@ -22,7 +22,7 @@ class AOC2022Six extends Command
      */
     protected $description = 'Display solution for problem 6 :: 2022';
 
-    private String $buffer;
+    private string $buffer;
 
     /**
      * Execute the console command.
@@ -44,7 +44,7 @@ class AOC2022Six extends Command
         $bench = new Ubench;
 
         $bench->start();
-        switch($option) {
+        switch ($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2022/day/6');
                 $this->info(<<<'EOL'
@@ -116,7 +116,7 @@ EOL);
                     $localBuffer = $localBuffer->values();
 
                     if ($localBuffer->count() == 4 && $localBuffer->unique()->count() == 4) {
-//                        $this->info("Found 4 unique characters in a row {$localBuffer->implode('')} at index " . ($i + 1));
+                        //                        $this->info("Found 4 unique characters in a row {$localBuffer->implode('')} at index " . ($i + 1));
 
                         if (is_null($indexOfFirstMarker)) {
                             $indexOfFirstMarker = ($i + 1);
@@ -150,7 +150,7 @@ EOL);
                     $localBuffer = $localBuffer->values();
 
                     if ($localBuffer->count() == 14 && $localBuffer->unique()->count() == 14) {
-//                        $this->info("Found 14 unique characters in a row {$localBuffer->implode('')} at index " . ($i + 1));
+                        //                        $this->info("Found 14 unique characters in a row {$localBuffer->implode('')} at index " . ($i + 1));
 
                         if (is_null($indexOfFirstMarker)) {
                             $indexOfFirstMarker = ($i + 1);

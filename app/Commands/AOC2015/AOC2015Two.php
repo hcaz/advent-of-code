@@ -45,7 +45,7 @@ class AOC2015Two extends Command
         $bench = new Ubench;
 
         $bench->start();
-        switch($option) {
+        switch ($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2015/day/2');
                 $this->info(<<<'EOL'
@@ -78,7 +78,7 @@ EOL);
 
                 $totalFeetOfWrappingPaper = 0;
 
-                foreach($this->presents as $present) {
+                foreach ($this->presents as $present) {
                     $totalFeetOfWrappingPaper += 2 * $present[0] * $present[1];
                     $totalFeetOfWrappingPaper += 2 * $present[1] * $present[2];
                     $totalFeetOfWrappingPaper += 2 * $present[2] * $present[0];
@@ -94,7 +94,7 @@ EOL);
 
                 $totalFeetOfRibbon = 0;
 
-                foreach($this->presents as $present) {
+                foreach ($this->presents as $present) {
                     $totalFeetOfRibbon += 2 * min($present[0] + $present[1], $present[1] + $present[2], $present[2] + $present[0]);
                     $totalFeetOfRibbon += $present[0] * $present[1] * $present[2];
                 }
@@ -119,7 +119,9 @@ EOL);
 
         $this->presents = Collect([]);
         foreach (explode("\n", $data) as $line) {
-            if($line == '') continue;
+            if ($line == '') {
+                continue;
+            }
 
             $tmpPresents = Collect(explode('x', $line));
             $this->presents->push($tmpPresents);

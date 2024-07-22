@@ -42,7 +42,7 @@ class ProblemExample extends Command
         $bench = new Ubench;
 
         $bench->start();
-        switch($option) {
+        switch ($option) {
             case 0:
                 $this->alert('https://adventofcode.com/YEAR/day/PROBLEM');
                 $this->info(<<<'EOL'

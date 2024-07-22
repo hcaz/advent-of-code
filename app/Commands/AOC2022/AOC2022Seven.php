@@ -24,8 +24,11 @@ class AOC2022Seven extends Command
     protected $description = 'Display solution for problem 7 :: 2022';
 
     private Collection $commands;
+
     private Collection $directories;
+
     private int $totalSize = 0;
+
     /**
      * Execute the console command.
      *
@@ -46,7 +49,7 @@ class AOC2022Seven extends Command
         $bench = new Ubench;
 
         $bench->start();
-        switch($option) {
+        switch ($option) {
             case 0:
                 $this->alert('https://adventofcode.com/2022/day/7');
                 $this->info(<<<'EOL'
@@ -160,7 +163,7 @@ EOL);
                 $this->parseDirectories();
                 $this->calculateSizeOfFoldersUnderLimit();
 
-                $this->alert('Total size of directories with a total size of at most 100000: ' . $this->totalSize);
+                $this->alert('Total size of directories with a total size of at most 100000: '.$this->totalSize);
                 break;
             case 2:
                 $this->info('Running step 2');
@@ -169,7 +172,7 @@ EOL);
                 $this->parseDirectories();
                 $this->calculateSizeOfFoldersToBeRemoved();
 
-                $this->alert('Total size of directories to be deleted: ' . $this->totalSize);
+                $this->alert('Total size of directories to be deleted: '.$this->totalSize);
                 break;
         }
         $bench->end();
@@ -181,30 +184,32 @@ EOL);
         $this->handle();
     }
 
-    public function parseDirectories(){
+    public function parseDirectories()
+    {
         $directories = Collect([]);
         $currentDirectoryPrefix = '';
-        foreach($this->commands as $command) {
-            if(str_contains($command, '$')) {
-                $command = explode(" ", str_replace('$ ', '', $command));
-                if($command[0] == 'cd') {
+        foreach ($this->commands as $command) {
+            if (str_contains($command, '$')) {
+                $command = explode(' ', str_replace('$ ', '', $command));
+                if ($command[0] == 'cd') {
                     $command[1] = ltrim($command[1], '/');
 
-                    if($command[1] == '..') {
+                    if ($command[1] == '..') {
                         $currentDirectoryPrefix = substr($currentDirectoryPrefix, 0, strrpos($currentDirectoryPrefix, '.'));
+
                         continue;
                     }
 
-                    $directories[$currentDirectoryPrefix . $command[1]] = [];
+                    $directories[$currentDirectoryPrefix.$command[1]] = [];
 
-                    $currentDirectoryPrefix = ltrim($currentDirectoryPrefix . $command[1]. '.', '.');
+                    $currentDirectoryPrefix = ltrim($currentDirectoryPrefix.$command[1].'.', '.');
                 }
             } else {
-                $command = explode(" ", $command);
-                if($command[0] != 'dir' && count($command) == 2) {
+                $command = explode(' ', $command);
+                if ($command[0] != 'dir' && count($command) == 2) {
                     ///Replace file extension dot with a underscore so I can use undot later
                     $command[1] = str_replace('.', '_', $command[1]);
-                    $directories[$currentDirectoryPrefix . $command[1]] = $command[0];
+                    $directories[$currentDirectoryPrefix.$command[1]] = $command[0];
                 }
             }
         }
@@ -212,18 +217,21 @@ EOL);
         $this->directories = $directories->undot();
     }
 
-    private function calculateSizeOfFoldersUnderLimit($children = null, $limit = 100000): int {
+    private function calculateSizeOfFoldersUnderLimit($children = null, $limit = 100000): int
+    {
         $size = 0;
 
-        if(is_null($children)) $children = $this->directories->toArray();
+        if (is_null($children)) {
+            $children = $this->directories->toArray();
+        }
 
-        if(is_numeric($children)) {
+        if (is_numeric($children)) {
             $size += $children;
-        } elseif(is_array($children)) {
-            foreach($children as $childChildren) {
+        } elseif (is_array($children)) {
+            foreach ($children as $childChildren) {
                 $size += $this->calculateSizeOfFoldersUnderLimit($childChildren, $limit);
             }
-            if($size <= $limit) {
+            if ($size <= $limit) {
                 $this->totalSize += $size;
             }
         }
@@ -231,7 +239,8 @@ EOL);
         return $size;
     }
 
-    private function calculateSizeOfFoldersToBeRemoved($children = null): int {
+    private function calculateSizeOfFoldersToBeRemoved($children = null): int
+    {
         $totalDiskSpace = 70000000;
         $spaceNeeded = 30000000;
         $spaceUsed = $this->calculateSizeOfFoldersUnderLimit(PHP_INT_MAX);
@@ -244,15 +253,17 @@ EOL);
 
         $size = 0;
 
-        if(is_null($children)) $children = $this->directories->toArray();
+        if (is_null($children)) {
+            $children = $this->directories->toArray();
+        }
 
-        if(is_numeric($children)) {
+        if (is_numeric($children)) {
             $size += $children;
-        } elseif(is_array($children)) {
-            foreach($children as $childChildren) {
+        } elseif (is_array($children)) {
+            foreach ($children as $childChildren) {
                 $size += $this->calculateSize($childChildren);
             }
-            if($size <= 100000) {
+            if ($size <= 100000) {
                 $this->totalSize += $size;
             }
         }
