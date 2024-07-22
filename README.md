@@ -1,14 +1,38 @@
 # Advent of Code
 
-This is a single project which contains all my solutions to [Advent of Code](https://adventofcode.com/). Here is a list of the challenges I have completed:
+This is a single project which contains all my solutions to [Advent of Code](https://adventofcode.com/), all solutions are written in PHP by myself. Snippets of problem text and input files are stored in the `storage` directory and in issues, these remain the property of AOC and are only stored here for my own reference. Please visit the home page of AOC to download your own problem datasets.
 
-## 2015
+Here is a list of the challenges I have completed:
 
-- [Day 1: Not Quite Lisp](https://adventofcode.com/2015/day/1) - `php adventofcode browse/2015/one
+### 2015
+
+- [Day 1: Not Quite Lisp](https://adventofcode.com/2015/day/1) ★★ - `php adventofcode browse/2015/one
   `
-- [Day 2: I Was Told There Would Be No Math](https://adventofcode.com/2015/day/2) - `php adventofcode browse/2015/two`
+- [Day 2: I Was Told There Would Be No Math](https://adventofcode.com/2015/day/2) ★★ - `php adventofcode browse/2015/two`
 
 - [Day 3: Perfectly Spherical Houses in a Vacuum](https://adventofcode.com/2015/day/3) - `php adventofcode browse/2015/three
+  `
+
+### 2012
+
+- [Day 1: Calorie Counting](https://adventofcode.com/2022/day/1) ★★ - `php adventofcode browse/2022/one
+  `
+- [Day 2: Rock Paper Scissors](https://adventofcode.com/2022/day/2) ★★ - `php adventofcode browse/2022/two`
+
+- [Day 3: Rucksack Reorganization](https://adventofcode.com/2022/day/3) ★★ - `php adventofcode browse/2022/three
+  `
+- [Day 4: Camp Cleanup](https://adventofcode.com/2022/day/4) ★★ - `php adventofcode browse/2022/four
+  `
+- [Day 5: Supply Stacks](https://adventofcode.com/2022/day/5) ★★ - `php adventofcode browse/2022/five
+  `
+- [Day 6: Tuning Trouble](https://adventofcode.com/2022/day/6) ★★ - `php adventofcode browse/2022/six
+  `
+- [Day 7: No Space Left On Device](https://adventofcode.com/2022/day/7) ★ - `php adventofcode browse/2022/seven
+  `
+
+### 2023
+
+- [Day 1: Trebuchet?!](https://adventofcode.com/2023/day/1) ★ - `php adventofcode browse/2023/one
   `
 
 ## Getting Started
@@ -35,6 +59,10 @@ You can then run the main menu by running:
 ## Authors
 
 - **Zachary Claret-Scott** -
-  [hcaz](https://github.com/hcaz)
-  
-This repository is mirrored to both https://github.com/hcaz/advent-of-code and https://gitlab.com/zachary.claretscott/advent-of-code
+  [hcaz](https://hcaz.io)
+
+## Code hosting
+
+This repository is stored on a private git server, however it is mirrored to the following public git servers:
+- https://github.com/hcaz/advent-of-code
+- https://gitlab.com/zachary.claretscott/advent-of-code
