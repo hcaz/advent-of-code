@@ -2,9 +2,6 @@
 
 namespace App\Commands;
 
-use App\Commands\AOC2015\AOC2015;
-use App\Commands\AOC2022\AOC2022;
-use App\Commands\AOC2023\AOC2023;
 use LaravelZero\Framework\Commands\Command;
 
 class Browse extends Command
@@ -28,67 +25,44 @@ class Browse extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
-        $AOC2015 = new AOC2015();
-        $AOC2016 = new AOC2015();
-        $AOC2017 = new AOC2015();
-        $AOC2018 = new AOC2015();
-        $AOC2019 = new AOC2015();
-        $AOC2020 = new AOC2015();
-        $AOC2021 = new AOC2015();
-        $AOC2022 = new AOC2022();
-        $AOC2023 = new AOC2023();
-        $totalComplete = $AOC2015->complete + $AOC2016->complete + $AOC2017->complete + $AOC2018->complete + $AOC2019->complete + $AOC2020->complete + $AOC2021->complete + $AOC2022->complete + $AOC2023->complete;
-        $totalAvailable = $AOC2015->available() + $AOC2016->available() + $AOC2017->available() + $AOC2018->available() + $AOC2019->available() + $AOC2020->available() + $AOC2021->available() + $AOC2022->available() + $AOC2023->available();
+        $challenges = config('challenges');
 
-        $option = $this->menu("Advent of Code - $totalComplete / $totalAvailable complete", [
-            "2015 - $AOC2015->complete / {$AOC2015->available()} complete",
-            "2016 - 0 / {$AOC2016->available()} complete",
-            "2017 - 0 / {$AOC2017->available()} complete",
-            "2018 - 0 / {$AOC2018->available()} complete",
-            "2019 - 0 / {$AOC2019->available()} complete",
-            "2020 - 0 / {$AOC2020->available()} complete",
-            "2021 - 0 / {$AOC2021->available()} complete",
-            "2022 - $AOC2022->complete / {$AOC2022->available()} complete",
-            "2023 - $AOC2023->complete / {$AOC2023->available()} complete",
-        ])->open();
+        $options = [];
+        foreach ($challenges as $year => $days) {
+            $complete = array_filter($days, function ($day) {
+                return ! empty($day['info']['step_one_answer']) && ! empty($day['info']['step_two_answer']);
+            });
+            $options[] = "$year - ".count($complete).'/'.count($days).' complete';
+        }
 
-        if (is_null($option)) {
+        $chooseYear = $this->menu('Advent of Code', $options)->open();
+
+        if (is_null($chooseYear)) {
+            $this->info('You have chosen to exit');
+
+            return;
+        }
+        $year = ($chooseYear + 2015);
+
+        $options = [];
+        foreach ($challenges[$year] as $day => $challenge) {
+            $options[] = $challenge['info']['title'];
+        }
+
+        $chooseDay = $this->menu("Advent of Code - $year", $options)->open();
+
+        if (is_null($chooseDay)) {
             $this->info('You have chosen to exit');
 
             return;
         }
 
-        switch($option) {
-            case 0:
-                $this->call($AOC2015::class);
-                break;
-            case 1:
-                $this->call($AOC2016::class);
-                break;
-            case 2:
-                $this->call($AOC2017::class);
-                break;
-            case 3:
-                $this->call($AOC2018::class);
-                break;
-            case 4:
-                $this->call($AOC2019::class);
-                break;
-            case 5:
-                $this->call($AOC2020::class);
-                break;
-            case 6:
-                $this->call($AOC2021::class);
-                break;
-            case 7:
-                $this->call($AOC2022::class);
-                break;
-            case 8:
-                $this->call($AOC2023::class);
-                break;
-        }
+        $day = str_pad(($chooseDay + 1), 2, '0', STR_PAD_LEFT);
+
+        $this->call("challenge/$year/$day");
+
         $this->handle();
     }
 }
