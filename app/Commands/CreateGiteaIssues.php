@@ -61,8 +61,10 @@ class CreateGiteaIssues extends Command
 
                 foreach ($issues as $issue) {
                     if ($issue['title'] === "Day $day - Advent of Code $year" || $issue['title'] === "Day $dayRaw - Advent of Code $year" || $issue['title'] == $challenge['info']['title']) {
-                        // Update issue ID here
-                        break 2;
+                        $data = $challenge['info'];
+                        $data['gitea_issue_id'] = $issue['id'];
+                        file_put_contents("storage/app/$year/$day/info.json", json_encode($data));
+                        continue 2;
                     }
                 }
 
@@ -79,6 +81,10 @@ class CreateGiteaIssues extends Command
                 curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"title\":\"$title\",\"body\":\"$body\",\"assignee\":\"$username\",\"milestone\":{$this->milestons[$year]},\"project\":1,\"due_date\":\"$year-12-".str_pad($day, 2, '0', STR_PAD_LEFT).'T00:00:00Z"}');
                 $result = json_decode(curl_exec($ch), true);
                 unset($ch);
+
+                $data = $challenge['info'];
+                $data['gitea_issue_id'] = $result['id'];
+                file_put_contents("storage/app/$year/$day/info.json", json_encode($data));
             }
 
             $year++;
