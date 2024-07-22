@@ -38,7 +38,7 @@ class AOC2023 extends Command
     public function handle()
     {
         $option = $this->menu('2023', [
-            'Day 1: Trebuchet?!',
+            'Day 1: Trebuchet?! ★',
         ])->setExitButtonText('Back')->open();
 
         if (is_null($option)) {
