@@ -27,10 +27,10 @@ return [
     */
 
     'version' => app('git.version'),
-    'gitea_url' => 'https://'.trim(env('ISSUES_GITEA_HOST') ?? env('vars.ISSUES_GITEA_HOST')),
-    'gitea_token' => trim(env('ISSUES_GITEA_TOKEN') ?? env('secrets.ISSUES_GITEA_TOKEN')),
-    'gitea_user' => trim(env('ISSUES_GITEA_USER') ?? env('vars.ISSUES_GITEA_USER')),
-    'gitea_repo' => trim(env('ISSUES_GITEA_REPO') ?? env('vars.ISSUES_GITEA_REPO')),
+    'gitea_url' => 'https://'.env('ISSUES_GITEA_HOST') !== null ? env('ISSUES_GITEA_HOST') : env('vars.ISSUES_GITEA_HOST'),
+    'gitea_token' => env('ISSUES_GITEA_TOKEN') !== null ? env('ISSUES_GITEA_TOKEN') : env('secrets.ISSUES_GITEA_TOKEN'),
+    'gitea_user' => env('ISSUES_GITEA_USER') !== null ? env('ISSUES_GITEA_USER') : env('vars.ISSUES_GITEA_USER'),
+    'gitea_repo' => env('ISSUES_GITEA_PASS') !== null ? env('ISSUES_GITEA_PASS') : env('vars.ISSUES_GITEA_PASS'),
 
     /*
     |--------------------------------------------------------------------------
