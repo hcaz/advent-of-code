@@ -38,7 +38,7 @@ return [
     |
     */
 
-    'font' => \LaravelZero\Framework\Components\Logo\FigletString::DEFAULT_FONT,
+    'font' => \Laminas\Text\Figlet\Figlet::FONTFILE_MAGIC_NUMBER,
 
     /*
     |--------------------------------------------------------------------------

@@ -18,7 +18,7 @@ your local machine for development and testing purposes.
 
 ### Prerequisites
 
-This project is built on top of [Laravel Zero](https://github.com/laravel-zero/laravel-zero), and needs php 8.0 or higher and the composer package manager installed on your system to run.
+This project is built on top of [Laravel Zero](https://github.com/laravel-zero/laravel-zero), and needs php 8.2 or higher and the composer package manager installed on your system to run.
 
 ### Installing
 
