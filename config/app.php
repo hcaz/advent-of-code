@@ -32,6 +32,9 @@ return [
     'gitea_user' => trim(env('ISSUES_GITEA_USER')),
     'gitea_repo' => trim(env('ISSUES_GITEA_REPO')),
 
+    'github_user' => trim(env('ISSUES_GITHUB_USER')),
+    'github_repo' => trim(env('ISSUES_GITHUB_REPO')),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
