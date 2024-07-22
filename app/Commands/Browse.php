@@ -35,14 +35,14 @@ class Browse extends Command
             $complete = array_filter($days, function ($day) {
                 return ! empty($day['info']['step_one_answer']) && ! empty($day['info']['step_two_answer']);
             });
-            $title = "AOC ".$year++;
+            $title = 'AOC '.$year++;
 
-            if(count($days) == 0) {
+            if (count($days) == 0) {
                 $title .= ' [Event not started]';
-            } elseif(count($complete) == count($days)) {
+            } elseif (count($complete) == count($days)) {
                 $title .= ' [Fully Complete]';
-            } elseif(count($complete) > 0) {
-                $title .= ' [Partially Complete] ' . count($complete).' complete out of '.count($days);
+            } elseif (count($complete) > 0) {
+                $title .= ' [Partially Complete] '.count($complete).' complete out of '.count($days);
             }
 
             $options[] = $title;
@@ -60,15 +60,15 @@ class Browse extends Command
         $options = [];
         foreach ($challenges[$year] as $day => $challenge) {
             $title = $challenge['info']['title'];
-            if (!empty($challenge['info']['step_one_answer']) && !empty($challenge['info']['step_two_answer'])) {
-                $title .= " [Fully Complete] ";
-            }elseif(!empty($challenge['info']['step_one_answer']) || !empty($challenge['info']['step_two_answer'])) {
-                $title .= " [Partially Complete] ";
+            if (! empty($challenge['info']['step_one_answer']) && ! empty($challenge['info']['step_two_answer'])) {
+                $title .= ' [Fully Complete] ';
+            } elseif (! empty($challenge['info']['step_one_answer']) || ! empty($challenge['info']['step_two_answer'])) {
+                $title .= ' [Partially Complete] ';
             }
-            if(!empty($challenge['info']['step_one_answer'])) {
+            if (! empty($challenge['info']['step_one_answer'])) {
                 $title .= '★';
             }
-            if(!empty($challenge['info']['step_two_answer'])) {
+            if (! empty($challenge['info']['step_two_answer'])) {
                 $title .= '★';
             }
             $options[] = $title;
