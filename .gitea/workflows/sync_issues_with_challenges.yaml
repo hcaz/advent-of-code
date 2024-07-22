@@ -12,4 +12,5 @@ jobs:
               uses: actions/checkout@v4
               with:
                   ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  ssh-known-hosts: 'enhostcode.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDHg5to4vUFEJ6tqvQ5QX3ptQ8CDgHaxIdJt0XdOMLCiOO4e7781c55sWv19mm/Qy7bIeYQesYuCANZ7LZS1pxyEyhUEOO7SXfgDR/XEWtIrM98OPhCKWFA2dVPaBjWjVnFu3LRy4iH15wCwsyM2diVm72opyCW3eDHDI2C8ijm65TfzGxYzIxkeMeVd3gDFgozNV4mOOrcfvBWCtntlu6hAykMqZp4cMqk468gg6srmcYRd0zvZpJxqHv0sVUQ76zsyFVlVG2XQmq2OGSfjERUgX9GL9ORzsr/9OHWue2PFiSDWPHng7Re0KtbngUwkyUgVge6p34AKrTzT841Lq9lx0RJs0ZGBxJCAx7w3F00hDCxrNMQvvABW5dycaGqyM51XMqFoJbHxDNrfmtYVf21fdDH+joPi88/fPqSMWURplC9gBI45N1ix67L5MwuXFO/xVXul457rKrUck9eLzAkZkeNjwaROks3SmxuDF/IY956gA2L+FyfI75UYrw6jYE='
             - run: composer install
