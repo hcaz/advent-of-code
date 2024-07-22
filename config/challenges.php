@@ -7,7 +7,7 @@ for ($year = 2015; $year <= date('Y'); $year++) {
 
     $data[$year] = [];
 
-    for ($day = 1; $day <= ($year == date('Y') ? (date('m') == 12 ? date('j') : 0) : 31); $day++) {
+    for ($day = 1; $day <= ($year == date('Y') ? (date('m') == 12 ? (date('j') <= 25 ? date('j') : 25) : 0) : 25); $day++) {
         $dayPad = str_pad($day, 2, '0', STR_PAD_LEFT);
         file_exists("storage/app/$year/$dayPad") || mkdir("storage/app/$year/$dayPad");
         if (! file_exists("storage/app/$year/$dayPad/info.json")) {
