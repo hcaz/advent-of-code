@@ -4,21 +4,21 @@ namespace App\Commands;
 
 use LaravelZero\Framework\Commands\Command;
 
-class CreateGiteaIssues extends Command
+class SyncGiteaIssues extends Command
 {
     /**
      * The signature of the command.
      *
      * @var string
      */
-    protected $signature = 'create-gitea-issues';
+    protected $signature = 'sync-gitea-issues';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Create Gitea issues for Advent of Code solutions';
+    protected $description = 'Sync Gitea issues for Advent of Code solutions';
 
     private $milestons = [
         '2015' => 3,
