@@ -1,0 +1,11 @@
+name: Sync issues with challenges
+run-name: ${{ gitea.actor }} is testing out Gitea Actions 🚀
+on: [push]
+
+jobs:
+    sync-gitea-issues:
+        runs-on: lbausch/laravel-ci:php82
+        steps:
+            - name: Check out repository code
+              uses: actions/checkout@v4
+            - run: composer install
