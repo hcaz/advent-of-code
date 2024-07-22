@@ -2,7 +2,6 @@
 
 namespace App\Commands;
 
-use GuzzleHttp\Client;
 use LaravelZero\Framework\Commands\Command;
 
 class CreateGiteaIssues extends Command
@@ -36,46 +35,41 @@ class CreateGiteaIssues extends Command
 
     public function handle(): void
     {
-        $url = $this->ask('Enter the URL of the Gitea instance to create issues on', 'https://enhostcode.com');
-        $username = $this->ask('Enter the username of the Gitea account to create issues with', 'hcaz');
-        $repo = $this->ask('Enter the repository name to create issues in', 'advent-of-code');
-        $year = $this->ask('Enter the year of Advent of Code to create Gitea issues for', 2015);
+        $url = config('app.gitea_url');
+        $token = config('app.gitea_token');
+        $username = config('app.gitea_user');
+        $repo = config('app.gitea_repo');
 
-        if (is_null($year)) {
-            $this->info('You have chosen to exit');
+        $this->alert("Syncing issues for all challenges to Gitea $username/$repo");
 
-            return;
-        }
+        $challenges = config('challenges');
+        $year = 2015;
+        foreach ($challenges as $days) {
+            $this->info("Syncing issues for $year");
 
-        if ($year < 2015 || $year > 2023) {
-            $this->error('Invalid year entered. Please enter a year between 2015 and 2023');
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$username/$repo/issues?milestones=$year&state=all&type=issues&token=".$token);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json']);
+            $issues = json_decode(curl_exec($ch), true);
+            unset($ch);
 
-            return;
-        }
-        $this->info("You have chosen to create Gitea issues for Advent of Code $year");
+            foreach ($days as $day => $challenge) {
+                $this->info("-> Checking for issue $year/$day");
+                $dayRaw = intval($day);
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$username/$repo/issues?state=all&type=issues&token=".config('app.gitea_token'));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json']);
-        $issues = json_decode(curl_exec($ch), true);
-        unset($ch);
-
-        for ($day = 1; $day <= 25; $day++) {
-            $title = "Day $day - Advent of Code $year";
-            $body = "Create a solution for Day $day of Advent of Code $year\nhttps://adventofcode.com/$year/$day";
-            $issueExists = false;
-
-            foreach ($issues as $issue) {
-                if ($issue['title'] === $title) {
-                    $issueExists = true;
-                    break;
+                foreach ($issues as $issue) {
+                    if ($issue['title'] === "Day $day - Advent of Code $year" || $issue['title'] === "Day $dayRaw - Advent of Code $year" || $issue['title'] == $challenge['info']['title']) {
+                        // Update issue ID here
+                        break 2;
+                    }
                 }
-            }
 
-            if (! $issueExists) {
-                $this->info("Creating issue $title");
+                $this->alert("Creating issue for $year/$day");
+
+                $title = $challenge['info']['title'];
+                $body = "## [Advent of Code $year](https://adventofcode.com/$year/day/$day)\n\n";
 
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$username/$repo/issues?token=".config('app.gitea_token'));
@@ -86,6 +80,8 @@ class CreateGiteaIssues extends Command
                 $result = json_decode(curl_exec($ch), true);
                 unset($ch);
             }
+
+            $year++;
         }
     }
 }

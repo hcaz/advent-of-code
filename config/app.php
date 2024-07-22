@@ -27,7 +27,10 @@ return [
     */
 
     'version' => app('git.version'),
+    'gitea_url' => 'https://'.trim(env('GITEA_HOST')),
     'gitea_token' => trim(env('GITEA_TOKEN')),
+    'gitea_user' => trim(env('GITEA_USER')),
+    'gitea_repo' => trim(env('GITEA_REPO')),
 
     /*
     |--------------------------------------------------------------------------
