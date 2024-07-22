@@ -61,12 +61,21 @@ class CreateGiteaIssues extends Command
 
                 $title = $challenge['info']['title'];
                 $link = $challenge['info']['link'];
+                $state = 'open';
+                $labels = [];
                 $body = "# [$title]($link)\n\n## Step 1:\n\n{$challenge['step_one']}\n\n## Step 2:\n\n{$challenge['step_two']}";
 
-                if (isset($challenge['info']['step_one_answer']) && $challenge['info']['step_one_answer'] != '') {
+                if (! empty($challenge['info']['step_one_answer']) && ! empty($challenge['info']['step_two_answer'])) {
+                    $state = 'closed';
+                    $labels[] = 'Status/★★';
+                } elseif (! empty($challenge['info']['step_one_answer']) || ! empty($challenge['info']['step_two_answer'])) {
+                    $labels[] = 'Status/★';
+                }
+
+                if (isset($challenge['info']['step_one_answer'])) {
                     $body .= "\n\n## Answers\n\n- Step 1: `{$challenge['info']['step_one_answer']}`";
                 }
-                if (isset($challenge['info']['step_two_answer']) && $challenge['info']['step_two_answer'] != '') {
+                if (isset($challenge['info']['step_two_answer'])) {
                     $body .= "\n- Step 2: `{$challenge['info']['step_two_answer']}`";
                 }
 
@@ -89,6 +98,10 @@ class CreateGiteaIssues extends Command
                             $updates['body'] = $body;
                         }
 
+                        if ($issue['state'] != $state) {
+                            $updates['state'] = $state;
+                        }
+
                         if (count($updates) > 0) {
                             $this->info("--> Updating issue for $year/$day");
                             $ch = curl_init();
@@ -99,7 +112,15 @@ class CreateGiteaIssues extends Command
                             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($updates));
                             curl_exec($ch);
                             unset($ch);
-                            exit;
+
+                            $ch = curl_init();
+                            curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$username/$repo/issues/{$issue['id']}/labels?token=".config('app.gitea_token'));
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+                            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json', 'Content-Type: application/json']);
+                            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['labels' => $labels]));
+                            curl_exec($ch);
+                            unset($ch);
                         }
 
                         continue 2;
