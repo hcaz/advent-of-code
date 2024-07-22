@@ -30,11 +30,22 @@ class Browse extends Command
         $challenges = config('challenges');
 
         $options = [];
-        foreach ($challenges as $year => $days) {
+        $year = 2015;
+        foreach ($challenges as $days) {
             $complete = array_filter($days, function ($day) {
                 return ! empty($day['info']['step_one_answer']) && ! empty($day['info']['step_two_answer']);
             });
-            $options[] = "$year - ".count($complete).'/'.count($days).' complete';
+            $title = "AOC ".$year++;
+
+            if(count($days) == 0) {
+                $title .= ' [Event not started]';
+            } elseif(count($complete) == count($days)) {
+                $title .= ' [Fully Complete]';
+            } elseif(count($complete) > 0) {
+                $title .= ' [Partially Complete] ' . count($complete).' complete out of '.count($days);
+            }
+
+            $options[] = $title;
         }
 
         $chooseYear = $this->menu('Advent of Code', $options)->open();
@@ -48,7 +59,19 @@ class Browse extends Command
 
         $options = [];
         foreach ($challenges[$year] as $day => $challenge) {
-            $options[] = $challenge['info']['title'];
+            $title = $challenge['info']['title'];
+            if (!empty($challenge['info']['step_one_answer']) && !empty($challenge['info']['step_two_answer'])) {
+                $title .= " [Fully Complete] ";
+            }elseif(!empty($challenge['info']['step_one_answer']) || !empty($challenge['info']['step_two_answer'])) {
+                $title .= " [Partially Complete] ";
+            }
+            if(!empty($challenge['info']['step_one_answer'])) {
+                $title .= '★';
+            }
+            if(!empty($challenge['info']['step_two_answer'])) {
+                $title .= '★';
+            }
+            $options[] = $title;
         }
 
         $chooseDay = $this->menu("Advent of Code - $year", $options)->open();
