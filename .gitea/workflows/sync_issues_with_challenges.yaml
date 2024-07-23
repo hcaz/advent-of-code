@@ -18,7 +18,7 @@ jobs:
                   git config user.name "git-actions[bot]"
                   git config user.email "git-actions-bot@hcaz.me.uk"
                   git add .
-                  git commit -m "Updated any git issues IDs"
+                  git commit -m "Updated readme" || exit 0
                   git push
     sync-gitea-issues:
         runs-on: docker
@@ -40,7 +40,7 @@ jobs:
                git config user.name "git-actions[bot]"
                git config user.email "git-actions-bot@hcaz.me.uk"
                git add .
-               git commit -m "Updated any git issues IDs"
+               git commit -m "Updated any gitea issues IDs" || exit 0
                git push
     sync-github-issues:
         runs-on: docker
@@ -61,5 +61,5 @@ jobs:
                   git config user.name "git-actions[bot]"
                   git config user.email "git-actions-bot@hcaz.me.uk"
                   git add .
-                  git commit -m "Updated any git issues IDs"
+                  git commit -m "Updated any github issues IDs" || exit 0
                   git push
