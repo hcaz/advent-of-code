@@ -42,7 +42,6 @@ class SyncReadme extends Command
                     $challenge_data .= "- [$title]($link) ★ - `php adventofcode challenge/2015/one`\n";
                 }
 
-
             }
 
             $year++;
