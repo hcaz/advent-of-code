@@ -5,35 +5,25 @@ This is a single project which contains all my solutions to [Advent of Code](htt
 Here is a list of the challenges I have completed:
 
 ### 2015
+- [Day 1: Not Quite Lisp - Advent of Code 2015](https://adventofcode.com/2015/day/1) ★★ - `php adventofcode challenge/2015/one`
 
-- [Day 1: Not Quite Lisp](https://adventofcode.com/2015/day/1) ★★ - `php adventofcode browse/2015/one
-  `
-- [Day 2: I Was Told There Would Be No Math](https://adventofcode.com/2015/day/2) ★★ - `php adventofcode browse/2015/two`
+### 2016
 
-- [Day 3: Perfectly Spherical Houses in a Vacuum](https://adventofcode.com/2015/day/3) - `php adventofcode browse/2015/three
-  `
+### 2017
 
-### 2012
+### 2018
 
-- [Day 1: Calorie Counting](https://adventofcode.com/2022/day/1) ★★ - `php adventofcode browse/2022/one
-  `
-- [Day 2: Rock Paper Scissors](https://adventofcode.com/2022/day/2) ★★ - `php adventofcode browse/2022/two`
+### 2019
 
-- [Day 3: Rucksack Reorganization](https://adventofcode.com/2022/day/3) ★★ - `php adventofcode browse/2022/three
-  `
-- [Day 4: Camp Cleanup](https://adventofcode.com/2022/day/4) ★★ - `php adventofcode browse/2022/four
-  `
-- [Day 5: Supply Stacks](https://adventofcode.com/2022/day/5) ★★ - `php adventofcode browse/2022/five
-  `
-- [Day 6: Tuning Trouble](https://adventofcode.com/2022/day/6) ★★ - `php adventofcode browse/2022/six
-  `
-- [Day 7: No Space Left On Device](https://adventofcode.com/2022/day/7) ★ - `php adventofcode browse/2022/seven
-  `
+### 2020
+
+### 2021
+
+### 2022
 
 ### 2023
 
-- [Day 1: Trebuchet?!](https://adventofcode.com/2023/day/1) ★ - `php adventofcode browse/2023/one
-  `
+### 2024
 
 ## Getting Started
 
