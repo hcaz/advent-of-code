@@ -3,16 +3,36 @@ run-name: ${{ gitea.actor }} is testing out Gitea Actions 🚀
 on: [push]
 
 jobs:
+    sync-readme:
+        runs-on: docker
+        container:
+            image: lbausch/laravel-ci:php82
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  ssh-known-hosts: 'enhostcode.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDHg5to4vUFEJ6tqvQ5QX3ptQ8CDgHaxIdJt0XdOMLCiOO4e7781c55sWv19mm/Qy7bIeYQesYuCANZ7LZS1pxyEyhUEOO7SXfgDR/XEWtIrM98OPhCKWFA2dVPaBjWjVnFu3LRy4iH15wCwsyM2diVm72opyCW3eDHDI2C8ijm65TfzGxYzIxkeMeVd3gDFgozNV4mOOrcfvBWCtntlu6hAykMqZp4cMqk468gg6srmcYRd0zvZpJxqHv0sVUQ76zsyFVlVG2XQmq2OGSfjERUgX9GL9ORzsr/9OHWue2PFiSDWPHng7Re0KtbngUwkyUgVge6p34AKrTzT841Lq9lx0RJs0ZGBxJCAx7w3F00hDCxrNMQvvABW5dycaGqyM51XMqFoJbHxDNrfmtYVf21fdDH+joPi88/fPqSMWURplC9gBI45N1ix67L5MwuXFO/xVXul457rKrUck9eLzAkZkeNjwaROks3SmxuDF/IY956gA2L+FyfI75UYrw6jYE='
+            - run: composer install
+            - run: php adventofcode sync-readme
+            - uses: actions/checkout@v4
+              with:
+                  ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  ssh-known-hosts: 'enhostcode.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDHg5to4vUFEJ6tqvQ5QX3ptQ8CDgHaxIdJt0XdOMLCiOO4e7781c55sWv19mm/Qy7bIeYQesYuCANZ7LZS1pxyEyhUEOO7SXfgDR/XEWtIrM98OPhCKWFA2dVPaBjWjVnFu3LRy4iH15wCwsyM2diVm72opyCW3eDHDI2C8ijm65TfzGxYzIxkeMeVd3gDFgozNV4mOOrcfvBWCtntlu6hAykMqZp4cMqk468gg6srmcYRd0zvZpJxqHv0sVUQ76zsyFVlVG2XQmq2OGSfjERUgX9GL9ORzsr/9OHWue2PFiSDWPHng7Re0KtbngUwkyUgVge6p34AKrTzT841Lq9lx0RJs0ZGBxJCAx7w3F00hDCxrNMQvvABW5dycaGqyM51XMqFoJbHxDNrfmtYVf21fdDH+joPi88/fPqSMWURplC9gBI45N1ix67L5MwuXFO/xVXul457rKrUck9eLzAkZkeNjwaROks3SmxuDF/IY956gA2L+FyfI75UYrw6jYE='
+              run: |
+                  git config user.name "git-actions[bot]"
+                  git config user.email "git-actions-bot@hcaz.me.uk"
+                  git add .
+                  git commit -m "Updated any git issues IDs"
+                  git push
     sync-gitea-issues:
         runs-on: docker
         container:
             image: lbausch/laravel-ci:php82
         steps:
-            - name: Check out repository code
-              uses: actions/checkout@v4
+            - uses: actions/checkout@v4
               with:
-                  ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  ssh-known-hosts: 'enhostcode.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDHg5to4vUFEJ6tqvQ5QX3ptQ8CDgHaxIdJt0XdOMLCiOO4e7781c55sWv19mm/Qy7bIeYQesYuCANZ7LZS1pxyEyhUEOO7SXfgDR/XEWtIrM98OPhCKWFA2dVPaBjWjVnFu3LRy4iH15wCwsyM2diVm72opyCW3eDHDI2C8ijm65TfzGxYzIxkeMeVd3gDFgozNV4mOOrcfvBWCtntlu6hAykMqZp4cMqk468gg6srmcYRd0zvZpJxqHv0sVUQ76zsyFVlVG2XQmq2OGSfjERUgX9GL9ORzsr/9OHWue2PFiSDWPHng7Re0KtbngUwkyUgVge6p34AKrTzT841Lq9lx0RJs0ZGBxJCAx7w3F00hDCxrNMQvvABW5dycaGqyM51XMqFoJbHxDNrfmtYVf21fdDH+joPi88/fPqSMWURplC9gBI45N1ix67L5MwuXFO/xVXul457rKrUck9eLzAkZkeNjwaROks3SmxuDF/IY956gA2L+FyfI75UYrw6jYE='
+                    ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+                    ssh-known-hosts: 'enhostcode.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDHg5to4vUFEJ6tqvQ5QX3ptQ8CDgHaxIdJt0XdOMLCiOO4e7781c55sWv19mm/Qy7bIeYQesYuCANZ7LZS1pxyEyhUEOO7SXfgDR/XEWtIrM98OPhCKWFA2dVPaBjWjVnFu3LRy4iH15wCwsyM2diVm72opyCW3eDHDI2C8ijm65TfzGxYzIxkeMeVd3gDFgozNV4mOOrcfvBWCtntlu6hAykMqZp4cMqk468gg6srmcYRd0zvZpJxqHv0sVUQ76zsyFVlVG2XQmq2OGSfjERUgX9GL9ORzsr/9OHWue2PFiSDWPHng7Re0KtbngUwkyUgVge6p34AKrTzT841Lq9lx0RJs0ZGBxJCAx7w3F00hDCxrNMQvvABW5dycaGqyM51XMqFoJbHxDNrfmtYVf21fdDH+joPi88/fPqSMWURplC9gBI45N1ix67L5MwuXFO/xVXul457rKrUck9eLzAkZkeNjwaROks3SmxuDF/IY956gA2L+FyfI75UYrw6jYE='
             - run: composer install
             - run: cp .env.example .env
             - run: sed -i '/^ISSUES_GITEA_HOST=/c\export ISSUES_GITEA_HOST=${{ vars.ISSUES_GITEA_HOST }}' .env
@@ -20,6 +40,16 @@ jobs:
             - run: sed -i '/^ISSUES_GITEA_USER=/c\export ISSUES_GITEA_USER=${{ vars.ISSUES_GITEA_USER }}' .env
             - run: sed -i '/^ISSUES_GITEA_REPO=/c\export ISSUES_GITEA_REPO=${{ vars.ISSUES_GITEA_REPO }}' .env
             - run: php adventofcode sync-gitea-issues
+            - uses: actions/checkout@v4
+              with:
+                    ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+                    ssh-known-hosts: 'enhostcode.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDHg5to4vUFEJ6tqvQ5QX3ptQ8CDgHaxIdJt0XdOMLCiOO4e7781c55sWv19mm/Qy7bIeYQesYuCANZ7LZS1pxyEyhUEOO7SXfgDR/XEWtIrM98OPhCKWFA2dVPaBjWjVnFu3LRy4iH15wCwsyM2diVm72opyCW3eDHDI2C8ijm65TfzGxYzIxkeMeVd3gDFgozNV4mOOrcfvBWCtntlu6hAykMqZp4cMqk468gg6srmcYRd0zvZpJxqHv0sVUQ76zsyFVlVG2XQmq2OGSfjERUgX9GL9ORzsr/9OHWue2PFiSDWPHng7Re0KtbngUwkyUgVge6p34AKrTzT841Lq9lx0RJs0ZGBxJCAx7w3F00hDCxrNMQvvABW5dycaGqyM51XMqFoJbHxDNrfmtYVf21fdDH+joPi88/fPqSMWURplC9gBI45N1ix67L5MwuXFO/xVXul457rKrUck9eLzAkZkeNjwaROks3SmxuDF/IY956gA2L+FyfI75UYrw6jYE='
+              run: |
+               git config user.name "git-actions[bot]"
+               git config user.email "git-actions-bot@hcaz.me.uk"
+               git add .
+               git commit -m "Updated any git issues IDs"
+               git push
     sync-github-issues:
         runs-on: docker
         container:
@@ -28,10 +58,20 @@ jobs:
             - name: Check out repository code
               uses: actions/checkout@v4
               with:
-                  ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  ssh-known-hosts: 'enhostcode.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDHg5to4vUFEJ6tqvQ5QX3ptQ8CDgHaxIdJt0XdOMLCiOO4e7781c55sWv19mm/Qy7bIeYQesYuCANZ7LZS1pxyEyhUEOO7SXfgDR/XEWtIrM98OPhCKWFA2dVPaBjWjVnFu3LRy4iH15wCwsyM2diVm72opyCW3eDHDI2C8ijm65TfzGxYzIxkeMeVd3gDFgozNV4mOOrcfvBWCtntlu6hAykMqZp4cMqk468gg6srmcYRd0zvZpJxqHv0sVUQ76zsyFVlVG2XQmq2OGSfjERUgX9GL9ORzsr/9OHWue2PFiSDWPHng7Re0KtbngUwkyUgVge6p34AKrTzT841Lq9lx0RJs0ZGBxJCAx7w3F00hDCxrNMQvvABW5dycaGqyM51XMqFoJbHxDNrfmtYVf21fdDH+joPi88/fPqSMWURplC9gBI45N1ix67L5MwuXFO/xVXul457rKrUck9eLzAkZkeNjwaROks3SmxuDF/IY956gA2L+FyfI75UYrw6jYE='
+                    ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+                    ssh-known-hosts: 'enhostcode.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDHg5to4vUFEJ6tqvQ5QX3ptQ8CDgHaxIdJt0XdOMLCiOO4e7781c55sWv19mm/Qy7bIeYQesYuCANZ7LZS1pxyEyhUEOO7SXfgDR/XEWtIrM98OPhCKWFA2dVPaBjWjVnFu3LRy4iH15wCwsyM2diVm72opyCW3eDHDI2C8ijm65TfzGxYzIxkeMeVd3gDFgozNV4mOOrcfvBWCtntlu6hAykMqZp4cMqk468gg6srmcYRd0zvZpJxqHv0sVUQ76zsyFVlVG2XQmq2OGSfjERUgX9GL9ORzsr/9OHWue2PFiSDWPHng7Re0KtbngUwkyUgVge6p34AKrTzT841Lq9lx0RJs0ZGBxJCAx7w3F00hDCxrNMQvvABW5dycaGqyM51XMqFoJbHxDNrfmtYVf21fdDH+joPi88/fPqSMWURplC9gBI45N1ix67L5MwuXFO/xVXul457rKrUck9eLzAkZkeNjwaROks3SmxuDF/IY956gA2L+FyfI75UYrw6jYE='
             - run: composer install
             - run: cp .env.example .env
             - run: sed -i '/^ISSUES_GITHUB_USER=/c\export ISSUES_GITHUB_USER=${{ vars.ISSUES_GITHUB_USER }}' .env
             - run: sed -i '/^ISSUES_GITHUB_REPO=/c\export ISSUES_GITHUB_REPO=${{ vars.ISSUES_GITHUB_REPO }}' .env
             - run: php adventofcode sync-github-issues
+            - uses: actions/checkout@v4
+              with:
+                  ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  ssh-known-hosts: 'enhostcode.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDHg5to4vUFEJ6tqvQ5QX3ptQ8CDgHaxIdJt0XdOMLCiOO4e7781c55sWv19mm/Qy7bIeYQesYuCANZ7LZS1pxyEyhUEOO7SXfgDR/XEWtIrM98OPhCKWFA2dVPaBjWjVnFu3LRy4iH15wCwsyM2diVm72opyCW3eDHDI2C8ijm65TfzGxYzIxkeMeVd3gDFgozNV4mOOrcfvBWCtntlu6hAykMqZp4cMqk468gg6srmcYRd0zvZpJxqHv0sVUQ76zsyFVlVG2XQmq2OGSfjERUgX9GL9ORzsr/9OHWue2PFiSDWPHng7Re0KtbngUwkyUgVge6p34AKrTzT841Lq9lx0RJs0ZGBxJCAx7w3F00hDCxrNMQvvABW5dycaGqyM51XMqFoJbHxDNrfmtYVf21fdDH+joPi88/fPqSMWURplC9gBI45N1ix67L5MwuXFO/xVXul457rKrUck9eLzAkZkeNjwaROks3SmxuDF/IY956gA2L+FyfI75UYrw6jYE='
+              run: |
+                  git config user.name "git-actions[bot]"
+                  git config user.email "git-actions-bot@hcaz.me.uk"
+                  git add .
+                  git commit -m "Updated any git issues IDs"
+                  git push
