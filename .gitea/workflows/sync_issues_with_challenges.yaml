@@ -15,8 +15,8 @@ jobs:
             - run: composer install
             - run: php adventofcode sync-readme
             - run: |
-                  git config user.name "git-actions[bot]"
-                  git config user.email "git-actions-bot@hcaz.me.uk"
+                  git config user.name "Zachary Claret-Scott [Bot]"
+                  git config user.email "zachary.claretscpott@gmail.com"
                   git add .
                   git commit -m "Updated readme" || exit 0
                   git push
@@ -37,8 +37,8 @@ jobs:
             - run: sed -i '/^ISSUES_GITEA_REPO=/c\export ISSUES_GITEA_REPO=${{ vars.ISSUES_GITEA_REPO }}' .env
             - run: php adventofcode sync-gitea-issues
             - run: |
-               git config user.name "git-actions[bot]"
-               git config user.email "git-actions-bot@hcaz.me.uk"
+               git config user.name "Zachary Claret-Scott [Bot]"
+               git config user.email "zachary.claretscpott@gmail.com"
                git add .
                git commit -m "Updated any gitea issues IDs" || exit 0
                git push
@@ -58,8 +58,8 @@ jobs:
             - run: sed -i '/^ISSUES_GITHUB_REPO=/c\export ISSUES_GITHUB_REPO=${{ vars.ISSUES_GITHUB_REPO }}' .env
             - run: php adventofcode sync-github-issues
             - run: |
-                  git config user.name "git-actions[bot]"
-                  git config user.email "git-actions-bot@hcaz.me.uk"
+                  git config user.name "Zachary Claret-Scott [Bot]"
+                  git config user.email "zachary.claretscpott@gmail.com"
                   git add .
                   git commit -m "Updated any github issues IDs" || exit 0
                   git push
