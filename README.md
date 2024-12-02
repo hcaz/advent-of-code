@@ -24,6 +24,7 @@ Here is a list of the challenges I have completed:
 ### 2023
 
 ### 2024
+- [Day 1: Historian Hysteria - Advent of Code 2024](https://adventofcode.com/2024/day/1) ★★ - `php adventofcode challenge/2015/one`
 
 ## Getting Started
 
