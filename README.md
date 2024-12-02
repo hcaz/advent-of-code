@@ -25,7 +25,7 @@ Here is a list of the challenges I have completed:
 
 ### 2024
 - [Day 1: Historian Hysteria - Advent of Code 2024](https://adventofcode.com/2024/day/1) ★★ - `php adventofcode challenge/2024/01`
-- [Day 2: Red-Nosed Reports - Advent of Code 2024](https://adventofcode.com/2024/day/2) ★ - `php adventofcode challenge/2024/02`
+- [Day 2: Red-Nosed Reports - Advent of Code 2024](https://adventofcode.com/2024/day/2) ★★ - `php adventofcode challenge/2024/02`
 
 ## Getting Started
 

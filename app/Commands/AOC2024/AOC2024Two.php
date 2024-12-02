@@ -61,56 +61,13 @@ class AOC2024Two extends Command
                 $this->info('Running step 1');
                 $this->loadData();
 
-                $safeReports = 0;
-                $unsafeReports = 0;
-
-                while ($this->reports->count() > 0) {
-                    $report = $this->reports->pop();
-                    $lastNumber = null;
-                    $increasing = null;
-                    foreach ($report as $number) {
-                        if (is_null($lastNumber)) {
-                            $lastNumber = $number;
-
-                            continue;
-                        }
-
-                        if ($lastNumber == $number) {
-                            $unsafeReports++;
-
-                            continue 2;
-                        }
-                        $diff = intval($lastNumber) - intval($number);
-                        if (is_null($increasing)) {
-                            if ($diff < 0) {
-                                $increasing = false;
-                            } else {
-                                $increasing = true;
-                            }
-                        } elseif (($increasing && $diff < 0) || (! $increasing && $diff > 0)) {
-                            $unsafeReports++;
-
-                            continue 2;
-                        }
-                        if (abs($diff) > 3) {
-                            $unsafeReports++;
-
-                            continue 2;
-                        }
-
-                        $lastNumber = $number;
-                    }
-
-                    $safeReports++;
-                }
-
-                $this->info("Safe reports: {$safeReports}");
-                $this->info("Unsafe reports: {$unsafeReports}");
-
+                $this->processReports(0);
                 break;
             case 2:
                 $this->info('Running step 2');
                 $this->loadData();
+
+                $this->processReports(1);
                 break;
         }
         $bench->end();
@@ -120,6 +77,47 @@ class AOC2024Two extends Command
 
         $this->ask('Press any key to continue');
         $this->handle();
+    }
+
+    private function processReports($allowedLevelIssues = 0)
+    {
+        $safeReports = 0;
+        $unsafeReports = 0;
+
+        while ($this->reports->count() > 0) {
+            $report = $this->reports->pop();
+            $lastNumber = null;
+            $increasing = null;
+            $badNumbers = 0;
+            foreach ($report as $number) {
+                if ($lastNumber == $number) {
+                    $badNumbers++;
+                } elseif (! is_null($lastNumber)) {
+                    $diff = intval($lastNumber) - intval($number);
+
+                    if (is_null($increasing)) {
+                        $increasing = $diff > 0;
+                    }
+
+                    if (abs($diff) > 3) {
+                        $badNumbers++;
+                    } elseif (($increasing && $diff < 0) || (! $increasing && $diff > 0)) {
+                        $badNumbers++;
+                    }
+                }
+
+                $lastNumber = $number;
+            }
+
+            if ($badNumbers > $allowedLevelIssues) {
+                $unsafeReports++;
+            } else {
+                $safeReports++;
+            }
+        }
+
+        $this->info("Safe reports: {$safeReports}");
+        $this->info("Unsafe reports: {$unsafeReports}");
     }
 
     private function loadData()
