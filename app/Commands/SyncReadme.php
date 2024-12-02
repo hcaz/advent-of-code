@@ -37,9 +37,9 @@ class SyncReadme extends Command
                 $link = $challenge['info']['link'];
 
                 if (! empty($challenge['info']['step_one_answer']) && ! empty($challenge['info']['step_two_answer'])) {
-                    $challenge_data .= "- [$title]($link) ★★ - `php adventofcode challenge/2015/one`\n";
+                    $challenge_data .= "- [$title]($link) ★★ - `php adventofcode challenge/$year/$day`\n";
                 } elseif (! empty($challenge['info']['step_one_answer']) || ! empty($challenge['info']['step_two_answer'])) {
-                    $challenge_data .= "- [$title]($link) ★ - `php adventofcode challenge/2015/one`\n";
+                    $challenge_data .= "- [$title]($link) ★ - `php adventofcode challenge/$year/$day`\n";
                 }
 
             }
