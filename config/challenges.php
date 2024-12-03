@@ -12,7 +12,7 @@ for ($year = 2015; $year <= date('Y'); $year++) {
         file_exists("storage/app/$year/$dayPad") || mkdir("storage/app/$year/$dayPad");
         if (! file_exists("storage/app/$year/$dayPad/info.json")) {
             file_put_contents("storage/app/$year/$dayPad/info.json", json_encode([
-                'title' => "Day $dayPad - $year",
+                'title' => "Day $dayPad:",
                 'link' => "https://adventofcode.com/$year/day/$day",
                 'step_one_answer' => '',
                 'step_two_answer' => '',

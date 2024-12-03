@@ -5,7 +5,7 @@ This is a single project which contains all my solutions to [Advent of Code](htt
 Here is a list of the challenges I have completed:
 
 ### 2015
-- [Day 1: Not Quite Lisp - Advent of Code 2015](https://adventofcode.com/2015/day/1) ★★ - `php adventofcode challenge/2015/01`
+- [Day 1: Not Quite Lisp](https://adventofcode.com/2015/day/1) ★★ - `php adventofcode challenge/2015/01`
 
 ### 2016
 
@@ -24,8 +24,9 @@ Here is a list of the challenges I have completed:
 ### 2023
 
 ### 2024
-- [Day 1: Historian Hysteria - Advent of Code 2024](https://adventofcode.com/2024/day/1) ★★ - `php adventofcode challenge/2024/01`
-- [Day 2: Red-Nosed Reports - Advent of Code 2024](https://adventofcode.com/2024/day/2) ★★ - `php adventofcode challenge/2024/02`
+- [Day 1: Historian Hysteria](https://adventofcode.com/2024/day/1) ★★ - `php adventofcode challenge/2024/01`
+- [Day 2: Red-Nosed Reports](https://adventofcode.com/2024/day/2) ★★ - `php adventofcode challenge/2024/02`
+- [Day 3: Mull It Over](https://adventofcode.com/2024/day/3) ★★ - `php adventofcode challenge/2024/03`
 
 ## Getting Started
 
