@@ -37,6 +37,10 @@ your local machine for development and testing purposes.
 
 This project is built on top of [Laravel Zero](https://github.com/laravel-zero/laravel-zero), and needs php 8.2 or higher and the composer package manager installed on your system to run.
 
+You will also need to provide puzzle input files in the `storage` directory, in this repo these are encrypted with `git-crypt` and are not included in the public repository. To read more about why puzzle input and challenge questions are private see [the AOC about page](https://adventofcode.com/about).
+
+>If you're posting a code repository somewhere, please don't include parts of Advent of Code like the puzzle text or your inputs.
+
 ### Installing
 
 After cloning the repository you can install all dependencies through composer by running:
