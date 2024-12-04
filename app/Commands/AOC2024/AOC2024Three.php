@@ -62,7 +62,7 @@ class AOC2024Three extends Command
 
                 $count = $this->calculateMuls($this->memory);
 
-                $this->info("The result is: $count");
+                $this->alert("The result is: $count");
 
                 break;
             case 2:
@@ -73,7 +73,7 @@ class AOC2024Three extends Command
                 $cleanedMemory = preg_replace('/don\'t\(\)(.|\n)*?do\(\)/', '', $this->memory.'do()');
                 $count = $this->calculateMuls($cleanedMemory);
 
-                $this->info("The result is: $count");
+                $this->alert("The result is: $count");
                 break;
         }
         $bench->end();

@@ -73,7 +73,7 @@ class AOC2024One extends Command
                     $count += abs($a - $b);
                 }
 
-                $this->info("The total distance is: {$count}");
+                $this->alert("The total distance is: {$count}");
 
                 break;
             case 2:
@@ -94,7 +94,7 @@ class AOC2024One extends Command
                     }
                 }
 
-                $this->info("The total distance is: {$count}");
+                $this->alert("The total distance is: {$count}");
 
                 break;
         }

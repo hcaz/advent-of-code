@@ -14,7 +14,7 @@ class AOC2022Eight extends Command
      *
      * @var string
      */
-    protected $signature = 'browse/2022/eight';
+    protected $signature = 'challenge/2022/08';
 
     /**
      * The description of the command.
@@ -32,7 +32,9 @@ class AOC2022Eight extends Command
      */
     public function handle()
     {
-        $option = $this->menu('Day 8: Treetop Tree House', [
+        $this->challenge = config('challenges.2022.08');
+
+        $option = $this->menu($this->challenge['info']['title'], [
             'View problem',
             'Run step 1',
             'Run step 2',
@@ -43,14 +45,16 @@ class AOC2022Eight extends Command
         }
 
         $bench = new Ubench;
-
         $bench->start();
+
+        $this->title($this->challenge['info']['title']);
         switch ($option) {
             case 0:
-                $this->alert('https://adventofcode.com/2022/day/8');
-                $this->info(<<<'EOL'
-
-EOL);
+                $this->info($this->challenge['info']['link']);
+                $this->alert('Step one:');
+                $this->info($this->challenge['step_one']);
+                $this->alert('Step two:');
+                $this->info($this->challenge['step_two']);
                 break;
             case 1:
                 $this->info('Running step 1');
@@ -102,9 +106,8 @@ EOL);
 
     private function loadData()
     {
-        $this->info('Running solution for problem 8 :: 2022');
-        $this->info('Loading in 2022_eight_input.txt');
-        $data = Storage::get('2022/eight_input.txt');
+        $this->info('Loading data...');
+        $data = $this->challenge['input'];
 
         $trees = 0;
         $this->trees = Collect([]);

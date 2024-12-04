@@ -116,8 +116,8 @@ class AOC2024Two extends Command
             }
         }
 
-        $this->info("Safe reports: {$safeReports}");
-        $this->info("Unsafe reports: {$unsafeReports}");
+        $this->alert("Safe reports: {$safeReports}");
+        $this->alert("Unsafe reports: {$unsafeReports}");
     }
 
     private function loadData()

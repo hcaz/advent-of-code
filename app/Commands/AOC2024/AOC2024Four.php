@@ -129,7 +129,7 @@ class AOC2024Four extends Command
                     }
                 }
 
-                $this->info('XMAS count: '.$xmasCount);
+                $this->alert('XMAS count: '.$xmasCount);
 
                 break;
             case 2:
@@ -185,7 +185,7 @@ class AOC2024Four extends Command
                     }
                 }
 
-                $this->info('X-MAS count: '.$x_masCount);
+                $this->alert('X-MAS count: '.$x_masCount);
                 break;
         }
         $bench->end();

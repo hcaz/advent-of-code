@@ -45,8 +45,9 @@ class AOC2015Two extends Command
         }
 
         $bench = new Ubench;
-
         $bench->start();
+
+        $this->title($this->challenge['info']['title']);
         switch ($option) {
             case 0:
                 $this->info($this->challenge['info']['link']);
@@ -69,7 +70,7 @@ class AOC2015Two extends Command
                     $totalFeetOfWrappingPaper += min($present[0] * $present[1], $present[1] * $present[2], $present[2] * $present[0]);
                 }
 
-                $this->info("The elves should order $totalFeetOfWrappingPaper square feet of wrapping paper");
+                $this->alert("The elves should order $totalFeetOfWrappingPaper square feet of wrapping paper");
                 break;
             case 2:
                 $this->info('Running step 2');
@@ -82,7 +83,7 @@ class AOC2015Two extends Command
                     $totalFeetOfRibbon += $present[0] * $present[1] * $present[2];
                 }
 
-                $this->info("The elves should order $totalFeetOfRibbon feet of ribbon");
+                $this->alert("The elves should order $totalFeetOfRibbon feet of ribbon");
                 break;
         }
         $bench->end();
