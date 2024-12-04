@@ -11,6 +11,7 @@ Here is a list of the challenges I have completed:
 - [Day 3: Perfectly Spherical Houses in a Vacuum](https://adventofcode.com/2015/day/3) ★★ - `php adventofcode challenge/2015/03`
 - [Day 4: The Ideal Stocking Stuffer](https://adventofcode.com/2015/day/4) ★★ - `php adventofcode challenge/2015/04`
 - [Day 5: Doesn't He Have Intern-Elves For This?](https://adventofcode.com/2015/day/5) ★★ - `php adventofcode challenge/2015/05`
+- [Day 6: Probably a Fire Hazard](https://adventofcode.com/2015/day/6) ★★ - `php adventofcode challenge/2015/06`
 
 ### 2016
 

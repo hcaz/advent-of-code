@@ -3,7 +3,6 @@
 namespace App\Commands\AOC2022;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 use Ubench;
 

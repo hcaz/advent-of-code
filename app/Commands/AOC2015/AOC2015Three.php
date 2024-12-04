@@ -103,7 +103,7 @@ class AOC2015Three extends Command
                 $houses = ["{$santaX},{$santaY}" => 2];
 
                 foreach ($this->directions as $index => $direction) {
-                    if($index % 2 === 0) {
+                    if ($index % 2 === 0) {
                         switch ($direction) {
                             case '^':
                                 $santaY++;

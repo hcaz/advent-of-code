@@ -5,7 +5,6 @@ namespace App\Commands\AOC2022;
 use App\Enums\AOC2022GameObjects;
 use App\Enums\AOC2022GameResults;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 use Ubench;
 
