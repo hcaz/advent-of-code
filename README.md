@@ -10,6 +10,7 @@ Here is a list of the challenges I have completed:
 - [Day 2: I Was Told There Would Be No Math](https://adventofcode.com/2015/day/2) ★★ - `php adventofcode challenge/2015/02`
 - [Day 3: Perfectly Spherical Houses in a Vacuum](https://adventofcode.com/2015/day/3) ★★ - `php adventofcode challenge/2015/03`
 - [Day 4: The Ideal Stocking Stuffer](https://adventofcode.com/2015/day/4) ★★ - `php adventofcode challenge/2015/04`
+- [Day 5: Doesn't He Have Intern-Elves For This?](https://adventofcode.com/2015/day/5) ★★ - `php adventofcode challenge/2015/05`
 
 ### 2016
 
