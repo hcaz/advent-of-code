@@ -8,6 +8,7 @@ Here is a list of the challenges I have completed:
 ### 2015
 - [Day 1: Not Quite Lisp](https://adventofcode.com/2015/day/1) ★★ - `php adventofcode challenge/2015/01`
 - [Day 2: I Was Told There Would Be No Math](https://adventofcode.com/2015/day/2) ★★ - `php adventofcode challenge/2015/02`
+- [Day 3: Perfectly Spherical Houses in a Vacuum](https://adventofcode.com/2015/day/3) ★★ - `php adventofcode challenge/2015/03`
 
 ### 2016
 
@@ -28,10 +29,10 @@ Here is a list of the challenges I have completed:
 - [Day 4: Camp Cleanup](https://adventofcode.com/2022/day/4) ★★ - `php adventofcode challenge/2022/04`
 - [Day 5: Supply Stacks](https://adventofcode.com/2022/day/5) ★★ - `php adventofcode challenge/2022/05`
 - [Day 6: Tuning Trouble](https://adventofcode.com/2022/day/6) ★★ - `php adventofcode challenge/2022/06`
-- [Day 7: No Space Left On Device - Advent of Code 2022](https://adventofcode.com/2022/day/7) ★ - `php adventofcode challenge/2022/07`
+- [Day 7: No Space Left On Device](https://adventofcode.com/2022/day/7) ★ - `php adventofcode challenge/2022/07`
 
 ### 2023
-- [Day 1: Trebuchet?! - Advent of Code 2023](https://adventofcode.com/2023/day/1) ★ - `php adventofcode challenge/2023/01`
+- [Day 1: Trebuchet?!](https://adventofcode.com/2023/day/1) ★ - `php adventofcode challenge/2023/01`
 
 ### 2024
 - [Day 1: Historian Hysteria](https://adventofcode.com/2024/day/1) ★★ - `php adventofcode challenge/2024/01`
