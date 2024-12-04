@@ -7,6 +7,7 @@ Here is a list of the challenges I have completed:
 
 ### 2015
 - [Day 1: Not Quite Lisp](https://adventofcode.com/2015/day/1) ★★ - `php adventofcode challenge/2015/01`
+- [Day 2: I Was Told There Would Be No Math](https://adventofcode.com/2015/day/2) ★★ - `php adventofcode challenge/2015/02`
 
 ### 2016
 
