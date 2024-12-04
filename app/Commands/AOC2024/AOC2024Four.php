@@ -69,35 +69,59 @@ class AOC2024Four extends Command
                 foreach ($this->data as $lineIndex => $line) {
                     foreach ($line as $charIndex => $char) {
                         if ($char == 'X') {
-                            // Direction right
+                            //....
+                            //XMAS
+                            //....
+                            //....
                             if ($charIndex < $rightBound && $this->data[$lineIndex][$charIndex + 1] == 'M' && $this->data[$lineIndex][$charIndex + 2] == 'A' && $this->data[$lineIndex][$charIndex + 3] == 'S') {
                                 $xmasCount++;
                             }
-                            // Direction left
+                            //....
+                            //SMAX
+                            //....
+                            //....
                             if ($charIndex > $leftBound && $this->data[$lineIndex][$charIndex - 1] == 'M' && $this->data[$lineIndex][$charIndex - 2] == 'A' && $this->data[$lineIndex][$charIndex - 3] == 'S') {
                                 $xmasCount++;
                             }
-                            // Direction down
+                            //..X.
+                            //..M.
+                            //..A.
+                            //..S.
                             if ($lineIndex < $downBound && $this->data[$lineIndex + 1][$charIndex] == 'M' && $this->data[$lineIndex + 2][$charIndex] == 'A' && $this->data[$lineIndex + 3][$charIndex] == 'S') {
                                 $xmasCount++;
                             }
-                            // Direction up
+                            //..S.
+                            //..A.
+                            //..M.
+                            //..X.
                             if ($lineIndex > $upBound && $this->data[$lineIndex - 1][$charIndex] == 'M' && $this->data[$lineIndex - 2][$charIndex] == 'A' && $this->data[$lineIndex - 3][$charIndex] == 'S') {
                                 $xmasCount++;
                             }
-                            // Direction down right
+                            //...X
+                            //..M.
+                            //.A..
+                            //S...
                             if ($lineIndex < $downBound && $charIndex < $rightBound && $this->data[$lineIndex + 1][$charIndex + 1] == 'M' && $this->data[$lineIndex + 2][$charIndex + 2] == 'A' && $this->data[$lineIndex + 3][$charIndex + 3] == 'S') {
                                 $xmasCount++;
                             }
-                            // Direction down left
+                            //X...
+                            //.M..
+                            //..A.
+                            //...S
                             if ($lineIndex < $downBound && $charIndex > $leftBound && $this->data[$lineIndex + 1][$charIndex - 1] == 'M' && $this->data[$lineIndex + 2][$charIndex - 2] == 'A' && $this->data[$lineIndex + 3][$charIndex - 3] == 'S') {
                                 $xmasCount++;
                             }
-                            // Direction up right
+                            //...S
+                            //..A.
+                            //.M..
+                            //X...
                             if ($lineIndex > $upBound && $charIndex < $rightBound && $this->data[$lineIndex - 1][$charIndex + 1] == 'M' && $this->data[$lineIndex - 2][$charIndex + 2] == 'A' && $this->data[$lineIndex - 3][$charIndex + 3] == 'S') {
                                 $xmasCount++;
                             }
-                            // Direction up left
+                            //S...
+                            //.A..
+                            //..M.
+                            //...X
                             if ($lineIndex > $upBound && $charIndex > $leftBound && $this->data[$lineIndex - 1][$charIndex - 1] == 'M' && $this->data[$lineIndex - 2][$charIndex - 2] == 'A' && $this->data[$lineIndex - 3][$charIndex - 3] == 'S') {
                                 $xmasCount++;
                             }
@@ -105,12 +129,63 @@ class AOC2024Four extends Command
                     }
                 }
 
-                $this->info('Xmas count: '.$xmasCount);
+                $this->info('XMAS count: '.$xmasCount);
 
                 break;
             case 2:
                 $this->info('Running step 2');
                 $this->loadData();
+
+                $x_masCount = 0;
+                $rightBound = count($this->data[0]) - 1;
+                $downBound = count($this->data) - 1;
+                $leftBound = 0;
+                $upBound = 0;
+
+                foreach ($this->data as $lineIndex => $line) {
+                    foreach ($line as $charIndex => $char) {
+                        if ($charIndex < $rightBound && $charIndex > $leftBound && $lineIndex < $downBound && $lineIndex > $upBound && $char == 'A') {
+                            //M.S
+                            //.A.
+                            //M.S
+                            if ($this->data[$lineIndex - 1][$charIndex - 1] == 'M' &&
+                                $this->data[$lineIndex + 1][$charIndex + 1] == 'S' &&
+                                $this->data[$lineIndex + 1][$charIndex - 1] == 'M' &&
+                                $this->data[$lineIndex - 1][$charIndex + 1] == 'S') {
+                                $x_masCount++;
+                            }
+                            //S.M
+                            //.A.
+                            //S.M
+                            if ($this->data[$lineIndex + 1][$charIndex + 1] == 'M' &&
+                                $this->data[$lineIndex - 1][$charIndex - 1] == 'S' &&
+                                $this->data[$lineIndex - 1][$charIndex + 1] == 'M' &&
+                                $this->data[$lineIndex + 1][$charIndex - 1] == 'S') {
+                                $x_masCount++;
+                            }
+                            //M.M
+                            //.A.
+                            //S.S
+                            if ($this->data[$lineIndex - 1][$charIndex - 1] == 'M' &&
+                                $this->data[$lineIndex + 1][$charIndex + 1] == 'S' &&
+                                $this->data[$lineIndex - 1][$charIndex + 1] == 'M' &&
+                                $this->data[$lineIndex + 1][$charIndex - 1] == 'S') {
+                                $x_masCount++;
+                            }
+                            //S.S
+                            //.A.
+                            //M.M
+                            if ($this->data[$lineIndex + 1][$charIndex + 1] == 'M' &&
+                                $this->data[$lineIndex - 1][$charIndex - 1] == 'S' &&
+                                $this->data[$lineIndex + 1][$charIndex - 1] == 'M' &&
+                                $this->data[$lineIndex - 1][$charIndex + 1] == 'S') {
+                                $x_masCount++;
+                            }
+                        }
+                    }
+                }
+
+                $this->info('X-MAS count: '.$x_masCount);
                 break;
         }
         $bench->end();
