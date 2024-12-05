@@ -42,6 +42,7 @@ Here is a list of the challenges I have completed:
 - [Day 2: Red-Nosed Reports](https://adventofcode.com/2024/day/2) ★★ - `php adventofcode challenge/2024/02`
 - [Day 3: Mull It Over](https://adventofcode.com/2024/day/3) ★★ - `php adventofcode challenge/2024/03`
 - [Day 4: Ceres Search](https://adventofcode.com/2024/day/4) ★★ - `php adventofcode challenge/2024/04`
+- [Day 5: Print Queue](https://adventofcode.com/2024/day/5) ★★ - `php adventofcode challenge/2024/05`
 
 ## Getting Started
 
