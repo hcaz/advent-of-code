@@ -2,6 +2,8 @@ on:
     push:
         branches:
             - development
+        paths:
+            - '**.json'
 
 jobs:
     sync-readme:
@@ -18,7 +20,7 @@ jobs:
             - run: php adventofcode sync-readme
             - run: |
                   git config user.name "Zachary Claret-Scott [Bot]"
-                  git config user.email "zachary.claretscpott@gmail.com"
+                  git config user.email "zachary.claretscott@gmail.com"
                   git add .
                   git commit -m "Updated readme" || exit 0
                   git push
