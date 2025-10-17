@@ -21,16 +21,17 @@ class SyncGiteaIssues extends Command
     protected $description = 'Sync Gitea issues for Advent of Code solutions';
 
     private $milestons = [
-        '2015' => 3,
-        '2016' => 4,
-        '2017' => 5,
-        '2018' => 6,
-        '2019' => 7,
-        '2020' => 8,
-        '2021' => 9,
-        '2022' => 10,
-        '2023' => 11,
-        '2024' => 12,
+        '2015' => 5,
+        '2016' => 6,
+        '2017' => 7,
+        '2018' => 8,
+        '2019' => 9,
+        '2020' => 10,
+        '2021' => 11,
+        '2022' => 12,
+        '2023' => 13,
+        '2024' => 14,
+        '2025' => 15,
     ];
 
     public function handle(): void
@@ -127,14 +128,20 @@ class SyncGiteaIssues extends Command
                     }
                 }
 
-                $this->alert("Creating issue for $year/$day");
+                $data = [
+                    'title' => $title,
+                    'body' => $body,
+                    'assignee' => $username,
+                    'milestone' => $this->milestons[$year],
+                    'due_date' => "$year-12-".str_pad($day, 2, '0', STR_PAD_LEFT)."T00:00:00Z",
+                ];
 
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$username/$repo/issues?token=".config('app.gitea_token'));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
                 curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json', 'Content-Type: application/json']);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"title\":\"$title\",\"body\":\"$body\",\"assignee\":\"$username\",\"milestone\":{$this->milestons[$year]},\"project\":1,\"due_date\":\"$year-12-".str_pad($day, 2, '0', STR_PAD_LEFT).'T00:00:00Z"}');
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
                 $result = json_decode(curl_exec($ch), true);
                 unset($ch);
 
