@@ -68,7 +68,7 @@ class AOC2024Seven extends Command
                     $testValue = $testResult[0];
                     $numbersToCombine = [];
                     for ($i = 0; $i < count($testResult[1]); $i++) {
-                        if($i!=0) {
+                        if ($i != 0) {
                             $numbersToCombine[] = $operators;
                         }
                         $numbersToCombine[] = $testResult[1];
@@ -79,19 +79,19 @@ class AOC2024Seven extends Command
                         $expression = implode(' ', $combination);
                         $result = eval('$(('.$expression.'));');
                         dd($result);
-//                                                try {
-//                                                    $result = eval($expression);
-//                                                    dd($result);
-//                                                } catch (\Throwable $e) {
-//                                                    $valid = false;
-//                                                }
-//
-//                                                if ($valid && $result == $testValue) {
-//                                                    $sumOfValidTestResults += $testValue;
-//                                                    break;
-//                                                }
+                        //                                                try {
+                        //                                                    $result = eval($expression);
+                        //                                                    dd($result);
+                        //                                                } catch (\Throwable $e) {
+                        //                                                    $valid = false;
+                        //                                                }
+                        //
+                        //                                                if ($valid && $result == $testValue) {
+                        //                                                    $sumOfValidTestResults += $testValue;
+                        //                                                    break;
+                        //                                                }
                     }
-                    die;
+                    exit;
 
                 }
 
