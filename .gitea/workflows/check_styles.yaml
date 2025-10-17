@@ -7,7 +7,7 @@ jobs:
     sync-gitea-issues:
         runs-on: docker
         container:
-            image: lbausch/laravel-ci:php84
+            image: lbausch/laravel-ci:php83
         steps:
             - name: Check out repository code
               uses: actions/checkout@v4

@@ -7,7 +7,7 @@ jobs:
     sync-readme:
         runs-on: docker
         container:
-            image: lbausch/laravel-ci:php84
+            image: lbausch/laravel-ci:php83
         steps:
             - uses: actions/checkout@v4
               with:
@@ -25,7 +25,7 @@ jobs:
     sync-gitea-issues:
         runs-on: docker
         container:
-            image: lbausch/laravel-ci:php84
+            image: lbausch/laravel-ci:php83
         steps:
             - uses: actions/checkout@v4
               with:
@@ -48,7 +48,7 @@ jobs:
 #    sync-github-issues:
 #        runs-on: docker
 #        container:
-#            image: lbausch/laravel-ci:php84
+#            image: lbausch/laravel-ci:php83
 #        steps:
 #            - name: Check out repository code
 #              uses: actions/checkout@v4
