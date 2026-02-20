@@ -10,7 +10,7 @@ jobs:
             image: lbausch/laravel-ci:php83
         steps:
             - name: Check out repository code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   ref: ${{ github.ref }}
                   ssh-key: ${{ secrets.ACTIONS_PRIVATE_KEY }}
