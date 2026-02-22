@@ -21,7 +21,7 @@
         "guzzlehttp/guzzle": "^7.5",
         "illuminate/log": "^11.0",
         "laminas/laminas-text": "^2.10",
-        "laravel-zero/framework": "^11.0",
+        "laravel-zero/framework": "^12.0",
         "nunomaduro/laravel-console-menu": "^3.4",
         "nunomaduro/termwind": "^2.0",
         "nyholm/psr7": "^1.8",
