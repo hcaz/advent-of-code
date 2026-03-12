@@ -30,6 +30,7 @@ return [
     'gitea_url' => trim(env('ISSUES_GITEA_HOST')),
     'gitea_token' => trim(env('ISSUES_GITEA_TOKEN')),
     'gitea_user' => trim(env('ISSUES_GITEA_USER')),
+    'gitea_org' => trim(env('ISSUES_GITEA_ORG')),
     'gitea_repo' => trim(env('ISSUES_GITEA_REPO')),
 
     'github_user' => trim(env('ISSUES_GITHUB_USER')),

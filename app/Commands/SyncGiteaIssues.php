@@ -19,8 +19,7 @@ class SyncGiteaIssues extends Command
      * @var string
      */
     protected $description = 'Sync Gitea issues for Advent of Code solutions';
-
-    private $milestons = [
+    private $milestoneGiteaIds = [
         '2015' => 5,
         '2016' => 6,
         '2017' => 7,
@@ -38,18 +37,18 @@ class SyncGiteaIssues extends Command
     {
         $url = config('app.gitea_url');
         $token = config('app.gitea_token');
+        $org = config('app.gitea_org');
         $username = config('app.gitea_user');
         $repo = config('app.gitea_repo');
 
-        $this->alert("Syncing issues for all challenges to Gitea $username/$repo");
+        $this->alert("Syncing issues for all challenges to Gitea $org/$repo");
 
         $challenges = config('challenges');
-        $year = 2015;
-        foreach ($challenges as $days) {
+        foreach ($challenges as $year => $days) {
             $this->info("Syncing issues for $year");
 
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$username/$repo/issues?milestones=$year&state=all&type=issues&token=".$token);
+            curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$org/$repo/issues?milestones=$year&state=all&type=issues&token=" . $token);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
             curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json']);
@@ -64,13 +63,16 @@ class SyncGiteaIssues extends Command
                 $link = $challenge['info']['link'];
                 $state = 'open';
                 $labels = [];
+                $assignees = [];
                 $body = "# [$title]($link)\n\n## Step 1:\n\n{$challenge['step_one']}\n\n## Step 2:\n\n{$challenge['step_two']}";
 
                 if (! empty($challenge['info']['step_one_answer']) && ! empty($challenge['info']['step_two_answer'])) {
                     $state = 'closed';
                     $labels[] = 'Status/★★';
+                    $assignees = [$username];
                 } elseif (! empty($challenge['info']['step_one_answer']) || ! empty($challenge['info']['step_two_answer'])) {
                     $labels[] = 'Status/★';
+                    $assignees = [$username];
                 }
 
                 if (isset($challenge['info']['step_one_answer'])) {
@@ -88,7 +90,9 @@ class SyncGiteaIssues extends Command
                             file_put_contents("storage/app/$year/$day/info.json", json_encode($data));
                         }
 
-                        $updates = [];
+                        $updates = [
+                            'assignees' => $assignees,
+                        ];
 
                         if ($issue['title'] != $title) {
                             $updates['title'] = $title;
@@ -102,26 +106,24 @@ class SyncGiteaIssues extends Command
                             $updates['state'] = $state;
                         }
 
-                        if (count($updates) > 0) {
-                            $this->info("--> Updating issue for $year/$day");
-                            $ch = curl_init();
-                            curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$username/$repo/issues/{$issue['number']}?token=".config('app.gitea_token'));
-                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
-                            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json', 'Content-Type: application/json']);
-                            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($updates));
-                            curl_exec($ch);
-                            unset($ch);
+                        $this->info("--> Updating issue for $year/$day");
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$org/$repo/issues/{$issue['number']}?token=".config('app.gitea_token'));
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json', 'Content-Type: application/json']);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($updates));
+                        curl_exec($ch);
+                        unset($ch);
 
-                            $ch = curl_init();
-                            curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$username/$repo/issues/{$issue['number']}/labels?token=".config('app.gitea_token'));
-                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-                            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json', 'Content-Type: application/json']);
-                            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['labels' => $labels]));
-                            curl_exec($ch);
-                            unset($ch);
-                        }
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$org/$repo/issues/{$issue['number']}/labels?token=".config('app.gitea_token'));
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json', 'Content-Type: application/json']);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['labels' => $labels]));
+                        curl_exec($ch);
+                        unset($ch);
 
                         continue 2;
                     }
@@ -130,13 +132,13 @@ class SyncGiteaIssues extends Command
                 $data = [
                     'title' => $title,
                     'body' => $body,
-                    'assignee' => $username,
-                    'milestone' => $this->milestons[$year],
+                    'assignees' => $assignees,
+                    'milestone' => $this->milestoneGiteaIds[$year],
                     'due_date' => "$year-12-".str_pad($day, 2, '0', STR_PAD_LEFT).'T00:00:00Z',
                 ];
 
                 $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$username/$repo/issues?token=".config('app.gitea_token'));
+                curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$org/$repo/issues?token=".config('app.gitea_token'));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
                 curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json', 'Content-Type: application/json']);
@@ -148,8 +150,6 @@ class SyncGiteaIssues extends Command
                 $data['gitea_issue_id'] = $result['id'];
                 file_put_contents("storage/app/$year/$day/info.json", json_encode($data));
             }
-
-            $year++;
         }
     }
 }
