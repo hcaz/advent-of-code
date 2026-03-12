@@ -52,12 +52,11 @@ Here is a list of the challenges I have completed:
 
 ## Getting Started
 
-These instructions will give you a copy of the project up and running on
-your local machine for development and testing purposes.
+These instructions will give you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
 
-This project is built on top of [Laravel Zero](https://github.com/laravel-zero/laravel-zero), and needs php 8.2 or higher and the composer package manager installed on your system to run.
+This project is built on top of [Laravel Zero](https://github.com/laravel-zero/laravel-zero), and needs php 8.4 or higher and the composer package manager installed on your system to run.
 
 ### Installing
 
@@ -74,7 +73,7 @@ You can then run the main menu by running:
 ## Authors
 
 - **Zachary Claret-Scott** -
-  [hcaz](https://hcaz.io)
+  [hcaz](https://hcaz.uk)
 
 ## Code hosting
 
