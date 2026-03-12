@@ -19,19 +19,19 @@
         "php": "^8.4",
         "devster/ubench": "^2.1",
         "guzzlehttp/guzzle": "^7.5",
-        "illuminate/log": "^11.0",
+        "illuminate/log": "^12.0",
         "laminas/laminas-text": "^2.10",
-        "laravel-zero/framework": "^11.0",
+        "laravel-zero/framework": "^12.0",
         "nunomaduro/laravel-console-menu": "^3.4",
         "nunomaduro/termwind": "^2.0",
         "nyholm/psr7": "^1.8",
-        "symfony/http-client": "^7.1",
+        "symfony/http-client": "^8.0",
         "ext-curl": "*"
     },
     "require-dev": {
         "laravel/pint": "^1.2",
         "mockery/mockery": "^1.4.4",
-        "pestphp/pest": "^2.0"
+        "pestphp/pest": "^4.0"
     },
     "autoload": {
         "psr-4": {
