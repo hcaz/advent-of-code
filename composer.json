@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "devster/ubench": "^2.1",
         "guzzlehttp/guzzle": "^7.5",
         "illuminate/log": "^11.0",
