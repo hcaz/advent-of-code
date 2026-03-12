@@ -19,6 +19,7 @@ class SyncGiteaIssues extends Command
      * @var string
      */
     protected $description = 'Sync Gitea issues for Advent of Code solutions';
+
     private $milestoneGiteaIds = [
         '2015' => 5,
         '2016' => 6,
@@ -48,7 +49,7 @@ class SyncGiteaIssues extends Command
             $this->info("Syncing issues for $year");
 
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$org/$repo/issues?milestones=$year&state=all&type=issues&token=" . $token);
+            curl_setopt($ch, CURLOPT_URL, "$url/api/v1/repos/$org/$repo/issues?milestones=$year&state=all&type=issues&token=".$token);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
             curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json']);

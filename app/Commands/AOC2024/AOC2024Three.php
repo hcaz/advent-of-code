@@ -69,7 +69,7 @@ class AOC2024Three extends Command
                 $this->info('Running step 2');
                 $this->loadData();
 
-                /// Add a trailing do() to ensure the last don't() is removed
+                // / Add a trailing do() to ensure the last don't() is removed
                 $cleanedMemory = preg_replace('/don\'t\(\)(.|\n)*?do\(\)/', '', $this->memory.'do()');
                 $count = $this->calculateMuls($cleanedMemory);
 

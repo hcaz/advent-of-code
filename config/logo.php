@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Text\Figlet\Figlet;
+
 return [
 
     /*
@@ -38,7 +40,7 @@ return [
     |
     */
 
-    'font' => \Laminas\Text\Figlet\Figlet::FONTFILE_MAGIC_NUMBER,
+    'font' => Figlet::FONTFILE_MAGIC_NUMBER,
 
     /*
     |--------------------------------------------------------------------------

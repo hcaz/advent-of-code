@@ -110,7 +110,7 @@ class AOC2022Seven extends Command
             } else {
                 $command = explode(' ', $command);
                 if ($command[0] != 'dir' && count($command) == 2) {
-                    ///Replace file extension dot with a underscore so I can use undot later
+                    // /Replace file extension dot with a underscore so I can use undot later
                     $command[1] = str_replace('.', '_', $command[1]);
                     $directories[$currentDirectoryPrefix.$command[1]] = $command[0];
                 }
