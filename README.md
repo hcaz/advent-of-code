@@ -46,6 +46,10 @@ Here is a list of the challenges I have completed:
 - [Day 6: Guard Gallivant](https://adventofcode.com/2024/day/6) ★★ - `php adventofcode challenge/2024/06`
 - [Day 10: Hoof It](https://adventofcode.com/2024/day/10) ★★ - `php adventofcode challenge/2024/10`
 
+### 2025
+
+### 2026
+
 ## Getting Started
 
 These instructions will give you a copy of the project up and running on
