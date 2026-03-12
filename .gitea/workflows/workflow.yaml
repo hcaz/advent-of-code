@@ -1,0 +1,82 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+    tags: ['*']
+
+jobs:
+  check:
+    runs-on: docker
+    container:
+      image: lbausch/laravel-ci:php84
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref }}
+          token: ${{ github.token }}
+
+      - name: Install Composer Dependencies
+        run: composer install --no-interaction
+
+      - name: Code Style (Pint)
+        run: ./vendor/bin/pint --test
+
+#      - name: Static Analysis (PHPStan)
+#        run: ./vendor/bin/phpstan analyse
+
+      - name: Security Audit
+        run: composer audit
+
+#  deploy-dev:
+#    needs: check
+#    if: github.ref == 'refs/heads/main'
+#    runs-on: docker
+#    container:
+#      image: lbausch/laravel-ci:php84
+#    steps:
+#      - name: Check out repository code
+#        uses: actions/checkout@v4
+#        with:
+#          ref: ${{ github.ref }}
+#          token: ${{ github.token }}
+#
+#      - name: Install Dependencies
+#        run: composer install --no-interaction --prefer-dist
+#
+#      - name: Build for Dev
+#        run: ./vendor/bin/jigsaw build staging
+#
+#      - name: Upload to enhost Static
+#        run: npx @getmeli/cli upload --url ${{ vars.ENHOSTSTATIC_ENDPOINT }} --site ${{ vars.ENHOSTSTATIC_SITEID }} --token ${{ secrets.ENHOSTSTATIC_TOKEN }} build_staging/ --branch staging --release "staging-"$(date "+%Y%m%d%H%M.%S")
+#
+#      - name: Send deployment notification
+#        continue-on-error: true
+#        run: curl -d "Deployment staging-"$(date "+%Y%m%d%H%M.%S")" pushed to https://staging.hcaz.uk - "${{ vars.ENHOSTSTATIC_ENDPOINT }}"/sites/"${{ vars.ENHOSTSTATIC_SITEID }}"/releases" https://chat.claretscott.com/rooms/2/3-Sn9RtZH0m8Og/messages
+#
+#  deploy-prod:
+#    needs: check
+#    if: startsWith(github.ref, 'refs/tags/')
+#    runs-on: docker
+#    container:
+#      image: lbausch/laravel-ci:php84
+#    steps:
+#      - name: Check out repository code
+#        uses: actions/checkout@v4
+#        with:
+#          ref: ${{ github.ref }}
+#          token: ${{ github.token }}
+#
+#      - name: Install Dependencies
+#        run: composer install --no-interaction --prefer-dist
+#
+#      - name: Build for Production
+#        run: ./vendor/bin/jigsaw build production
+#
+#      - name: Upload to enhost Static
+#        run: npx @getmeli/cli upload --url ${{ vars.ENHOSTSTATIC_ENDPOINT }} --site ${{ vars.ENHOSTSTATIC_SITEID }} --token ${{ secrets.ENHOSTSTATIC_TOKEN }} build_production/ --branch production --release ${{ gitea.ref_name }}
+#
+#      - name: Send deployment notification
+#        continue-on-error: true
+#        run: curl -d "Deployment "${{ gitea.ref_name }}" pushed to https://hcaz.uk - "${{ vars.ENHOSTSTATIC_ENDPOINT }}"/sites/"${{ vars.ENHOSTSTATIC_SITEID }}"/releases" https://chat.claretscott.com/rooms/2/3-Sn9RtZH0m8Og/messages
