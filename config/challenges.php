@@ -18,20 +18,19 @@ for ($year = 2015; $year <= date('Y'); $year++) {
                 'step_two_answer' => '',
             ]));
         }
-        if (! file_exists("storage/app/$year/$dayPad/step_one.md")) {
-            file_put_contents("storage/app/$year/$dayPad/step_one.md", '');
-        }
-        if (! file_exists("storage/app/$year/$dayPad/step_two.md")) {
-            file_put_contents("storage/app/$year/$dayPad/step_two.md", '');
-        }
-        if (! file_exists("storage/app/$year/$dayPad/input.txt")) {
-            file_put_contents("storage/app/$year/$dayPad/input.txt", '');
-        }
-
         $info = file_get_contents("storage/app/$year/$dayPad/info.json");
-        $step_one = file_get_contents("storage/app/$year/$dayPad/step_one.md");
-        $step_two = file_get_contents("storage/app/$year/$dayPad/step_two.md");
-        $input = file_get_contents("storage/app/$year/$dayPad/input.txt");
+
+        $step_one = $step_two = $input = '';
+
+        if (file_exists("storage/app/$year/$dayPad/step_one.md")) {
+            $step_one = file_get_contents("storage/app/$year/$dayPad/step_one.md");
+        }
+        if (file_exists("storage/app/$year/$dayPad/step_two.md")) {
+            $step_two = file_get_contents("storage/app/$year/$dayPad/step_two.md");
+        }
+        if (file_exists("storage/app/$year/$dayPad/input.txt")) {
+            $input = file_get_contents("storage/app/$year/$dayPad/input.txt");
+        }
 
         $data[$year][$dayPad] = [
             'info' => json_decode($info, true),
