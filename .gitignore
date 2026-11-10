@@ -1,9 +1,16 @@
-/vendor
-/.idea
-/.vscode
-/.vagrant
-.phpunit.result.cache
-.env
+/build_local/
+/cache/
+/node_modules/
+/vendor/
+/.idea/
+/.vscode/
+npm-debug.log
+hot
 .DS_Store
-
+.env
 /old_code/vendor
+
+# Optional ignores
+# /build_staging/
+# /build_production/
+# /source/assets/build/
