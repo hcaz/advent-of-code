@@ -1,0 +1,121 @@
+name: Build and deploy
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+
+# Deliberately absent:
+#
+#   git-crypt unlock  -- CI never gets the key. That is why the site renders
+#                        from committed problem files instead of computing
+#                        answers, and why the solution regression tests are in
+#                        an opt-in group rather than the default suite.
+#
+#   npm install       -- there is no JS toolchain. The stylesheet is hand
+#                        written and served as-is.
+#
+#   sync jobs         -- the Gitea issue sync embeds puzzle text in issue
+#                        bodies, so it needs the key and runs locally only. The
+#                        old workflow ran it in a key-less container, which
+#                        would have written encrypted binary into every issue.
+
+jobs:
+  check:
+    runs-on: docker
+    container:
+      image: lbausch/laravel-ci:php84
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          token: ${{ github.token }}
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress
+
+      - name: Lint
+        run: ./vendor/bin/pint --test
+
+      - name: Static analysis
+        run: ./vendor/bin/phpstan analyse --no-progress
+
+      - name: Tests
+        run: ./vendor/bin/pest
+
+      - name: README is up to date
+        run: php scripts/sync-readme.php --check
+
+      - name: Security audit
+        run: composer audit
+
+      - name: Build
+        run: ./vendor/bin/jigsaw build production
+
+      # Belt and braces. bootstrap.php already fails the build on a leak, but a
+      # mistake in bootstrap.php itself silently skips that listener -- Jigsaw
+      # promotes warnings to exceptions while loading it, so an unrelated typo
+      # aborts the file before the listener registers. This step does not
+      # depend on bootstrap.php loading. With no git-crypt key it reports that
+      # it has nothing to check and passes.
+      - name: Check for leaked puzzle content
+        run: php scripts/check-leaks.php build_production
+
+  deploy-staging:
+    needs: check
+    if: gitea.ref == 'refs/heads/main'
+    runs-on: docker
+    container:
+      image: lbausch/laravel-ci:php84
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          token: ${{ github.token }}
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --no-dev
+
+      - name: Build
+        run: ./vendor/bin/jigsaw build staging
+
+      # Needs node on the runner for npx. Nothing else here does.
+      - name: Upload to Meli
+        run: |
+          npx @getmeli/cli upload \
+            --url ${{ vars.ENHOSTSTATIC_ENDPOINT }} \
+            --site ${{ vars.ENHOSTSTATIC_SITEID }} \
+            --token ${{ secrets.ENHOSTSTATIC_TOKEN }} \
+            build_staging/ \
+            --branch staging \
+            --release "staging-$(date +%Y%m%d%H%M%S)"
+
+  deploy-production:
+    needs: check
+    if: startsWith(gitea.ref, 'refs/tags/')
+    runs-on: docker
+    container:
+      image: lbausch/laravel-ci:php84
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          token: ${{ github.token }}
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --no-dev
+
+      - name: Build
+        run: ./vendor/bin/jigsaw build production
+
+      - name: Upload to Meli
+        run: |
+          npx @getmeli/cli upload \
+            --url ${{ vars.ENHOSTSTATIC_ENDPOINT }} \
+            --site ${{ vars.ENHOSTSTATIC_SITEID }} \
+            --token ${{ secrets.ENHOSTSTATIC_TOKEN }} \
+            build_production/ \
+            --branch production \
+            --release ${{ gitea.ref_name }}
