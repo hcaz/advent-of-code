@@ -292,6 +292,13 @@ pre {
     color: var(--star-dim);
 }
 
+/* An unattempted day links out to adventofcode.com rather than to a page of
+   ours, so say so instead of looking like an internal link. */
+.day__external .day__title::after {
+    content: " ↗";
+    color: var(--text-dim);
+}
+
 /* Problem page ------------------------------------------------------------ */
 
 .problem header {
