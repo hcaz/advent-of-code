@@ -10,5 +10,19 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
+        <testsuite name="Solutions">
+            <directory>tests/Solutions</directory>
+        </testsuite>
     </testsuites>
+
+    <!--
+        Solution regression tests need decrypted puzzle inputs, which CI
+        deliberately does not have, and some days are brute force. Run them
+        locally by passing the group flag to pest: group=solutions
+    -->
+    <groups>
+        <exclude>
+            <group>solutions</group>
+        </exclude>
+    </groups>
 </phpunit>

@@ -1,0 +1,149 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Run Advent of Code solutions.
+ *
+ *   bin/aoc run                   every ported day
+ *   bin/aoc run 2024              every ported day in 2024
+ *   bin/aoc run 2024 1            one day
+ *   bin/aoc run 2024 1 --part=two one part
+ *   bin/aoc run --write           record answers and notes into the problem files
+ *   bin/aoc verify                check every day against its recorded answer
+ *
+ * Deliberately plain argv parsing rather than a console framework: there are
+ * two verbs and three flags, and the whole point of this rewrite was to stop
+ * carrying a framework to run a handful of scripts.
+ *
+ * This reads decrypted puzzle inputs, so it is a local-only tool. CI has no
+ * git-crypt key and never runs it.
+ */
+
+use Aoc\Calendar;
+use Aoc\Data;
+use Aoc\ProblemFile;
+use Aoc\Result;
+use Aoc\Runner;
+
+require __DIR__.'/../vendor/autoload.php';
+
+chdir(dirname(__DIR__));
+
+$argv = $_SERVER['argv'];
+array_shift($argv);
+
+$flags = [];
+$positional = [];
+
+foreach ($argv as $arg) {
+    if (str_starts_with($arg, '--')) {
+        [$name, $value] = array_pad(explode('=', substr($arg, 2), 2), 2, true);
+        $flags[$name] = $value;
+    } else {
+        $positional[] = $arg;
+    }
+}
+
+$command = array_shift($positional) ?? 'run';
+$year = isset($positional[0]) ? (int) $positional[0] : null;
+$day = isset($positional[1]) ? (int) $positional[1] : null;
+$only = isset($flags['part']) && is_string($flags['part']) ? $flags['part'] : null;
+$write = isset($flags['write']);
+
+if (! in_array($command, ['run', 'verify'], true)) {
+    fwrite(STDERR, "Unknown command '{$command}'. Expected 'run' or 'verify'.\n");
+    exit(1);
+}
+
+$data = Data::unlocked();
+
+if ($data->isLocked()) {
+    fwrite(STDERR, "data/ is encrypted -- run `git-crypt unlock` first.\n");
+    exit(1);
+}
+
+$runner = new Runner($data);
+
+$targets = array_filter(
+    Runner::all(),
+    fn (array $pair) => ($year === null || $pair[0] === $year)
+        && ($day === null || $pair[1] === $day),
+);
+
+if ($targets === []) {
+    fwrite(STDERR, "No ported solution matches that selection.\n");
+    exit(1);
+}
+
+$parts = $only !== null ? [$only] : ['one', 'two'];
+$mismatches = 0;
+$ran = 0;
+
+foreach ($targets as [$y, $d]) {
+    $file = ProblemFile::read(Calendar::path($y, $d));
+    $updates = [];
+
+    printf("\n%d day %-2d  %s\n", $y, $d, (string) ($file->get('title') ?? ''));
+
+    foreach ($parts as $part) {
+        $expected = $file->get('answer_'.$part);
+
+        try {
+            $result = $runner->run($y, $d, $part);
+        } catch (Throwable $e) {
+            printf("  part %-3s  ERROR  %s\n", $part, $e->getMessage());
+            $mismatches++;
+
+            continue;
+        }
+
+        if (! $result instanceof Result) {
+            printf("  part %-3s  skipped (no input)\n", $part);
+
+            continue;
+        }
+
+        $ran++;
+        $status = match (true) {
+            $expected === null => 'NEW  ',
+            (string) $expected === $result->answer => 'ok   ',
+            default => 'WRONG',
+        };
+
+        if ($status === 'WRONG') {
+            $mismatches++;
+        }
+
+        printf("  part %-3s  %s  %s", $part, $status, $result->answer);
+
+        if ($status === 'WRONG') {
+            printf("   (recorded: %s)", (string) $expected);
+        }
+
+        if ($result->notes !== []) {
+            $pairs = [];
+            foreach ($result->notes as $label => $value) {
+                $pairs[] = $label.'='.var_export($value, true);
+            }
+            printf("\n              %s", implode('  ', $pairs));
+        }
+
+        echo "\n";
+
+        if ($write && $command === 'run' && $status !== 'WRONG') {
+            $updates['answer_'.$part] = $result->answer;
+            $updates['notes_'.$part] = $result->notes === [] ? null : $result->notes;
+        }
+    }
+
+    if ($updates !== []) {
+        $file->setMany($updates)->write();
+        echo "  written\n";
+    }
+}
+
+printf("\n%d part(s) run, %d mismatch(es)\n", $ran, $mismatches);
+
+exit($mismatches > 0 ? 1 : 0);
