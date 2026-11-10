@@ -22,13 +22,20 @@ final class Data
     /** git-crypt prefixes every encrypted blob with this. */
     private const CRYPT_MAGIC = "\0GITCRYPT\0";
 
+    private readonly string $root;
+
     public function __construct(
-        private readonly string $root = 'data',
+        ?string $root = null,
         private readonly bool $allowPuzzleText = false,
-    ) {}
+    ) {
+        // Resolved from the project root rather than defaulting to a relative
+        // 'data', so a different working directory cannot make every lookup
+        // silently return nothing.
+        $this->root = $root ?? dirname(__DIR__).'/data';
+    }
 
     /** A reader that may return puzzle text. For local builds and the CLI only. */
-    public static function unlocked(string $root = 'data'): self
+    public static function unlocked(?string $root = null): self
     {
         return new self($root, allowPuzzleText: true);
     }
