@@ -13,6 +13,7 @@
  */
 
 return [
-    'baseUrl' => 'https://aoc.hcaz.uk',
+    'baseUrl' => 'https://staging.aoc.hcaz.uk',
     'production' => true,
+    'show_puzzle_text' => false,
 ];
