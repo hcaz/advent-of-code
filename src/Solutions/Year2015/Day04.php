@@ -10,33 +10,44 @@ use Aoc\Solution;
 /**
  * 2015 day 4: The Ideal Stocking Stuffer.
  *
- * Brute force by design -- the puzzle is a proof-of-work. Part two runs to
- * nearly four million MD5s, which is why the regression suite is opt-in rather
- * than part of the default run.
+ * Step logic is the original, unchanged. Brute force by design -- the puzzle is
+ * a proof of work, and part two runs to nearly four million MD5s, which is why
+ * the regression suite is opt-in rather than part of the default run.
  */
 final class Day04 implements Solution
 {
+    private string $secretKey;
+
     public function partOne(string $input): Result
     {
-        return $this->mine($input, '00000');
+        $this->loadData($input);
+
+        $i = 0;
+        while (true) {
+            $hash = md5($this->secretKey.$i);
+            if (str_starts_with($hash, '00000')) {
+                return Result::of($i, ['hashes tried' => $i + 1, 'zeroes' => 5]);
+            }
+            $i++;
+        }
     }
 
     public function partTwo(string $input): Result
     {
-        return $this->mine($input, '000000');
+        $this->loadData($input);
+
+        $i = 0;
+        while (true) {
+            $hash = md5($this->secretKey.$i);
+            if (str_starts_with($hash, '000000')) {
+                return Result::of($i, ['hashes tried' => $i + 1, 'zeroes' => 6]);
+            }
+            $i++;
+        }
     }
 
-    private function mine(string $input, string $prefix): Result
+    private function loadData(string $input): void
     {
-        $key = trim($input);
-
-        for ($i = 0; ; $i++) {
-            if (str_starts_with(md5($key.$i), $prefix)) {
-                return Result::of($i, [
-                    'hashes tried' => $i + 1,
-                    'zeroes' => strlen($prefix),
-                ]);
-            }
-        }
+        $this->secretKey = trim($input);
     }
 }

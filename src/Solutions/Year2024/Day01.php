@@ -6,62 +6,75 @@ namespace Aoc\Solutions\Year2024;
 
 use Aoc\Result;
 use Aoc\Solution;
+use Illuminate\Support\Collection;
 
-/** 2024 day 1: Historian Hysteria. */
+/**
+ * 2024 day 1: Historian Hysteria.
+ *
+ * Step logic is the original, unchanged -- including sorting then popping both
+ * lists in step, and the countBy() closure whose true/false keys become 0/1.
+ */
 final class Day01 implements Solution
 {
+    private Collection $listA;
+
+    private Collection $listB;
+
     public function partOne(string $input): Result
     {
-        [$left, $right] = $this->lists($input);
+        $this->loadData($input);
 
-        sort($left);
-        sort($right);
+        $pairs = $this->listA->count();
 
-        $distance = 0;
+        $listA = $this->listA->sort();
+        $listB = $this->listB->sort();
 
-        foreach ($left as $i => $value) {
-            $distance += abs($value - $right[$i]);
+        $count = 0;
+        while ($listA->count() > 0) {
+            $a = $listA->pop();
+            $b = $listB->pop();
+            $count += abs($a - $b);
         }
 
-        return Result::of($distance, ['pairs' => count($left)]);
+        return Result::of($count, ['pairs' => $pairs]);
     }
 
     public function partTwo(string $input): Result
     {
-        [$left, $right] = $this->lists($input);
+        $this->loadData($input);
 
-        $occurrences = array_count_values($right);
-        $similarity = 0;
+        $pairs = $this->listA->count();
+
+        $listA = $this->listA->sort();
+        $listB = $this->listB->sort();
+
+        $count = 0;
         $matched = 0;
-
-        foreach ($left as $value) {
-            if (isset($occurrences[$value])) {
-                $similarity += $value * $occurrences[$value];
+        while ($listA->count() > 0) {
+            $a = $listA->pop();
+            $times = $listB->countBy(function ($value) use ($a) {
+                return $value == $a;
+            });
+            if (isset($times[1])) {
+                $count += ($a * $times[1]);
                 $matched++;
             }
         }
 
-        return Result::of($similarity, [
-            'pairs' => count($left),
-            'matched' => $matched,
-        ]);
+        return Result::of($count, ['pairs' => $pairs, 'matched' => $matched]);
     }
 
-    /** @return array{list<int>, list<int>} */
-    private function lists(string $input): array
+    private function loadData(string $input): void
     {
-        $left = [];
-        $right = [];
+        $this->listA = collect([]);
+        $this->listB = collect([]);
 
         foreach (explode("\n", $input) as $line) {
-            $parts = preg_split('/\s+/', trim($line)) ?: [];
-
-            if (count($parts) === 2) {
-                $left[] = (int) $parts[0];
-                $right[] = (int) $parts[1];
+            $data = explode('   ', $line);
+            if (count($data) > 1) {
+                $this->listA->add($data[0]);
+                $this->listB->add($data[1]);
             }
         }
-
-        return [$left, $right];
     }
 }

@@ -7,37 +7,51 @@ namespace Aoc\Solutions\Year2024;
 use Aoc\Result;
 use Aoc\Solution;
 
-/** 2024 day 3: Mull It Over. */
+/**
+ * 2024 day 3: Mull It Over.
+ *
+ * Step logic is the original, unchanged.
+ */
 final class Day03 implements Solution
 {
+    private string $memory;
+
     public function partOne(string $input): Result
     {
-        [$sum, $count] = $this->sumMuls($input);
+        $this->loadData($input);
 
-        return Result::of($sum, ['instructions' => $count]);
+        [$count, $instructions] = $this->calculateMuls($this->memory);
+
+        return Result::of($count, ['instructions' => $instructions]);
     }
 
     public function partTwo(string $input): Result
     {
-        // The trailing do() closes a final unterminated don't() region.
-        $enabled = preg_replace('/don\'t\(\)(.|\n)*?do\(\)/', '', $input.'do()') ?? $input;
+        $this->loadData($input);
 
-        [$sum, $count] = $this->sumMuls($enabled);
+        // / Add a trailing do() to ensure the last don't() is removed
+        $cleanedMemory = preg_replace('/don\'t\(\)(.|\n)*?do\(\)/', '', $this->memory.'do()');
+        [$count, $instructions] = $this->calculateMuls($cleanedMemory);
 
-        return Result::of($sum, ['instructions' => $count]);
+        return Result::of($count, ['instructions' => $instructions]);
     }
 
     /** @return array{int, int} */
-    private function sumMuls(string $memory): array
+    private function calculateMuls($memory): array
     {
-        preg_match_all('/mul\((\d{1,3}),(\d{1,3})\)/', $memory, $matches, PREG_SET_ORDER);
+        preg_match_all("/mul\(\d{1,3},\d{1,3}\)/", $memory, $matches);
 
-        $sum = 0;
-
-        foreach ($matches as $match) {
-            $sum += (int) $match[1] * (int) $match[2];
+        $count = 0;
+        foreach ($matches[0] as $match) {
+            $numbers = explode(',', str_replace(['mul(', ')'], '', $match));
+            $count += $numbers[0] * $numbers[1];
         }
 
-        return [$sum, count($matches)];
+        return [$count, count($matches[0])];
+    }
+
+    private function loadData(string $input): void
+    {
+        $this->memory = $input;
     }
 }

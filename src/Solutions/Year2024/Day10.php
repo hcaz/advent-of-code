@@ -10,105 +10,131 @@ use Aoc\Solution;
 /**
  * 2024 day 10: Hoof It.
  *
- * Part one counts distinct summits reachable from each trailhead; part two
- * counts distinct routes to them. The walk is the original's: step to a
- * neighbour whose height is the next value up, and at height 9 record the
- * summit -- keyed by position, so part one naturally de-duplicates while part
- * two accumulates a visit count per summit and sums them.
+ * Step logic is the original, unchanged -- including the four separate
+ * direction blocks in calculateTrailHeadScore() and the ignoreDuplicateRoutes
+ * flag that switches part two from counting summits to counting routes.
  */
 final class Day10 implements Solution
 {
+    /** @var list<list<string>> */
+    private array $data = [];
+
     public function partOne(string $input): Result
     {
-        return $this->score($input, countRoutes: false);
+        $this->loadData($input);
+
+        $sumOfTrailHeadScores = 0;
+        $numberOfTrailHeads = 0;
+
+        foreach ($this->data as $rowIndex => $line) {
+            foreach ($line as $colIndex => $char) {
+                if ($char === '0') {
+                    $foundTrailEnds = $this->calculateTrailHeadScore($rowIndex, $colIndex);
+                    $score = count($foundTrailEnds);
+                    if ($score > 0) {
+                        $numberOfTrailHeads++;
+                        $sumOfTrailHeadScores += $score;
+                    }
+                }
+            }
+        }
+
+        return Result::of($sumOfTrailHeadScores, [
+            'grid' => count($this->data).'x'.count($this->data[0]),
+            'trailheads' => $numberOfTrailHeads,
+        ]);
     }
 
     public function partTwo(string $input): Result
     {
-        return $this->score($input, countRoutes: true);
-    }
+        $this->loadData($input);
 
-    private function score(string $input, bool $countRoutes): Result
-    {
-        $grid = $this->grid($input);
-        $total = 0;
-        $trailheads = 0;
+        $sumOfTrailHeadScores = 0;
+        $numberOfTrailHeads = 0;
 
-        foreach ($grid as $row => $line) {
-            foreach ($line as $col => $char) {
-                if ($char !== '0') {
-                    continue;
+        foreach ($this->data as $rowIndex => $line) {
+            foreach ($line as $colIndex => $char) {
+                if ($char === '0') {
+                    $foundTrailEnds = $this->calculateTrailHeadScore($rowIndex, $colIndex, ignoreDuplicateRoutes: true);
+                    $score = count($foundTrailEnds);
+                    if ($score > 0) {
+                        $numberOfTrailHeads++;
+                        $sumOfTrailHeadScores += array_sum($foundTrailEnds);
+                    }
                 }
-
-                $summits = $this->walk($grid, $row, $col, 1, $countRoutes);
-
-                if ($summits === []) {
-                    continue;
-                }
-
-                $trailheads++;
-                $total += $countRoutes ? array_sum($summits) : count($summits);
             }
         }
 
-        return Result::of($total, [
-            'grid' => count($grid).'x'.count($grid[0]),
-            'trailheads' => $trailheads,
+        return Result::of($sumOfTrailHeadScores, [
+            'grid' => count($this->data).'x'.count($this->data[0]),
+            'trailheads' => $numberOfTrailHeads,
         ]);
     }
 
-    /**
-     * Summits reachable from a position, as position => times reached.
-     *
-     * @param  list<list<string>>  $grid
-     * @return array<string, int>
-     */
-    private function walk(array $grid, int $row, int $col, int $next, bool $countRoutes): array
+    private function calculateTrailHeadScore($rowIndex, $colIndex, $value = 1, $foundTrailEnds = [], $ignoreDuplicateRoutes = false): array
     {
-        $summits = [];
-
-        foreach ([[0, 1], [0, -1], [1, 0], [-1, 0]] as [$dRow, $dCol]) {
-            $r = $row + $dRow;
-            $c = $col + $dCol;
-
-            if (! isset($grid[$r][$c])) {
-                continue;
+        if (isset($this->data[$rowIndex][$colIndex + 1])) {
+            if (intval($this->data[$rowIndex][$colIndex + 1]) == 9 && $value == 9 && (! isset($foundTrailEnds["$rowIndex-".($colIndex + 1)]) || $ignoreDuplicateRoutes)) {
+                if (! isset($foundTrailEnds["$rowIndex-".($colIndex + 1)])) {
+                    $foundTrailEnds["$rowIndex-".($colIndex + 1)] = 1;
+                } else {
+                    $foundTrailEnds["$rowIndex-".($colIndex + 1)]++;
+                }
+            } elseif (intval($this->data[$rowIndex][$colIndex + 1]) == $value) {
+                $foundTrailEnds = array_merge($foundTrailEnds, $this->calculateTrailHeadScore($rowIndex, $colIndex + 1, value: $value + 1, foundTrailEnds: $foundTrailEnds, ignoreDuplicateRoutes: $ignoreDuplicateRoutes));
             }
-
-            $height = (int) $grid[$r][$c];
-
-            if ($height !== $next) {
-                continue;
-            }
-
-            if ($next === 9) {
-                $key = "{$r}-{$c}";
-                $summits[$key] = ($summits[$key] ?? 0) + 1;
-
-                continue;
-            }
-
-            foreach ($this->walk($grid, $r, $c, $next + 1, $countRoutes) as $key => $count) {
-                $summits[$key] = ($summits[$key] ?? 0) + $count;
+        }
+        if (isset($this->data[$rowIndex][$colIndex - 1])) {
+            if (intval($this->data[$rowIndex][$colIndex - 1]) == 9 && $value == 9 && (! isset($foundTrailEnds["$rowIndex-".($colIndex - 1)]) || $ignoreDuplicateRoutes)) {
+                if (! isset($foundTrailEnds["$rowIndex-".($colIndex - 1)])) {
+                    $foundTrailEnds["$rowIndex-".($colIndex - 1)] = 1;
+                } else {
+                    $foundTrailEnds["$rowIndex-".($colIndex - 1)]++;
+                }
+            } elseif (intval($this->data[$rowIndex][$colIndex - 1]) == $value) {
+                $foundTrailEnds = array_merge($foundTrailEnds, $this->calculateTrailHeadScore($rowIndex, $colIndex - 1, value: $value + 1, foundTrailEnds: $foundTrailEnds, ignoreDuplicateRoutes: $ignoreDuplicateRoutes));
             }
         }
 
-        return $summits;
+        if (isset($this->data[$rowIndex + 1][$colIndex])) {
+            if (intval($this->data[$rowIndex + 1][$colIndex]) == 9 && $value == 9 && (! isset($foundTrailEnds[($rowIndex + 1).'-'.$colIndex]) || $ignoreDuplicateRoutes)) {
+                if (! isset($foundTrailEnds[($rowIndex + 1).'-'.$colIndex])) {
+                    $foundTrailEnds[($rowIndex + 1).'-'.$colIndex] = 1;
+                } else {
+                    $foundTrailEnds[($rowIndex + 1).'-'.$colIndex]++;
+                }
+            } elseif (intval($this->data[$rowIndex + 1][$colIndex]) == $value) {
+                $foundTrailEnds = array_merge($foundTrailEnds, $this->calculateTrailHeadScore($rowIndex + 1, $colIndex, value: $value + 1, foundTrailEnds: $foundTrailEnds, ignoreDuplicateRoutes: $ignoreDuplicateRoutes));
+            }
+        }
+        if (isset($this->data[$rowIndex - 1][$colIndex])) {
+            if (intval($this->data[$rowIndex - 1][$colIndex]) == 9 && $value == 9 && (! isset($foundTrailEnds[($rowIndex - 1).'-'.$colIndex]) || $ignoreDuplicateRoutes)) {
+                if (! isset($foundTrailEnds[($rowIndex - 1).'-'.$colIndex])) {
+                    $foundTrailEnds[($rowIndex - 1).'-'.$colIndex] = 1;
+                } else {
+                    $foundTrailEnds[($rowIndex - 1).'-'.$colIndex]++;
+                }
+            } elseif (intval($this->data[$rowIndex - 1][$colIndex]) == $value) {
+                $foundTrailEnds = array_merge($foundTrailEnds, $this->calculateTrailHeadScore($rowIndex - 1, $colIndex, value: $value + 1, foundTrailEnds: $foundTrailEnds, ignoreDuplicateRoutes: $ignoreDuplicateRoutes));
+            }
+        }
+
+        return $foundTrailEnds;
     }
 
-    /** @return list<list<string>> */
-    private function grid(string $input): array
+    private function loadData(string $input): void
     {
-        $grid = [];
-
-        foreach (explode("\n", $input) as $line) {
-            if ($line === '') {
+        $this->data = [];
+        $lines = explode("\n", $input);
+        foreach ($lines as $lineData) {
+            if (empty($lineData)) {
                 continue;
             }
-
-            $grid[] = str_split(rtrim($line, "\r"));
+            $line = [];
+            for ($i = 0; $i < strlen($lineData); $i++) {
+                $line[] = $lineData[$i];
+            }
+            $this->data[] = $line;
         }
-
-        return $grid;
     }
 }

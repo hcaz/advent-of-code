@@ -1,14 +1,36 @@
 # Narrow on purpose, matching the house pattern at hcaz.me.uk.
 # config.php and bootstrap.php are the riskiest files in a Jigsaw site -- loose
 # arrays and closures that only fail at build time -- so they are analysed
-# alongside src/.
+# alongside the rest of src/.
 #
-# tests/ is excluded: Pest rebinds $this inside test closures, which PHPStan
-# cannot model without an extension, and the tests are verified by running them.
+# Excluded:
+#
+#   src/Solutions  These are faithful transcriptions of solutions written over
+#                  three years, kept deliberately unchanged. They use collect([])
+#                  (which infers as Collection<never, never>), arithmetic on
+#                  numeric strings, and match without a default arm. Satisfying
+#                  the analyser would mean editing the puzzle logic, which is
+#                  not worth it -- their correctness is pinned by the solutions
+#                  regression group instead, which checks every recorded answer.
+#                  Note the old CI had PHPStan commented out, so nothing that
+#                  used to be checked has stopped being checked.
+#
+#   tests          Pest rebinds $this inside test closures, which PHPStan cannot
+#                  model without an extension, and the tests are verified by
+#                  running them.
 parameters:
     level: 5
     paths:
         - config.php
+        - config.local.php.example
+        - config.production.php
+        - config.staging.php
         - bootstrap.php
+        - helpers.php
         - src
+        - scripts
+        - bin
+    excludePaths:
+        analyse:
+            - src/Solutions
     treatPhpDocTypesAsCertain: false

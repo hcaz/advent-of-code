@@ -7,40 +7,36 @@ namespace Aoc\Solutions\Year2022;
 use Aoc\PartNotImplemented;
 use Aoc\Result;
 use Aoc\Solution;
+use Illuminate\Support\Collection;
 
 /**
  * 2022 day 7: No Space Left On Device.
  *
- * Part one only -- part two was never finished, and the recorded answers agree
- * (one star). The original's partTwo was abandoned mid-debug: it still had
- * dump() calls, a dd() that would have halted execution, and a call to a
- * calculateSize() method that does not exist anywhere in the class. Rather
- * than guess at what it was meant to be, this reports honestly that the part
- * is unsolved.
+ * Part one's step logic is the original, unchanged -- flatten the filesystem
+ * into dot-delimited paths, nest with undot(), then recurse summing sizes and
+ * accumulating any directory within the limit.
  *
- * Part one keeps the original's approach: flatten the filesystem into
- * dot-delimited paths, nest it with Collection::undot(), then walk the tree
- * summing sizes and accumulating every directory at or under the limit. Note
- * that dots in filenames are replaced with underscores first, because undot()
- * would otherwise treat them as path separators.
+ * Part two was never finished: the original still had dump() calls, a dd() that
+ * would have halted execution, and a call to a calculateSize() method that does
+ * not exist anywhere in the class. It never produced an answer and none was
+ * recorded, so it reports as unimplemented rather than being guessed at.
  */
 final class Day07 implements Solution
 {
-    private const LIMIT = 100000;
+    private Collection $commands;
+
+    private Collection $directories;
+
+    private int $totalSize = 0;
 
     public function partOne(string $input): Result
     {
-        $tree = $this->tree($input);
+        $this->loadData($input);
 
-        $total = 0;
-        $directories = 0;
+        $this->parseDirectories();
+        $this->calculateSizeOfFoldersUnderLimit();
 
-        $this->walk($tree, $total, $directories);
-
-        return Result::of($total, [
-            'directories' => $directories,
-            'limit' => self::LIMIT,
-        ]);
+        return Result::of($this->totalSize, ['commands' => $this->commands->count()]);
     }
 
     public function partTwo(string $input): Result
@@ -48,75 +44,64 @@ final class Day07 implements Solution
         throw PartNotImplemented::for(2022, 7, 'two');
     }
 
-    /**
-     * Sum a directory subtree, accumulating any directory within the limit.
-     *
-     * @param  array<string, mixed>  $node
-     */
-    private function walk(array $node, int &$total, int &$directories): int
+    private function parseDirectories(): void
+    {
+        $directories = collect([]);
+        $currentDirectoryPrefix = '';
+        foreach ($this->commands as $command) {
+            if (str_contains($command, '$')) {
+                $command = explode(' ', str_replace('$ ', '', $command));
+                if ($command[0] == 'cd') {
+                    $command[1] = ltrim($command[1], '/');
+
+                    if ($command[1] == '..') {
+                        $currentDirectoryPrefix = substr($currentDirectoryPrefix, 0, strrpos($currentDirectoryPrefix, '.'));
+
+                        continue;
+                    }
+
+                    $directories[$currentDirectoryPrefix.$command[1]] = [];
+
+                    $currentDirectoryPrefix = ltrim($currentDirectoryPrefix.$command[1].'.', '.');
+                }
+            } else {
+                $command = explode(' ', $command);
+                if ($command[0] != 'dir' && count($command) == 2) {
+                    // /Replace file extension dot with a underscore so I can use undot later
+                    $command[1] = str_replace('.', '_', $command[1]);
+                    $directories[$currentDirectoryPrefix.$command[1]] = $command[0];
+                }
+            }
+        }
+
+        $this->directories = $directories->undot();
+    }
+
+    private function calculateSizeOfFoldersUnderLimit($children = null, $limit = 100000): int
     {
         $size = 0;
 
-        foreach ($node as $child) {
-            $size += is_array($child)
-                ? $this->walk($child, $total, $directories)
-                : (int) $child;
+        if (is_null($children)) {
+            $children = $this->directories->toArray();
         }
 
-        $directories++;
-
-        if ($size <= self::LIMIT) {
-            $total += $size;
+        if (is_numeric($children)) {
+            $size += $children;
+        } elseif (is_array($children)) {
+            foreach ($children as $childChildren) {
+                $size += $this->calculateSizeOfFoldersUnderLimit($childChildren, $limit);
+            }
+            if ($size <= $limit) {
+                $this->totalSize += $size;
+            }
         }
 
         return $size;
     }
 
-    /** @return array<string, mixed> */
-    private function tree(string $input): array
+    private function loadData(string $input): void
     {
-        $flat = [];
-        $prefix = '';
-
-        foreach (explode("\n", $input) as $line) {
-            $line = trim($line);
-
-            if ($line === '') {
-                continue;
-            }
-
-            if (str_contains($line, '$')) {
-                $command = explode(' ', str_replace('$ ', '', $line));
-
-                if ($command[0] !== 'cd') {
-                    continue;
-                }
-
-                $target = ltrim($command[1] ?? '', '/');
-
-                if ($target === '..') {
-                    $cut = strrpos($prefix, '.');
-                    $prefix = $cut === false ? '' : substr($prefix, 0, $cut);
-
-                    continue;
-                }
-
-                $flat[$prefix.$target] = [];
-                $prefix = ltrim($prefix.$target.'.', '.');
-
-                continue;
-            }
-
-            $entry = explode(' ', $line);
-
-            if ($entry[0] !== 'dir' && count($entry) === 2) {
-                // undot() treats dots as separators, so a filename's dot has
-                // to become something else first.
-                $name = str_replace('.', '_', $entry[1]);
-                $flat[$prefix.$name] = $entry[0];
-            }
-        }
-
-        return collect($flat)->undot()->toArray();
+        $this->totalSize = 0;
+        $this->commands = collect(explode("\n", $input));
     }
 }

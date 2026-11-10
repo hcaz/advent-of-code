@@ -6,45 +6,57 @@ namespace Aoc\Solutions\Year2015;
 
 use Aoc\Result;
 use Aoc\Solution;
+use Illuminate\Support\Collection;
 
-/** 2015 day 5: Doesn't He Have Intern-Elves For This? */
+/**
+ * 2015 day 5: Doesn't He Have Intern-Elves For This?
+ *
+ * Step logic is the original, unchanged.
+ */
 final class Day05 implements Solution
 {
+    private Collection $strings;
+
     public function partOne(string $input): Result
     {
-        $strings = $this->strings($input);
-        $nice = 0;
+        $this->loadData($input);
 
-        foreach ($strings as $string) {
+        $niceStrings = 0;
+        foreach ($this->strings as $string) {
             if (preg_match('/(ab|cd|pq|xy)/', $string)) {
                 continue;
             }
 
             if (preg_match('/([aeiou].*){3,}/', $string) && preg_match('/(.)\1/', $string)) {
-                $nice++;
+                $niceStrings++;
             }
         }
 
-        return Result::of($nice, ['strings' => count($strings), 'naughty' => count($strings) - $nice]);
+        return Result::of($niceStrings, [
+            'strings' => $this->strings->count(),
+            'naughty' => $this->strings->count() - $niceStrings,
+        ]);
     }
 
     public function partTwo(string $input): Result
     {
-        $strings = $this->strings($input);
-        $nice = 0;
+        $this->loadData($input);
 
-        foreach ($strings as $string) {
+        $niceStrings = 0;
+        foreach ($this->strings as $string) {
             if (preg_match('/(..).*\1/', $string) && preg_match('/(.).\1/', $string)) {
-                $nice++;
+                $niceStrings++;
             }
         }
 
-        return Result::of($nice, ['strings' => count($strings), 'naughty' => count($strings) - $nice]);
+        return Result::of($niceStrings, [
+            'strings' => $this->strings->count(),
+            'naughty' => $this->strings->count() - $niceStrings,
+        ]);
     }
 
-    /** @return list<string> */
-    private function strings(string $input): array
+    private function loadData(string $input): void
     {
-        return explode("\n", trim($input));
+        $this->strings = collect(explode("\n", trim($input)));
     }
 }

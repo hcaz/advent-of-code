@@ -6,163 +6,143 @@ namespace Aoc\Solutions\Year2024;
 
 use Aoc\Result;
 use Aoc\Solution;
-use UnexpectedValueException;
 
 /**
  * 2024 day 6: Guard Gallivant.
  *
- * The original mutated grid state held on the command object and re-parsed the
- * input for every candidate obstruction. That state is local here instead, so
- * each part is independent and re-runnable.
- *
- * Part two is brute force: it re-simulates the whole patrol once per visited
- * cell, which is thousands of simulations of a 130x130 grid. Loop detection is
- * a heuristic -- revisiting any cell more than LOOP_THRESHOLD times -- not a
- * proof. It is preserved as-is because it is what produced the recorded answer;
- * tightening it would be a change in behaviour, not a port.
+ * Step logic is the original, unchanged -- including the mutable grid state,
+ * the reload per candidate obstruction in part two, the recursive rotation
+ * check, and the "more than ten visits" loop heuristic.
  */
 final class Day06 implements Solution
 {
-    private const LOOP_THRESHOLD = 10;
+    /** @var list<list<string>> */
+    private array $data = [];
+
+    private int $guardX = 0;
+
+    private int $guardY = 0;
 
     public function partOne(string $input): Result
     {
-        [$grid, $startX, $startY] = $this->parse($input);
+        $this->loadData($input);
 
-        $visited = $this->patrol($grid, $startX, $startY);
+        $positions = $this->runGuardPath();
 
-        return Result::of(count($visited ?? []), [
-            'grid' => count($grid).'x'.count($grid[0]),
-            'start' => $startX.','.$startY,
+        return Result::of(count($positions), [
+            'grid' => count($this->data).'x'.count($this->data[0]),
         ]);
     }
 
     public function partTwo(string $input): Result
     {
-        [$grid, $startX, $startY] = $this->parse($input);
+        $this->loadData($input);
 
-        $visited = $this->patrol($grid, $startX, $startY) ?? [];
-        $loops = 0;
+        $positions = $this->runGuardPath();
 
-        foreach (array_keys($visited) as $cell) {
-            [$x, $y] = array_map('intval', explode('x', (string) $cell));
+        $possibleObjectLocations = [];
 
-            // The guard's own starting square cannot hold an obstruction.
-            if ($x === $startX && $y === $startY) {
+        foreach (array_keys($positions) as $position) {
+            $this->loadData($input);
+
+            $position = explode('x', $position);
+            $x = $position[0];
+            $y = $position[1];
+
+            if ($x == $this->guardX && $y == $this->guardY) {
                 continue;
             }
 
-            $candidate = $grid;
-            $candidate[$y][$x] = '@';
+            $this->data[$y][$x] = '@';
 
-            if ($this->patrol($candidate, $startX, $startY) === null) {
-                $loops++;
+            $newPositions = $this->runGuardPath();
+            if (is_null($newPositions)) {
+                $possibleObjectLocations[] = "{$x}x{$y}";
             }
         }
 
-        return Result::of($loops, [
-            'candidates tried' => count($visited),
-            'simulations' => count($visited),
+        return Result::of(count($possibleObjectLocations), [
+            'candidates tried' => count($positions),
         ]);
     }
 
-    /**
-     * Walk the patrol until the guard leaves the grid.
-     *
-     * Returns the visited cells, or null if the guard appears to be looping.
-     *
-     * @param  list<list<string>>  $grid
-     * @return array<string, int>|null
-     */
-    private function patrol(array $grid, int $x, int $y): ?array
+    private function runGuardPath(): ?array
     {
-        $height = count($grid);
-        $width = count($grid[0]);
+        $positions = [];
+        $positions["{$this->guardX}x{$this->guardY}"] = 1;
 
-        $visited = ["{$x}x{$y}" => 1];
+        while ($this->guardX > 0 && $this->guardX < (count($this->data[0]) - 1) && $this->guardY > 0 && $this->guardY < (count($this->data) - 1)) {
+            $direction = $this->data[$this->guardY][$this->guardX];
+            $this->data[$this->guardY][$this->guardX] = '.';
 
-        while ($x > 0 && $x < $width - 1 && $y > 0 && $y < $height - 1) {
-            $direction = $grid[$y][$x];
-            $grid[$y][$x] = '.';
+            $direction = $this->checkGuardRotation($direction);
 
-            $direction = $this->turnUntilClear($grid, $x, $y, $direction);
-
-            match ($direction) {
-                '^' => $y--,
-                'v' => $y++,
-                '<' => $x--,
-                '>' => $x++,
-                default => throw new UnexpectedValueException(
-                    "Unexpected guard direction '{$direction}' at {$x},{$y}",
-                ),
-            };
-
-            $grid[$y][$x] = $direction;
-
-            $key = "{$x}x{$y}";
-            $visited[$key] = ($visited[$key] ?? 0) + 1;
-
-            if ($visited[$key] > self::LOOP_THRESHOLD) {
-                return null;
+            if ($direction === '^') {
+                $this->guardY--;
+            } elseif ($direction === 'v') {
+                $this->guardY++;
+            } elseif ($direction === '<') {
+                $this->guardX--;
+            } elseif ($direction === '>') {
+                $this->guardX++;
             }
-        }
+            $this->data[$this->guardY][$this->guardX] = $direction;
 
-        return $visited;
-    }
+            if (! isset($positions["{$this->guardX}x{$this->guardY}"])) {
+                $positions["{$this->guardX}x{$this->guardY}"] = 1;
+            } else {
+                $positions["{$this->guardX}x{$this->guardY}"]++;
 
-    /** @param list<list<string>> $grid */
-    private function turnUntilClear(array $grid, int $x, int $y, string $direction): string
-    {
-        $next = match ($direction) {
-            '^' => $grid[$y - 1][$x],
-            'v' => $grid[$y + 1][$x],
-            '<' => $grid[$y][$x - 1],
-            '>' => $grid[$y][$x + 1],
-            default => throw new UnexpectedValueException(
-                "Unexpected guard direction '{$direction}'",
-            ),
-        };
-
-        if ($next !== '#' && $next !== '@') {
-            return $direction;
-        }
-
-        // No default arm: the match above has already proved $direction is one
-        // of these four, so anything else threw before reaching here.
-        return $this->turnUntilClear($grid, $x, $y, match ($direction) {
-            '^' => '>',
-            'v' => '<',
-            '<' => '^',
-            '>' => 'v',
-        });
-    }
-
-    /** @return array{list<list<string>>, int, int} */
-    private function parse(string $input): array
-    {
-        $grid = [];
-        $startX = 0;
-        $startY = 0;
-
-        foreach (explode("\n", $input) as $line) {
-            if ($line === '') {
-                continue;
-            }
-
-            $row = [];
-
-            for ($i = 0, $len = strlen($line); $i < $len; $i++) {
-                $row[] = $line[$i];
-
-                if ($line[$i] === '^') {
-                    $startX = $i;
-                    $startY = count($grid);
+                if ($positions["{$this->guardX}x{$this->guardY}"] > 10) {
+                    return null;
                 }
             }
-
-            $grid[] = $row;
         }
 
-        return [$grid, $startX, $startY];
+        return $positions;
+    }
+
+    private function checkGuardRotation($direction): string
+    {
+        $next = match ($direction) {
+            '^' => $this->data[$this->guardY - 1][$this->guardX],
+            'v' => $this->data[$this->guardY + 1][$this->guardX],
+            '<' => $this->data[$this->guardY][$this->guardX - 1],
+            '>' => $this->data[$this->guardY][$this->guardX + 1],
+        };
+
+        if ($next == '#' || $next == '@') {
+            $direction = match ($direction) {
+                '^' => '>',
+                'v' => '<',
+                '<' => '^',
+                '>' => 'v',
+            };
+
+            $direction = $this->checkGuardRotation($direction);
+        }
+
+        return $direction;
+    }
+
+    private function loadData(string $input): void
+    {
+        $this->data = [];
+        $lines = explode("\n", $input);
+        foreach ($lines as $lineData) {
+            if (empty($lineData)) {
+                continue;
+            }
+            $line = [];
+            for ($i = 0; $i < strlen($lineData); $i++) {
+                $line[] = $lineData[$i];
+
+                if ($lineData[$i] === '^') {
+                    $this->guardX = $i;
+                    $this->guardY = count($this->data);
+                }
+            }
+            $this->data[] = $line;
+        }
     }
 }

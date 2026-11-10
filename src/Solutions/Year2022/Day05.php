@@ -6,116 +6,99 @@ namespace Aoc\Solutions\Year2022;
 
 use Aoc\Result;
 use Aoc\Solution;
+use Illuminate\Support\Collection;
 
 /**
  * 2022 day 5: Supply Stacks.
  *
- * The original also printed the full parsed stacks to the terminal through a
- * displayStacks() helper. That is dropped rather than ported: the stacks are
- * the puzzle input in another shape, and notes here are committed to a repo
- * that is mirrored publicly. Only counts and the answer itself are recorded.
+ * Step logic is the original, unchanged. The only thing dropped is the
+ * displayStacks() helper, which printed the parsed crate stacks to the
+ * terminal -- that is the puzzle input in another shape, and notes here are
+ * committed to a publicly mirrored repo.
  */
 final class Day05 implements Solution
 {
+    private Collection $stacks;
+
+    private Collection $moves;
+
     public function partOne(string $input): Result
     {
-        [$stacks, $moves] = $this->parse($input);
+        $this->loadData($input);
 
-        foreach ($moves as [$amount, $from, $to]) {
-            // One crate at a time, so the moved run arrives reversed.
-            for ($i = 0; $i < $amount; $i++) {
-                $crate = array_pop($stacks[$from - 1]);
-
-                if ($crate !== null) {
-                    $stacks[$to - 1][] = $crate;
-                }
+        foreach ($this->moves as $move) {
+            for ($i = 0; $i < $move['amount']; $i++) {
+                $crate = $this->stacks[$move['from'] - 1]->pop();
+                $this->stacks[$move['to'] - 1]->push($crate);
             }
         }
 
-        return Result::of($this->tops($stacks), [
-            'stacks' => count($stacks),
-            'moves' => count($moves),
-        ]);
+        $stackCount = $this->stacks->count();
+        $moveCount = $this->moves->count();
+
+        $answer = $this->stacks->map(function ($stack) {
+            return $stack->pop();
+        })->implode('');
+
+        return Result::of($answer, ['stacks' => $stackCount, 'moves' => $moveCount]);
     }
 
     public function partTwo(string $input): Result
     {
-        [$stacks, $moves] = $this->parse($input);
+        $this->loadData($input);
 
-        foreach ($moves as [$amount, $from, $to]) {
-            // The whole run moves at once, keeping its order.
-            $moved = array_splice($stacks[$from - 1], -$amount);
-
-            foreach ($moved as $crate) {
-                $stacks[$to - 1][] = $crate;
+        foreach ($this->moves as $move) {
+            $crates = $this->stacks[$move['from'] - 1]->pop($move['amount']);
+            foreach ($crates->reverse() as $crate) {
+                $this->stacks[$move['to'] - 1]->push($crate);
             }
         }
 
-        return Result::of($this->tops($stacks), [
-            'stacks' => count($stacks),
-            'moves' => count($moves),
-        ]);
+        $stackCount = $this->stacks->count();
+        $moveCount = $this->moves->count();
+
+        $answer = $this->stacks->map(function ($stack) {
+            return $stack->pop();
+        })->implode('');
+
+        return Result::of($answer, ['stacks' => $stackCount, 'moves' => $moveCount]);
     }
 
-    /** @param list<list<string>> $stacks */
-    private function tops(array $stacks): string
+    private function loadData(string $input): void
     {
-        $tops = '';
-
-        foreach ($stacks as $stack) {
-            $tops .= $stack === [] ? '' : $stack[count($stack) - 1];
-        }
-
-        return $tops;
-    }
-
-    /**
-     * Stacks are stored bottom-first, so array_pop takes the top crate.
-     *
-     * @return array{list<list<string>>, list<array{int, int, int}>}
-     */
-    private function parse(string $input): array
-    {
-        $stacks = [];
-        $moves = [];
-        $readingStacks = true;
-
+        $this->stacks = collect([]);
+        $this->moves = collect([]);
+        $stacks = true;
         foreach (explode("\n", $input) as $line) {
-            if (trim($line) === '') {
-                $readingStacks = false;
+            if ($line == '') {
+                $stacks = false;
 
                 continue;
             }
 
-            if ($readingStacks) {
+            if ($stacks) {
                 if (! str_contains($line, '[')) {
                     continue;
                 }
 
-                $count = (int) round(strlen($line) / 4);
-
-                for ($i = 0; $i < $count; $i++) {
-                    $stacks[$i] ??= [];
+                $stackCount = round(strlen($line) / 4);
+                for ($i = 0; $i < $stackCount; $i++) {
+                    if (! isset($this->stacks[$i])) {
+                        $this->stacks[$i] = collect([]);
+                    }
                     $crate = substr($line, ($i * 4) + 1, 1);
-
-                    if (trim($crate) !== '') {
-                        // Lines arrive top-down, so each lower crate goes under.
-                        array_unshift($stacks[$i], $crate);
+                    if (! empty(trim($crate))) {
+                        $this->stacks[$i]->prepend($crate);
                     }
                 }
-
-                continue;
-            }
-
-            $parts = explode(' ', trim($line));
-
-            if (count($parts) >= 6) {
-                $moves[] = [(int) $parts[1], (int) $parts[3], (int) $parts[5]];
+            } else {
+                $move = explode(' ', $line);
+                $this->moves->push([
+                    'amount' => $move[1],
+                    'from' => $move[3],
+                    'to' => $move[5],
+                ]);
             }
         }
-
-        ksort($stacks);
-
-        return [array_values($stacks), $moves];
     }
 }

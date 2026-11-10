@@ -6,63 +6,126 @@ namespace Aoc\Solutions\Year2015;
 
 use Aoc\Result;
 use Aoc\Solution;
+use Illuminate\Support\Collection;
 
 /**
  * 2015 day 3: Perfectly Spherical Houses in a Vacuum.
  *
- * The input is split with str_split and deliberately NOT trimmed, matching the
- * original. A trailing newline becomes a direction that moves nobody, which
- * cannot change the number of distinct houses, but the faithful reading is
- * kept so the recorded answers are reproducible.
+ * Step logic is the original, unchanged -- including str_split on the untrimmed
+ * input, the duplicated switch per traveller, and the filter that counts every
+ * house rather than only repeat visits (which is in fact the answer the puzzle
+ * asks for).
  */
 final class Day03 implements Solution
 {
+    private Collection $directions;
+
     public function partOne(string $input): Result
     {
+        $this->loadData($input);
+
         $x = 0;
         $y = 0;
-        $houses = ['0,0' => 1];
+        $houses = ["{$x},{$y}" => 1];
 
-        foreach (str_split($input) as $direction) {
-            [$x, $y] = $this->step($direction, $x, $y);
-            $houses["{$x},{$y}"] = ($houses["{$x},{$y}"] ?? 0) + 1;
+        foreach ($this->directions as $direction) {
+            switch ($direction) {
+                case '^':
+                    $y++;
+                    break;
+                case 'v':
+                    $y--;
+                    break;
+                case '>':
+                    $x++;
+                    break;
+                case '<':
+                    $x--;
+                    break;
+            }
+            if (isset($houses["{$x},{$y}"])) {
+                $houses["{$x},{$y}"]++;
+            } else {
+                $houses["{$x},{$y}"] = 1;
+            }
         }
 
-        return Result::of(count($houses), [
-            'directions' => strlen($input),
-            'most visits' => max($houses),
+        $houses = collect($houses);
+
+        $housesWithMoreThanOneVisit = $houses->filter(fn ($visits) => $visits >= 1);
+
+        return Result::of($housesWithMoreThanOneVisit->count(), [
+            'directions' => $this->directions->count(),
+            'houses visited' => $houses->count(),
         ]);
     }
 
     public function partTwo(string $input): Result
     {
-        $positions = [0 => [0, 0], 1 => [0, 0]];
-        // Both start on the same house, so it already has two deliveries.
-        $houses = ['0,0' => 2];
+        $this->loadData($input);
 
-        foreach (str_split($input) as $index => $direction) {
-            $who = $index % 2;
-            $positions[$who] = $this->step($direction, ...$positions[$who]);
-            [$x, $y] = $positions[$who];
-            $houses["{$x},{$y}"] = ($houses["{$x},{$y}"] ?? 0) + 1;
+        $santaX = 0;
+        $santaY = 0;
+        $robotX = 0;
+        $robotY = 0;
+        $houses = ["{$santaX},{$santaY}" => 2];
+
+        foreach ($this->directions as $index => $direction) {
+            if ($index % 2 === 0) {
+                switch ($direction) {
+                    case '^':
+                        $santaY++;
+                        break;
+                    case 'v':
+                        $santaY--;
+                        break;
+                    case '>':
+                        $santaX++;
+                        break;
+                    case '<':
+                        $santaX--;
+                        break;
+                }
+                if (isset($houses["{$santaX},{$santaY}"])) {
+                    $houses["{$santaX},{$santaY}"]++;
+                } else {
+                    $houses["{$santaX},{$santaY}"] = 1;
+                }
+            } else {
+                switch ($direction) {
+                    case '^':
+                        $robotY++;
+                        break;
+                    case 'v':
+                        $robotY--;
+                        break;
+                    case '>':
+                        $robotX++;
+                        break;
+                    case '<':
+                        $robotX--;
+                        break;
+                }
+                if (isset($houses["{$robotX},{$robotY}"])) {
+                    $houses["{$robotX},{$robotY}"]++;
+                } else {
+                    $houses["{$robotX},{$robotY}"] = 1;
+                }
+            }
         }
 
-        return Result::of(count($houses), [
-            'directions' => strlen($input),
-            'most visits' => max($houses),
+        $houses = collect($houses);
+
+        $housesWithMoreThanOneVisit = $houses->filter(fn ($visits) => $visits >= 1);
+
+        return Result::of($housesWithMoreThanOneVisit->count(), [
+            'directions' => $this->directions->count(),
+            'houses visited' => $houses->count(),
         ]);
     }
 
-    /** @return array{int, int} */
-    private function step(string $direction, int $x, int $y): array
+    private function loadData(string $input): void
     {
-        return match ($direction) {
-            '^' => [$x, $y + 1],
-            'v' => [$x, $y - 1],
-            '>' => [$x + 1, $y],
-            '<' => [$x - 1, $y],
-            // Anything else (e.g. a trailing newline) moves nobody.
-            default => [$x, $y],
-        };
+        $this->directions = collect(str_split($input));
     }
 }

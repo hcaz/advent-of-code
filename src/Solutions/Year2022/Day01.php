@@ -6,72 +6,75 @@ namespace Aoc\Solutions\Year2022;
 
 use Aoc\Result;
 use Aoc\Solution;
+use Illuminate\Support\Collection;
 
 /**
  * 2022 day 1: Calorie Counting.
  *
- * The original printed its totals through number_format(), so a verbatim port
- * would have produced "66,186" against a recorded "66186".
+ * Step logic is the original, unchanged. The only thing dropped is the
+ * number_format() applied to the value immediately before printing it -- that
+ * is display formatting, and it would have produced "66,186" against the
+ * recorded "66186".
  */
 final class Day01 implements Solution
 {
+    private Collection $elves;
+
     public function partOne(string $input): Result
     {
-        $elves = $this->elfTotals($input);
+        $this->loadData($input);
 
-        return Result::of($elves[0], [
-            'elves' => count($elves),
-            'runner up' => $elves[1] ?? 0,
+        $mostCaloriesElement = $this->elves->first();
+        $mostCaloriesElf = $this->elves->search(function ($elf) use ($mostCaloriesElement) {
+            return $elf === $mostCaloriesElement;
+        });
+        $mostCaloriesTotal = $this->elves[$mostCaloriesElf]->sum();
+        $mostCaloriesItems = $this->elves[$mostCaloriesElf]->count();
+
+        return Result::of($mostCaloriesTotal, [
+            'elves' => $this->elves->count(),
+            'items' => $mostCaloriesItems,
         ]);
     }
 
     public function partTwo(string $input): Result
     {
-        $elves = $this->elfTotals($input);
-        $top3 = array_slice($elves, 0, 3);
+        $this->loadData($input);
 
-        return Result::of(array_sum($top3), [
-            'elves' => count($elves),
-            'top three' => implode(', ', $top3),
+        $mostCaloriesElements = $this->elves->take(3);
+        $mostCaloriesTotalTop3 = 0;
+        $mostCaloriesItemsTop3 = 0;
+        foreach ($mostCaloriesElements as $mostCaloriesElement) {
+            $mostCaloriesElf = $this->elves->search(function ($elf) use ($mostCaloriesElement) {
+                return $elf === $mostCaloriesElement;
+            });
+            $mostCaloriesItems = $this->elves[$mostCaloriesElf]->count();
+
+            $mostCaloriesTotalTop3 = $mostCaloriesTotalTop3 + $this->elves[$mostCaloriesElf]->sum();
+            $mostCaloriesItemsTop3 = $mostCaloriesItemsTop3 + $mostCaloriesItems;
+        }
+
+        return Result::of($mostCaloriesTotalTop3, [
+            'elves' => $this->elves->count(),
+            'items' => $mostCaloriesItemsTop3,
         ]);
     }
 
-    /**
-     * Calorie totals per elf, highest first.
-     *
-     * A blank line closes the current elf, matching the original. Puzzle inputs
-     * end with a newline, so the final elf is closed by the trailing empty
-     * element from explode().
-     *
-     * @return list<int>
-     */
-    private function elfTotals(string $input): array
+    private function loadData(string $input): void
     {
-        $totals = [];
-        $current = 0;
-        $hasItems = false;
-
+        $this->elves = collect([]);
+        $tmpElf = collect([]);
         foreach (explode("\n", $input) as $line) {
-            if (trim($line) === '') {
-                if ($hasItems) {
-                    $totals[] = $current;
-                }
-                $current = 0;
-                $hasItems = false;
-
-                continue;
+            if ($line == '') {
+                $this->elves->push($tmpElf);
+                $tmpElf = collect([]);
+            } else {
+                $tmpElf->push($line);
             }
-
-            $current += (int) $line;
-            $hasItems = true;
         }
 
-        if ($hasItems) {
-            $totals[] = $current;
-        }
-
-        rsort($totals);
-
-        return $totals;
+        $this->elves = $this->elves->sortByDesc(function ($elf) {
+            return $elf->sum();
+        });
     }
 }

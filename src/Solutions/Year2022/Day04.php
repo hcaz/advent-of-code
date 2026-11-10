@@ -6,63 +6,72 @@ namespace Aoc\Solutions\Year2022;
 
 use Aoc\Result;
 use Aoc\Solution;
+use Illuminate\Support\Collection;
 
-/** 2022 day 4: Camp Cleanup. */
+/**
+ * 2022 day 4: Camp Cleanup.
+ *
+ * Step logic is the original, unchanged, including part two's four separate
+ * elseif branches rather than a single overlap test.
+ */
 final class Day04 implements Solution
 {
+    private Collection $sections;
+
     public function partOne(string $input): Result
     {
-        $pairs = $this->pairs($input);
-        $contained = 0;
+        $this->loadData($input);
 
-        foreach ($pairs as [$a, $b]) {
-            if ($this->contains($a, $b) || $this->contains($b, $a)) {
-                $contained++;
+        $overlaps = 0;
+        foreach ($this->sections as $section) {
+            $one = explode('-', $section['one']);
+            $two = explode('-', $section['two']);
+
+            if ($one[0] <= $two[0] && $one[1] >= $two[1]) {
+                $overlaps++;
+            } elseif ($two[0] <= $one[0] && $two[1] >= $one[1]) {
+                $overlaps++;
             }
         }
 
-        return Result::of($contained, ['pairs' => count($pairs)]);
+        return Result::of($overlaps, ['pairs' => $this->sections->count()]);
     }
 
     public function partTwo(string $input): Result
     {
-        $pairs = $this->pairs($input);
-        $overlapping = 0;
+        $this->loadData($input);
 
-        foreach ($pairs as [$a, $b]) {
-            // Any shared section at all, which includes full containment.
-            if ($a[0] <= $b[1] && $b[0] <= $a[1]) {
-                $overlapping++;
+        $overlaps = 0;
+        foreach ($this->sections as $section) {
+            $one = explode('-', $section['one']);
+            $two = explode('-', $section['two']);
+
+            if ($one[0] <= $two[0] && $one[1] >= $two[1]) {
+                $overlaps++;
+            } elseif ($two[0] <= $one[0] && $two[1] >= $one[1]) {
+                $overlaps++;
+            } elseif ($one[0] <= $two[0] && $one[1] >= $two[0]) {
+                $overlaps++;
+            } elseif ($two[0] <= $one[0] && $two[1] >= $one[0]) {
+                $overlaps++;
             }
         }
 
-        return Result::of($overlapping, ['pairs' => count($pairs)]);
+        return Result::of($overlaps, ['pairs' => $this->sections->count()]);
     }
 
-    /** @param array{int, int} $outer */
-    private function contains(array $outer, array $inner): bool
+    private function loadData(string $input): void
     {
-        return $outer[0] <= $inner[0] && $outer[1] >= $inner[1];
-    }
-
-    /** @return list<array{array{int, int}, array{int, int}}> */
-    private function pairs(string $input): array
-    {
-        $pairs = [];
-
+        $this->sections = collect([]);
         foreach (explode("\n", $input) as $line) {
-            $sections = explode(',', trim($line));
-
-            if (count($sections) !== 2) {
+            if ($line == '') {
                 continue;
             }
 
-            $one = array_map('intval', explode('-', $sections[0]));
-            $two = array_map('intval', explode('-', $sections[1]));
-
-            $pairs[] = [[$one[0], $one[1]], [$two[0], $two[1]]];
+            $section = explode(',', $line);
+            if (count($section) == 2) {
+                $this->sections->push(['one' => $section[0], 'two' => $section[1]]);
+            }
         }
-
-        return $pairs;
     }
 }

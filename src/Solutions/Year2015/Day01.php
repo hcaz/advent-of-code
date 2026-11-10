@@ -7,36 +7,49 @@ namespace Aoc\Solutions\Year2015;
 use Aoc\Result;
 use Aoc\Solution;
 
-/** 2015 day 1: Not Quite Lisp. */
+/**
+ * 2015 day 1: Not Quite Lisp.
+ *
+ * Step logic is the original, unchanged. Only the plumbing differs: loadData()
+ * takes the input as an argument instead of reading config, and the value that
+ * was passed to alert() is returned instead.
+ */
 final class Day01 implements Solution
 {
+    private string $instructions;
+
     public function partOne(string $input): Result
     {
-        $up = substr_count($input, '(');
-        $down = substr_count($input, ')');
+        $this->loadData($input);
 
-        return Result::of($up - $down, [
-            'up' => $up,
-            'down' => $down,
-        ]);
+        $up = substr_count($this->instructions, '(');
+        $down = substr_count($this->instructions, ')');
+
+        return Result::of($up - $down, ['up' => $up, 'down' => $down]);
     }
 
     public function partTwo(string $input): Result
     {
-        $floor = 0;
-        $length = strlen($input);
+        $this->loadData($input);
 
-        for ($position = 0; $position < $length; $position++) {
-            $floor += $input[$position] === '(' ? 1 : -1;
+        $answer = 0;
+        $floor = 0;
+        $position = 0;
+        $length = strlen($this->instructions);
+        while ($floor >= 0 && $position < $length) {
+            $floor += $this->instructions[$position] == '(' ? 1 : -1;
+            $position++;
 
             if ($floor < 0) {
-                // Puzzle positions are 1-indexed.
-                return Result::of($position + 1, [
-                    'instructions' => $length,
-                ]);
+                $answer = $position;
             }
         }
 
-        return Result::of(0, ['instructions' => $length, 'reached basement' => false]);
+        return Result::of($answer, ['instructions' => $length]);
+    }
+
+    private function loadData(string $input): void
+    {
+        $this->instructions = $input;
     }
 }

@@ -183,7 +183,7 @@ do {
     }
 
     $page++;
-} while (is_array($batch) && count($batch) === 50);
+} while (count($batch) === 50);
 
 function milestone_for(int $year, array &$milestones, string $api, string $token, bool $dryRun): ?int
 {
@@ -231,7 +231,7 @@ do {
     }
 
     $page++;
-} while (is_array($batch) && count($batch) === 50);
+} while (count($batch) === 50);
 
 printf("\n%d issues and %d milestones on the remote.\n\n", count($byNumber), count($milestones));
 

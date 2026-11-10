@@ -10,12 +10,13 @@ use Aoc\Solution;
 /**
  * 2022 day 6: Tuning Trouble.
  *
- * The original scanned the entire buffer and kept the first match rather than
- * stopping at it. This returns as soon as the marker is found, which is the
- * same answer for a fraction of the work.
+ * Step logic is the original, unchanged -- it scans the whole buffer and keeps
+ * the first marker it found rather than stopping there.
  */
 final class Day06 implements Solution
 {
+    private string $buffer;
+
     public function partOne(string $input): Result
     {
         return $this->findMarker($input, 4);
@@ -28,32 +29,38 @@ final class Day06 implements Solution
 
     private function findMarker(string $input, int $size): Result
     {
-        $window = [];
-        $length = strlen($input);
+        $this->loadData($input);
 
-        for ($i = 0; $i < $length; $i++) {
-            $char = $input[$i];
+        $indexOfFirstMarker = null;
 
-            // Whitespace is skipped but still counts towards the index, as in
-            // the original.
-            if (trim($char) === '') {
+        $localBuffer = collect([]);
+        for ($i = 0; $i < strlen($this->buffer); $i++) {
+            $char = $this->buffer[$i];
+            if (empty(trim($char))) {
                 continue;
             }
 
-            $window[] = $char;
-
-            if (count($window) > $size) {
-                array_shift($window);
+            $localBuffer->push($char);
+            if ($localBuffer->count() > $size) {
+                $localBuffer->pull(0);
             }
+            $localBuffer = $localBuffer->values();
 
-            if (count($window) === $size && count(array_unique($window)) === $size) {
-                return Result::of($i + 1, [
-                    'marker length' => $size,
-                    'buffer length' => $length,
-                ]);
+            if ($localBuffer->count() == $size && $localBuffer->unique()->count() == $size) {
+                if (is_null($indexOfFirstMarker)) {
+                    $indexOfFirstMarker = ($i + 1);
+                }
             }
         }
 
-        return Result::of(0, ['marker length' => $size, 'found' => false]);
+        return Result::of($indexOfFirstMarker ?? 0, [
+            'marker length' => $size,
+            'buffer length' => strlen($this->buffer),
+        ]);
+    }
+
+    private function loadData(string $input): void
+    {
+        $this->buffer = $input;
     }
 }

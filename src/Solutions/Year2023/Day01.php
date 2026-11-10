@@ -7,44 +7,44 @@ namespace Aoc\Solutions\Year2023;
 use Aoc\PartNotImplemented;
 use Aoc\Result;
 use Aoc\Solution;
+use Illuminate\Support\Collection;
 
 /**
  * 2023 day 1: Trebuchet?!
  *
- * Part one only -- the recorded answers agree (one star).
+ * Part one's step logic is the original, unchanged.
  *
- * The original did have a part-two branch, but it only re-found numeric digits
- * by a different route, which is the same problem part one already solves. The
- * actual part two requires recognising spelled-out digits ("one", "two", ...),
- * which it never did, and no answer was ever recorded. Porting it would have
- * displayed a confident-looking wrong number, so it reports as unsolved.
+ * The original's part two only re-found numeric digits by a different route,
+ * which is what part one already does; it never handled spelled-out digits,
+ * and no answer was recorded. Reporting it as unimplemented rather than
+ * publishing a confident wrong number.
  */
 final class Day01 implements Solution
 {
+    private Collection $calibrationLines;
+
     public function partOne(string $input): Result
     {
-        $lines = array_values(array_filter(
-            array_map('trim', explode("\n", $input)),
-            fn (string $line) => $line !== '',
-        ));
+        $this->loadData($input);
 
-        $sum = 0;
+        $sumOfCalibrationValues = $this->calibrationLines->map(function ($line) {
+            $cleanedLine = preg_replace('/[^0-9]/', '', $line);
+            $firstDigit = substr($cleanedLine, 0, 1);
+            $lastDigit = substr($cleanedLine, -1);
 
-        foreach ($lines as $line) {
-            $digits = preg_replace('/[^0-9]/', '', $line) ?? '';
+            return intval("$firstDigit$lastDigit");
+        })->sum();
 
-            if ($digits === '') {
-                continue;
-            }
-
-            $sum += (int) (substr($digits, 0, 1).substr($digits, -1));
-        }
-
-        return Result::of($sum, ['lines' => count($lines)]);
+        return Result::of($sumOfCalibrationValues, ['lines' => $this->calibrationLines->count()]);
     }
 
     public function partTwo(string $input): Result
     {
         throw PartNotImplemented::for(2023, 1, 'two');
+    }
+
+    private function loadData(string $input): void
+    {
+        $this->calibrationLines = collect(explode("\n", $input));
     }
 }
