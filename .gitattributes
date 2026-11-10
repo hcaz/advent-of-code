@@ -4,7 +4,5 @@
 BACKERS.md export-ignore
 CONTRIBUTING.md export-ignore
 CHANGELOG.md export-ignore
-old_code/storage/app/*/*/*.txt filter=git-crypt diff=git-crypt -text
-old_code/storage/app/*/*/*.md filter=git-crypt diff=git-crypt -text
 data/*/*/*.txt filter=git-crypt diff=git-crypt -text
 data/*/*/*.md filter=git-crypt diff=git-crypt -text
