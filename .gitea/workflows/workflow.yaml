@@ -12,7 +12,7 @@ jobs:
       image: lbausch/laravel-ci:php84
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.ref }}
           token: ${{ github.token }}
