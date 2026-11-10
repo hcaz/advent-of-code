@@ -5,9 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="canonical" href="{{ $page->getUrl() }}">
         <meta name="description" content="{{ $page->description }}">
-        <title>{{ $page->title }}</title>
+        <title>@hasSection('title')@yield('title') · {{ $page->site_name }}@else{{ $page->site_name }}@endif</title>
+        <link rel="stylesheet" href="/assets/css/main.css">
     </head>
-    <body class="text-gray-900 font-sans antialiased">
-        @yield('body')
+    <body>
+        <div class="wrap">
+            @yield('body')
+        </div>
     </body>
 </html>
