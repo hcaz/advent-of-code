@@ -1,0 +1,14 @@
+# Narrow on purpose, matching the house pattern at hcaz.me.uk.
+# config.php and bootstrap.php are the riskiest files in a Jigsaw site -- loose
+# arrays and closures that only fail at build time -- so they are analysed
+# alongside src/.
+#
+# tests/ is excluded: Pest rebinds $this inside test closures, which PHPStan
+# cannot model without an extension, and the tests are verified by running them.
+parameters:
+    level: 5
+    paths:
+        - config.php
+        - bootstrap.php
+        - src
+    treatPhpDocTypesAsCertain: false
