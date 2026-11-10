@@ -6,6 +6,11 @@
 /.idea/
 /.vscode/
 /source/*/_tmp/
+
+# Local-only config: holds the git-crypt-gated puzzle text flag AND the Gitea
+# credentials. Never commit it -- this repo is mirrored to public GitHub and
+# GitLab. See config.local.php.example.
+/config.local.php
 .DS_Store
 .env
 /old_code/vendor

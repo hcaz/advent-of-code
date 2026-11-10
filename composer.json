@@ -29,7 +29,9 @@
         "fix": "pint",
         "stan": "phpstan analyse",
         "test": "pest",
-        "check-leaks": "@php scripts/check-leaks.php"
+        "check-leaks": "@php scripts/check-leaks.php",
+        "sync-readme": "@php scripts/sync-readme.php",
+        "sync-issues": "@php scripts/sync-gitea-issues.php --dry-run"
     },
     "config": {
         "preferred-install": "dist",

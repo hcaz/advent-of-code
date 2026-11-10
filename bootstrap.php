@@ -21,6 +21,47 @@ use TightenCo\Jigsaw\Jigsaw;
  * collection files behind in the per-collection _tmp directories under source.
  * Those paths are gitignored.
  */
+/*
+ * Credentials must never reach the output, in ANY environment.
+ *
+ * The Gitea token lives in config.local.php, which means Jigsaw exposes it to
+ * every template as $page->gitea during a local build. Nothing renders it, but
+ * "nothing renders it today" is not a guarantee, and build_local is served at
+ * aoc.test. So this runs everywhere, including build_local, which the puzzle
+ * scan below deliberately skips.
+ */
+$events->afterBuild(function (Jigsaw $jigsaw) {
+    $secret = $jigsaw->getConfig('gitea.token');
+
+    if (! is_string($secret) || strlen($secret) < 8) {
+        return;
+    }
+
+    $destination = $jigsaw->getDestinationPath();
+
+    if (! is_dir($destination)) {
+        return;
+    }
+
+    $entries = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($destination, RecursiveDirectoryIterator::SKIP_DOTS),
+    );
+
+    foreach ($entries as $entry) {
+        if (! $entry->isFile()) {
+            continue;
+        }
+
+        if (str_contains((string) @file_get_contents($entry->getPathname()), $secret)) {
+            throw new RuntimeException(
+                "\n  CREDENTIAL LEAKED INTO THE BUILD\n\n"
+                ."    {$entry->getPathname()} contains the Gitea token.\n\n"
+                ."  Remove whatever renders it, then rotate the token.\n",
+            );
+        }
+    }
+});
+
 $events->afterBuild(function (Jigsaw $jigsaw) {
     $destination = $jigsaw->getDestinationPath();
 

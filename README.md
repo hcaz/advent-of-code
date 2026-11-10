@@ -1,74 +1,135 @@
 # Advent of Code
 
-This is a single project which contains all my solutions to [Advent of Code](https://adventofcode.com/), all solutions are written in PHP by myself. You will also need to provide puzzle input files in the `storage` directory, in this repo these are encrypted with `git-crypt` and are not included in the public repository. To read more about why puzzle input and challenge questions are private see [the AOC about page](https://adventofcode.com/about). Please visit the home page of AOC to download your own problem datasets.
->If you're posting a code repository somewhere, please don't include parts of Advent of Code like the puzzle text or your inputs.
+My solutions to [Advent of Code](https://adventofcode.com/), every year since 2015, written in PHP
+and published as a static site built with [Jigsaw](https://jigsaw.tighten.com/).
+
+Puzzle inputs and puzzle text are **not** in this repository. They live under `data/` encrypted with
+`git-crypt`, and the site build cannot read them unless it is explicitly told to, which only happens
+for local builds. This is deliberate — see [the AoC about page](https://adventofcode.com/about):
+
+> If you're posting a code repository somewhere, please don't include parts of Advent of Code like
+> the puzzle text or your inputs.
 
 Here is a list of the challenges I have completed:
 
-### 2015
-- [Day 1: Not Quite Lisp](https://adventofcode.com/2015/day/1) ★★ - `php adventofcode challenge/2015/01`
-- [Day 2: I Was Told There Would Be No Math](https://adventofcode.com/2015/day/2) ★★ - `php adventofcode challenge/2015/02`
-- [Day 3: Perfectly Spherical Houses in a Vacuum](https://adventofcode.com/2015/day/3) ★★ - `php adventofcode challenge/2015/03`
-- [Day 4: The Ideal Stocking Stuffer](https://adventofcode.com/2015/day/4) ★★ - `php adventofcode challenge/2015/04`
-- [Day 5: Doesn't He Have Intern-Elves For This?](https://adventofcode.com/2015/day/5) ★★ - `php adventofcode challenge/2015/05`
-- [Day 6: Probably a Fire Hazard](https://adventofcode.com/2015/day/6) ★★ - `php adventofcode challenge/2015/06`
+**★ 40 collected.**
 
-### 2016
+### 2024 — ★ 14
 
-### 2017
+- [Historian Hysteria](https://adventofcode.com/2024/day/1) ★★ - `bin/aoc run 2024 1`
+- [Red-Nosed Reports](https://adventofcode.com/2024/day/2) ★★ - `bin/aoc run 2024 2`
+- [Mull It Over](https://adventofcode.com/2024/day/3) ★★ - `bin/aoc run 2024 3`
+- [Ceres Search](https://adventofcode.com/2024/day/4) ★★ - `bin/aoc run 2024 4`
+- [Print Queue](https://adventofcode.com/2024/day/5) ★★ - `bin/aoc run 2024 5`
+- [Guard Gallivant](https://adventofcode.com/2024/day/6) ★★ - `bin/aoc run 2024 6`
+- [Hoof It](https://adventofcode.com/2024/day/10) ★★ - `bin/aoc run 2024 10`
 
-### 2018
+### 2023 — ★ 1
 
-### 2019
+- [Trebuchet?!](https://adventofcode.com/2023/day/1) ★ - `bin/aoc run 2023 1` _(retroactive)_
 
-### 2020
+### 2022 — ★ 13
 
-### 2021
+- [Calorie Counting](https://adventofcode.com/2022/day/1) ★★ - `bin/aoc run 2022 1`
+- [Rock Paper Scissors](https://adventofcode.com/2022/day/2) ★★ - `bin/aoc run 2022 2`
+- [Rucksack Reorganization](https://adventofcode.com/2022/day/3) ★★ - `bin/aoc run 2022 3`
+- [Camp Cleanup](https://adventofcode.com/2022/day/4) ★★ - `bin/aoc run 2022 4`
+- [Supply Stacks](https://adventofcode.com/2022/day/5) ★★ - `bin/aoc run 2022 5`
+- [Tuning Trouble](https://adventofcode.com/2022/day/6) ★★ - `bin/aoc run 2022 6`
+- [No Space Left On Device](https://adventofcode.com/2022/day/7) ★ - `bin/aoc run 2022 7`
 
-### 2022
-- [Day 1: Calorie Counting](https://adventofcode.com/2022/day/1) ★★ - `php adventofcode challenge/2022/01`
-- [Day 2: Rock Paper Scissors](https://adventofcode.com/2022/day/2) ★★ - `php adventofcode challenge/2022/02`
-- [Day 3: Rucksack Reorganization](https://adventofcode.com/2022/day/3) ★★ - `php adventofcode challenge/2022/03`
-- [Day 4: Camp Cleanup](https://adventofcode.com/2022/day/4) ★★ - `php adventofcode challenge/2022/04`
-- [Day 5: Supply Stacks](https://adventofcode.com/2022/day/5) ★★ - `php adventofcode challenge/2022/05`
-- [Day 6: Tuning Trouble](https://adventofcode.com/2022/day/6) ★★ - `php adventofcode challenge/2022/06`
-- [Day 7: No Space Left On Device](https://adventofcode.com/2022/day/7) ★ - `php adventofcode challenge/2022/07`
+### 2015 — ★ 12
 
-### 2023
-- [Day 1: Trebuchet?!](https://adventofcode.com/2023/day/1) ★ - `php adventofcode challenge/2023/01`
+- [Not Quite Lisp](https://adventofcode.com/2015/day/1) ★★ - `bin/aoc run 2015 1` _(retroactive)_
+- [I Was Told There Would Be No Math](https://adventofcode.com/2015/day/2) ★★ - `bin/aoc run 2015 2` _(retroactive)_
+- [Perfectly Spherical Houses in a Vacuum](https://adventofcode.com/2015/day/3) ★★ - `bin/aoc run 2015 3` _(retroactive)_
+- [The Ideal Stocking Stuffer](https://adventofcode.com/2015/day/4) ★★ - `bin/aoc run 2015 4` _(retroactive)_
+- [Doesn't He Have Intern-Elves For This?](https://adventofcode.com/2015/day/5) ★★ - `bin/aoc run 2015 5` _(retroactive)_
+- [Probably a Fire Hazard](https://adventofcode.com/2015/day/6) ★★ - `bin/aoc run 2015 6` _(retroactive)_
 
-### 2024
-- [Day 1: Historian Hysteria](https://adventofcode.com/2024/day/1) ★★ - `php adventofcode challenge/2024/01`
-- [Day 2: Red-Nosed Reports](https://adventofcode.com/2024/day/2) ★★ - `php adventofcode challenge/2024/02`
-- [Day 3: Mull It Over](https://adventofcode.com/2024/day/3) ★★ - `php adventofcode challenge/2024/03`
-- [Day 4: Ceres Search](https://adventofcode.com/2024/day/4) ★★ - `php adventofcode challenge/2024/04`
-- [Day 5: Print Queue](https://adventofcode.com/2024/day/5) ★★ - `php adventofcode challenge/2024/05`
-- [Day 6: Guard Gallivant](https://adventofcode.com/2024/day/6) ★★ - `php adventofcode challenge/2024/06`
-- [Day 10: Hoof It](https://adventofcode.com/2024/day/10) ★★ - `php adventofcode challenge/2024/10`
-
-### 2025
-
-### 2026
-
-## Getting Started
-
-These instructions will give you a copy of the project up and running on your local machine for development and testing purposes.
+## Getting started
 
 ### Prerequisites
 
-This project is built on top of [Laravel Zero](https://github.com/laravel-zero/laravel-zero), and needs php 8.4 or higher and the composer package manager installed on your system to run.
+PHP 8.4 or newer and Composer. There is no Node toolchain — the stylesheet is hand-written and
+served as-is.
 
 ### Installing
 
-After cloning the repository you can install all dependencies through composer by running:
+```
+composer install
+```
 
-Say what the step will be
+### Running a solution
 
-    composer install
+Solutions are plain classes under `src/Solutions/`, run through a small CLI:
 
-You can then run the main menu by running:
+```
+bin/aoc run                      # every ported day
+bin/aoc run 2024                 # one year
+bin/aoc run 2024 1               # one day
+bin/aoc run 2024 1 --part=two    # one part
+bin/aoc run --write              # record answers and notes into the problem files
+```
 
-    php adventofcode browse
+This needs the puzzle inputs, so it only works with the `git-crypt` key:
+
+```
+git-crypt unlock
+```
+
+### Building the site
+
+```
+vendor/bin/jigsaw build local        # includes puzzle text, never committed or deployed
+vendor/bin/jigsaw build production   # answers and notes only
+```
+
+A local build renders the puzzle text and a preview of the input so the pages are useful while
+working on a day. A production build cannot, because `src/Data.php` refuses to read it unless
+`show_puzzle_text` is on, and that is only set in `config.local.php`.
+
+### Local configuration
+
+Copy `config.local.php.example` to `config.local.php` and fill it in. That file is gitignored and
+holds the two things that must never be committed: the flag that lets the build read puzzle text,
+and the Gitea credentials used by the issue sync.
+
+### Checks
+
+```
+composer lint          # Pint
+composer stan          # PHPStan
+composer test          # Pest, structural checks only
+composer check-leaks   # scan a production build for puzzle content
+vendor/bin/pest --group=solutions    # verify every recorded answer (needs the key, slow)
+```
+
+### Keeping things in sync
+
+```
+composer sync-readme                        # regenerate this README
+php scripts/sync-readme.php --check         # fail if it is out of date
+composer sync-issues                        # dry-run the Gitea issue sync
+php scripts/sync-gitea-issues.php           # apply it
+```
+
+The issue sync also creates problem files and year pages for newly released days, so running it in
+December is enough to pick up a new puzzle. It embeds puzzle text in issue bodies, so it needs the
+`git-crypt` key and never runs in CI.
+
+## How it fits together
+
+| Path | What it is |
+|---|---|
+| `source/_problems/<year>-<day>.md` | One file per puzzle day — **the single source of truth** for titles, answers, notes, AI usage and the date solved |
+| `src/Solutions/Year<year>/Day<day>.php` | The solution, returning `Result{answer, notes}` |
+| `data/<year>/<day>/` | Puzzle input and text, `git-crypt` encrypted, never published |
+| `scripts/` | README sync, Gitea issue sync, and the leak check |
+| `config.local.php` | Local-only, gitignored: puzzle text flag and Gitea credentials |
+
+Both `bin/aoc` and the Gitea sync write back into the problem files through `src/ProblemFile.php`,
+which only ever touches its own front matter keys and leaves hand-written prose byte-for-byte alone.
 
 ## Authors
 

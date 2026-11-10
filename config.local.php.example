@@ -1,0 +1,39 @@
+<?php
+
+/*
+ * Copy to config.local.php and fill in. That file is gitignored, and must stay
+ * that way: this repo is mirrored to public GitHub and GitLab, so anything
+ * committed here is published.
+ *
+ * Jigsaw loads config.<env>.php over config.php, so `jigsaw build local` picks
+ * this up automatically. Note the merge is shallow and only top-level keys are
+ * considered -- do not add a `collections` key here, it would replace the whole
+ * collections config rather than extending it.
+ */
+
+return [
+    'baseUrl' => 'https://aoc.test',
+    'production' => false,
+
+    /*
+     * Allows src/Data.php to read the git-crypt encrypted puzzle inputs and
+     * prose. This is the ONLY place it may be true. config.php defaults it to
+     * false, because a missing key in an environment config silently inherits
+     * the base value -- so the base has to deny.
+     */
+    'show_puzzle_text' => true,
+
+    /*
+     * Used by scripts/sync-gitea-issues.php only; the site build never reads
+     * it, and bootstrap.php fails the build if the token ever reaches the
+     * output. Generate a token at <your gitea>/user/settings/applications
+     * with issue read/write scope.
+     */
+    'gitea' => [
+        'host' => 'https://git.example.com',
+        'org' => 'your-user-or-org',
+        'repo' => 'advent-of-code',
+        'user' => 'your-username',
+        'token' => '',
+    ],
+];
