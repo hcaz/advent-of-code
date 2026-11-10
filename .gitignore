@@ -5,3 +5,5 @@
 .phpunit.result.cache
 .env
 .DS_Store
+
+/old_code/vendor
