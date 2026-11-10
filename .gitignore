@@ -1,16 +1,14 @@
 /build_local/
+/build_staging/
+/build_production/
 /cache/
 /node_modules/
 /vendor/
 /.idea/
 /.vscode/
+/source/*/_tmp/
 npm-debug.log
 hot
 .DS_Store
 .env
 /old_code/vendor
-
-# Optional ignores
-# /build_staging/
-# /build_production/
-# /source/assets/build/
