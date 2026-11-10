@@ -1,2 +1,406 @@
-/* Placeholder. Real stylesheet lands in the next phase. */
-body { font-family: system-ui, sans-serif; }
+/*
+ * Hand-written, no build step. There is deliberately no Node toolchain in this
+ * project -- matching the other Jigsaw sites here -- so this file is served
+ * exactly as written.
+ *
+ * Dark by default, since that is what Advent of Code itself looks like, with a
+ * light override for anyone who prefers it.
+ */
+
+:root {
+    --bg: #0f0f23;
+    --bg-raised: #10101a;
+    --bg-sunken: #0b0b16;
+    --border: #333355;
+    --text: #cccccc;
+    --text-dim: #666688;
+    --text-bright: #ffffff;
+    --accent: #009900;
+    --accent-bright: #00cc00;
+    --star: #ffff66;
+    --star-dim: #333355;
+    --link: #009900;
+    --mono: "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+    --radius: 4px;
+    --gap: 1rem;
+    --measure: 46rem;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --bg: #fbfbfd;
+        --bg-raised: #ffffff;
+        --bg-sunken: #f0f0f4;
+        --border: #d4d4e0;
+        --text: #26263c;
+        --text-dim: #6a6a85;
+        --text-bright: #0f0f23;
+        --accent: #007700;
+        --accent-bright: #005c00;
+        --star: #b8860b;
+        --star-dim: #c8c8d4;
+        --link: #007700;
+    }
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-text-size-adjust: 100%;
+}
+
+.wrap {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: 2.5rem 1rem 4rem;
+}
+
+a {
+    color: var(--link);
+    text-decoration: none;
+}
+
+a:hover,
+a:focus-visible {
+    color: var(--accent-bright);
+    text-decoration: underline;
+}
+
+h1,
+h2 {
+    color: var(--text-bright);
+    font-weight: 700;
+    line-height: 1.25;
+    margin: 0;
+}
+
+h1 {
+    font-size: 1.75rem;
+}
+
+h2 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+}
+
+code {
+    font-family: var(--mono);
+    background: var(--bg-sunken);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.1em 0.4em;
+    color: var(--accent-bright);
+}
+
+pre {
+    background: var(--bg-sunken);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    overflow-x: auto;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Shared bits -------------------------------------------------------------- */
+
+.meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    align-items: center;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    margin: 0.6rem 0 0;
+}
+
+.stars {
+    color: var(--star);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+}
+
+.tag {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.05rem 0.55rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+}
+
+.breadcrumb {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+}
+
+.eyebrow {
+    margin: 0;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+}
+
+.unsolved {
+    color: var(--text-dim);
+    font-style: italic;
+}
+
+/* Index ------------------------------------------------------------------- */
+
+.site-header {
+    margin-bottom: 2.5rem;
+}
+
+.site-header p {
+    margin: 0.4rem 0 0;
+    color: var(--text-dim);
+}
+
+.year-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.4rem;
+}
+
+.year-list a {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr auto;
+    gap: var(--gap);
+    align-items: center;
+    padding: 0.7rem 0.9rem;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    text-decoration: none;
+}
+
+.year-list a:hover,
+.year-list a:focus-visible {
+    border-color: var(--accent);
+}
+
+.year-list__year {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-bright);
+}
+
+.year-list__stars {
+    color: var(--star);
+}
+
+.year-list__count {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    text-align: right;
+}
+
+/* Year calendar ----------------------------------------------------------- */
+
+.year header {
+    margin-bottom: 2rem;
+}
+
+.calendar {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.4rem;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+}
+
+.day a {
+    display: grid;
+    grid-template-columns: 2rem 1fr auto;
+    gap: 0.6rem;
+    align-items: center;
+    padding: 0.55rem 0.7rem;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--star-dim);
+    border-radius: var(--radius);
+    color: var(--text);
+    text-decoration: none;
+}
+
+.day a:hover,
+.day a:focus-visible {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+.day--stars-1 a {
+    border-left-color: var(--accent);
+}
+
+.day--stars-2 a {
+    border-left-color: var(--star);
+}
+
+.day__number {
+    color: var(--text-dim);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.day__title {
+    color: var(--text-bright);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.day__stars {
+    color: var(--star);
+    letter-spacing: 0.08em;
+}
+
+.day--empty a {
+    background: transparent;
+}
+
+.day--empty .day__title {
+    color: var(--text-dim);
+    font-style: italic;
+}
+
+.day--empty .day__stars {
+    color: var(--star-dim);
+}
+
+/* Problem page ------------------------------------------------------------ */
+
+.problem header {
+    margin-bottom: 2.25rem;
+}
+
+.problem h1 {
+    margin-top: 0.2rem;
+}
+
+.problem section {
+    margin-bottom: 2.25rem;
+}
+
+.answers dl,
+.notes dl {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0.75rem 0 0;
+}
+
+.answers dl > div,
+.notes dl > div {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    gap: var(--gap);
+    align-items: baseline;
+    padding: 0.5rem 0.7rem;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.answers dt,
+.notes dt {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+
+.answers dd,
+.notes dd {
+    margin: 0;
+    word-break: break-word;
+}
+
+.ai-note {
+    margin: 0.75rem 0 0;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
+
+.prose :first-child {
+    margin-top: 0;
+}
+
+.prose :last-child {
+    margin-bottom: 0;
+}
+
+/* Local-only block. Never rendered in production -- see src/Data.php. */
+
+.local-only {
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    background: var(--bg-sunken);
+}
+
+.local-only .warning {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    margin: 0.4rem 0 1rem;
+}
+
+.local-only details {
+    margin-bottom: 0.6rem;
+}
+
+.local-only summary {
+    cursor: pointer;
+    color: var(--link);
+}
+
+.local-only details p {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin: 0.3rem 0 0;
+}
+
+/* Narrow screens ---------------------------------------------------------- */
+
+@media (max-width: 34rem) {
+    .wrap {
+        padding: 1.5rem 0.85rem 3rem;
+    }
+
+    .year-list a {
+        grid-template-columns: 3.5rem 1fr;
+        row-gap: 0.2rem;
+    }
+
+    .year-list__count {
+        grid-column: 2;
+        text-align: left;
+    }
+
+    .answers dl > div,
+    .notes dl > div {
+        grid-template-columns: 1fr;
+        gap: 0.15rem;
+    }
+}
