@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Aoc\Calendar;
 use Aoc\ProblemFile;
+use Aoc\Runner;
+use Aoc\Solution;
 
 /**
  * Structural invariants over source/_problems/.
@@ -137,4 +139,43 @@ it('records a title for exactly the days that have been attempted', function () 
     // 23 days have real puzzle content; two of them (2024/07, 2024/08) are
     // started but unanswered, so titles outnumber answered days.
     expect($titled)->toHaveCount(23);
+});
+
+it('has a problem file for every ported solution class', function () {
+    $missing = [];
+
+    foreach (Runner::all() as [$year, $day]) {
+        if (! is_file(Calendar::path($year, $day))) {
+            $missing[] = "{$year}/{$day}";
+        }
+    }
+
+    expect($missing)->toBeEmpty()
+        ->and(Runner::all())->toHaveCount(23);
+});
+
+it('implements the Solution interface on every ported class', function () {
+    foreach (Runner::all() as [$year, $day]) {
+        $class = Runner::classFor($year, $day);
+
+        expect(class_exists($class))->toBeTrue()
+            ->and(new $class)->toBeInstanceOf(Solution::class);
+    }
+});
+
+it('records an answer for every day that is not a known unsolved part', function () {
+    // Days with a solution class but deliberately no recorded answers, because
+    // the original code for them was abandoned mid-debug.
+    $unsolved = ['2024-7', '2024-8'];
+    $gaps = [];
+
+    foreach (Runner::all() as [$year, $day]) {
+        $file = ProblemFile::read(Calendar::path($year, $day));
+
+        if (! $file->has('answer_one') && ! in_array("{$year}-{$day}", $unsolved, true)) {
+            $gaps[] = "{$year}/{$day}";
+        }
+    }
+
+    expect($gaps)->toBeEmpty();
 });

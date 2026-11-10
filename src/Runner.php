@@ -77,6 +77,9 @@ final class Runner
 
         try {
             return $solution->$method($input);
+        } catch (PartNotImplemented $e) {
+            // Not a failure: the part genuinely has not been written yet.
+            throw $e;
         } catch (Throwable $e) {
             throw new RuntimeException(
                 "{$year} day {$day} part {$part} threw: ".$e->getMessage(),

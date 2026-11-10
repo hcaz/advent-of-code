@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 use Aoc\Calendar;
 use Aoc\Data;
+use Aoc\PartNotImplemented;
 use Aoc\ProblemFile;
 use Aoc\Result;
 use Aoc\Runner;
@@ -92,6 +93,10 @@ foreach ($targets as [$y, $d]) {
 
         try {
             $result = $runner->run($y, $d, $part);
+        } catch (PartNotImplemented) {
+            printf("  part %-3s  not implemented\n", $part);
+
+            continue;
         } catch (Throwable $e) {
             printf("  part %-3s  ERROR  %s\n", $part, $e->getMessage());
             $mismatches++;
